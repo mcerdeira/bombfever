@@ -18,7 +18,7 @@ namespace Lolo
         private string KeyControl; 
         private int[] idleFrames = new int[] { 0, 1, 2, 3 };
         private int[] walkFrames = new int[] { 4, 5, 6, 7 };
-        public string Status;        
+        public string Status; // walking, idle, dead
         public string PrevStatus;
         public Rectangle hitBox;
         Vector2 Location;
