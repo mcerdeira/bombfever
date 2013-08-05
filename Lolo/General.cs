@@ -13,10 +13,11 @@ namespace Lolo
 {
     enum GameState
     {
-        MainMenu,
-        Options,
-        Playing,
-        Quit
+        MainMenu, // Displaying main menu
+        Options,  // Displaying game options
+        Start,    // (Command) Start the game (a temporal state)
+        Playing,  // Displaying in-game 
+        Quit      // (Command) Quit the game  
     }
 
     class General

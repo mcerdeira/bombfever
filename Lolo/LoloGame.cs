@@ -96,13 +96,7 @@ namespace Lolo
             spriteBatch = new SpriteBatch(GraphicsDevice);
             menu = new MainMenu(Content.Load<Texture2D>("MainMenu"));
             options = new OptionMenu();
-            map = new Map();
-            bombmanager = new BombManager(Content);
-            p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(0, 0), bombmanager);           
-            map.GenerateLevel(Content, p1);
-            bombmanager.UpdateMap(map);
-            //en = new Enemy(Content.Load<Texture2D>("Enemy"), new Vector2(19, 19));
-            background = Content.Load<Texture2D>("Background");
+            background = Content.Load<Texture2D>("Background");          
         }
 
         /// <summary>
@@ -111,7 +105,7 @@ namespace Lolo
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            Content.Unload();
         }
 
         /// <summary>
@@ -131,6 +125,16 @@ namespace Lolo
             {
                 switch (CurrentGameState)
                 {
+                    case GameState.Start:
+                        // In Game objects
+                        map = new Map();
+                        bombmanager = new BombManager(Content);
+                        p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(0, 0), bombmanager);
+                        map.GenerateLevel(Content, p1);
+                        bombmanager.UpdateMap(map);
+                        //en = new Enemy(Content.Load<Texture2D>("Enemy"), new Vector2(19, 19));  
+                        CurrentGameState = GameState.Playing;
+                        break;
                     case GameState.MainMenu:
                         menu.Update(gameTime);
                         break;

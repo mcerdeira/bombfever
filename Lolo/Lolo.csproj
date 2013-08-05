@@ -38,12 +38,14 @@
     <Compile Include="Bomb.cs" />
     <Compile Include="BombExplosion.cs" />
     <Compile Include="BombManager.cs" />
+    <Compile Include="Button.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="General.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="LoloGame.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="MainMenu.cs" />
+    <Compile Include="OptionMenu.cs" />
     <Compile Include="Particle.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
