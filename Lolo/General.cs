@@ -11,6 +11,14 @@ using Microsoft.Xna.Framework.GamerServices;
 
 namespace Lolo
 {
+    enum GameState
+    {
+        MainMenu,
+        Options,
+        Playing,
+        Quit
+    }
+
     class General
     {
         public static Vector2 IntersectDepthVector(Rectangle main, Rectangle r)

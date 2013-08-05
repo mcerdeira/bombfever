@@ -50,16 +50,17 @@ namespace Lolo
             Random rdn = new Random();           
             int row = 0;
             int v = 0;           
-            for (int r= 0; r< 20; r++)
+            for (int r= 0; r< 12; r++)
             {
                 int col = 0;
-                for (int c = 0; c < 20; c++)
+                for (int c = 0; c < 12; c++)
                 {
                     bool b = true;
                     if ((r == 0 && c == 0) ||
-                        (r == 0 && c == 19) ||
-                        (r == 19 && c == 0) ||
-                        (r == 19 && c == 19)
+                        (r == 0 && c == 1)||
+                        (r == 0 && c == 11) ||
+                        (r == 11 && c == 0) ||
+                        (r == 11 && c == 11)
                         )
                     {
                         v = 0; // 4 vertices empty
