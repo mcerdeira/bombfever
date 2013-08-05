@@ -16,7 +16,7 @@ namespace Lolo
         MainMenu, // Displaying main menu
         Options,  // Displaying game options
         Start,    // (Command) Start the game (a temporal state)
-        Playing,  // Displaying in-game 
+        Playing,  // Displaying in-game
         Quit      // (Command) Quit the game  
     }
 
@@ -42,6 +42,16 @@ namespace Lolo
           float depthX = distanceX > 0 ? minDistanceX - distanceX : -minDistanceX - distanceX;
           float depthY = distanceY > 0 ? minDistanceY - distanceY : -minDistanceY - distanceY;
           return new Vector2(depthX, depthY);
+        }
+
+        public static List<Vector2> PositionButtons(List<Button> buttons)
+        {
+            // Receive a list of buttons, and position them in the screen
+
+            List<Vector2> positions = new List<Vector2>();
+
+
+            return positions;
         }
     }
 }
