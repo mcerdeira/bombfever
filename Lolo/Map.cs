@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
  * 0 Empty space
  * 1 Brick (breakable 1 hit)  
  * 2 Iron (unbreakable)
- * 3 Stone (breakable 2 hits)
+ * 3 Stone (breakable 1 hits)
  * 4 Mud (breakable 1 hit, regenerates)
  * 5 Wood breakable 1 hit, catches fire and propagates to other wood bricks next to it)
  * 6 Empty space
@@ -40,16 +40,22 @@ namespace Lolo
             }
         }
 
+        public void RemoveTile(Tile tile)
+        {
+            tiles.Remove(tile);
+        }
+
         public void GenerateLevel(ContentManager content, Player player)
         {
             Random rdn = new Random();           
             int row = 0;
-            int v = 0;
+            int v = 0;           
             for (int r= 0; r< 20; r++)
             {
                 int col = 0;
                 for (int c = 0; c < 20; c++)
                 {
+                    bool b = true;
                     if ((r == 0 && c == 0) ||
                         (r == 0 && c == 19) ||
                         (r == 19 && c == 0) ||
@@ -66,6 +72,7 @@ namespace Lolo
                             )
                     { 
                         v = 2; // Iron
+                        b = false;
                     }
                     else
                     {
@@ -82,7 +89,7 @@ namespace Lolo
                     if (v != 0)
                     {
                         Vector2 pos = new Vector2(col, row);
-                        Tile t = new Tile(pos, content,player,v);
+                        Tile t = new Tile(pos, content,player, b, this, v);
                         tiles.Add(t);                        
                     }
                     col += 50;

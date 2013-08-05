@@ -52,7 +52,7 @@ namespace Lolo
         {
             if (LifeLoop <= 50 && hitBox.Intersects(player.hitBox))
             {
-                player.wall = true;
+                //player.wall = true;
             }
             LifeLoop--;
 

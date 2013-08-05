@@ -39,6 +39,7 @@
     <Compile Include="BombExplosion.cs" />
     <Compile Include="BombManager.cs" />
     <Compile Include="Enemy.cs" />
+    <Compile Include="General.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="LoloGame.cs" />
     <Compile Include="Map.cs" />
@@ -101,6 +102,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\particle.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\Background.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

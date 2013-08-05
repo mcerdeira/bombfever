@@ -20,10 +20,11 @@ namespace Lolo
         SpriteBatch spriteBatch;
         Player p1;
         Map map;
-        Enemy en;
-        Boolean paused;
+        Enemy en;        
         BombManager bombmanager;
         private Texture2D background;
+        private bool paused = false;
+        private bool pauseKeyDown = false;
 
         public LoloGame()
             : base()
@@ -32,6 +33,33 @@ namespace Lolo
             #warning Put fullscreen back
             //graphics.IsFullScreen = true;
             Content.RootDirectory = "Content";
+        }
+
+        private void BeginPause(bool UserInitiated)
+        {
+            paused = true;
+            //TODO: Volume down
+        }
+
+        private void EndPause()
+        {
+            //TODO: Resume audio            
+            paused = false;
+        }
+
+        private void checkPauseKey(KeyboardState keyboardState)
+        {
+            bool pauseKeyDownThisFrame = keyboardState.IsKeyDown(Keys.P);
+            // If key was not down before, but is down now, we toggle the
+            // pause setting
+            if (!pauseKeyDown && pauseKeyDownThisFrame)
+            {
+                if (!paused)
+                    BeginPause(true);
+                else
+                    EndPause();
+            }
+            pauseKeyDown = pauseKeyDownThisFrame;
         }
 
         /// <summary>
@@ -60,7 +88,7 @@ namespace Lolo
             map.GenerateLevel(Content, p1);
             bombmanager.UpdateMap(map);
             //en = new Enemy(Content.Load<Texture2D>("Enemy"), new Vector2(19, 19));
-            //background = Content.Load<Texture2D>("Background");
+            background = Content.Load<Texture2D>("Background");
         }
 
         /// <summary>
@@ -79,15 +107,19 @@ namespace Lolo
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            p1.Update(gameTime);
-            //en.Update();
-            map.Update();
-            bombmanager.Update();
-            
-            base.Update(gameTime);
+            checkPauseKey(Keyboard.GetState());
+
+            if (!paused)
+            {
+                p1.Update(gameTime);
+                //en.Update();
+                map.Update();
+                bombmanager.Update();
+                base.Update(gameTime);
+            }
         }
 
         /// <summary>
@@ -98,7 +130,7 @@ namespace Lolo
         {
             GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
-            //spriteBatch.Draw(background, new Rectangle(0, 0, 800, 480), Color.White); 
+            spriteBatch.Draw(background, new Rectangle(0, 0, 800, 480), Color.White); 
             map.Draw(spriteBatch);
             p1.Draw(spriteBatch);
             //en.Draw(spriteBatch);

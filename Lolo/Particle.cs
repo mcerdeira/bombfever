@@ -57,6 +57,11 @@ namespace Lolo
             {
                 if (this.hitBox.Intersects(map.tiles[index].hitBox))
                 {
+                    if (!disabled && map.tiles[index].BreakAble)
+                    {
+                        map.tiles[index].Action = "dead";
+                    }
+
                     disabled = true; // If the particle has bounced, its no longuer deathly (maybe it should dissapear too)
 
                     Random rnd = new Random();

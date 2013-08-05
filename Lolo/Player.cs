@@ -10,8 +10,8 @@ using Microsoft.Xna.Framework.Input;
 namespace Lolo
 {
     public class Player
-    {        
-        public bool wall;
+    {
+        public bool wallHitted;
         public Texture2D Texture { get; set; }        
         public int Columns { get; set; }
         private int currentFrame;
@@ -21,20 +21,20 @@ namespace Lolo
         public string Status; // walking, idle, dead
         public string PrevStatus;
         public Rectangle hitBox;
-        Vector2 Location;
-        Vector2 preLocation;
+        public Vector2 newPosition;
+        Vector2 Location;        
         Vector2 Speed = new Vector2();
-        Vector2 Acceleration = new Vector2(40, 40);
+        //Vector2 Acceleration = new Vector2(40, 40);
         BombManager BombMan;
         public int BombCount = 0;
         public int BombMax = 3;
-        int minVel = 100;
+        int minVel = 200;
         int maxVel = 280;
         int directionX = 0;
         int directionY = 0;
 
         public Player(Texture2D texture, Vector2 location, BombManager BombMan)
-        {            
+        {
             Speed.X = minVel;
             Speed.Y = minVel;
             Status = "idle";
@@ -75,7 +75,8 @@ namespace Lolo
 
         private void UpdateInput(float elapsedTime)
         {
-            Console.WriteLine(KeyControl);
+            #warning add joystick support
+            //GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed            
             this.Status = "idle";
             KeyboardState st = Keyboard.GetState();
             if (!st.IsKeyDown(Keys.Space))
@@ -93,63 +94,51 @@ namespace Lolo
             if (st.IsKeyDown(Keys.Right))
             {
                 this.Status = "walking";
-                if (Speed.X < maxVel)
-                {
-                    Speed.X += Acceleration.X;                
-                }
                 directionX = 1;               
             }
 
             if (st.IsKeyDown(Keys.Left))
             {
                 this.Status = "walking";
-                if (Speed.X < maxVel)
-                {
-                    Speed.X += Acceleration.X;
-                }
                 directionX = -1;
             }
 
             if (st.IsKeyDown(Keys.Down))
             {
                 this.Status = "walking";
-                if (Speed.Y < maxVel)
-                {
-                    Speed.Y += Acceleration.Y;
-                }
                 directionY = 1;         
             }
 
             if (st.IsKeyDown(Keys.Up))
             {
                 this.Status = "walking";
-                if (Speed.Y < maxVel)
-                {
-                    Speed.Y += Acceleration.Y;
-                }
                 directionY = -1;
             }
 
             if (!st.IsKeyDown(Keys.Right) &&
-                !st.IsKeyDown(Keys.Left) && Speed.X > minVel)
+                !st.IsKeyDown(Keys.Left))
             {
-                Speed.X = 0;
+                //Speed.X = 0;
                 directionX = 0;
             }
 
             if (!st.IsKeyDown(Keys.Up) &&
-                !st.IsKeyDown(Keys.Down) && Speed.Y > minVel)
-            {
-                Speed.Y = 0;
+                !st.IsKeyDown(Keys.Down))
+            {                
                 directionY = 0;
             }
-
             Location.X += (Speed.X * elapsedTime) * directionX;
             Location.Y += (Speed.Y * elapsedTime) * directionY;
         }
 
         public void Draw(SpriteBatch spriteBatch)
-        {   
+        {
+            if (wallHitted)
+            {
+                Location = newPosition;
+                wallHitted = false;
+            }
+
             // Draw the player in the new location(x,y)
             int width = Texture.Width / Columns;
             int height = Texture.Height;
@@ -159,19 +148,6 @@ namespace Lolo
             Rectangle destinationRectangle = new Rectangle((int)Location.X, (int)Location.Y, width, height);
             hitBox = destinationRectangle;
             spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White);
-            if (wall)
-            {  
-                // After drawing, if a collision exists, I revert the movement
-                wall = false;
-                Location.X = preLocation.X;
-                Location.Y = preLocation.Y;
-            }
-            else
-            {
-                // After drawing, if no collision exists, y save the pre-location (safe location)
-                preLocation.X = Location.X;
-                preLocation.Y = Location.Y;
-            }
         }
     }
 }
