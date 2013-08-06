@@ -91,7 +91,7 @@ namespace Lolo
                 if (previousMenuKey != Keys.Down)
                 {
                     previousMenuKey = Keys.Down;
-                    menu.ButtonFocus(s1);
+                    menu.ButtonFocus(1);
                 }
             }
             else if (keyboardState.IsKeyDown(Keys.Enter))
@@ -172,7 +172,7 @@ namespace Lolo
                         p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(0, 0), bombmanager);
                         map.GenerateLevel(Content, p1);
                         bombmanager.UpdateMap(map);
-                        //en = new Enemy(Content.Load<Texture2D>("Enemy"), new Vector2(19, 19));  
+                        en = new Enemy(Content.Load<Texture2D>("Enemy"), new Vector2(770,566), bombmanager);  
                         CurrentGameState = GameState.Playing;
                         break;
                     case GameState.MainMenu:
@@ -183,9 +183,13 @@ namespace Lolo
                         break;
                     case GameState.Playing:
                         p1.Update(gameTime);
-                        //en.Update();
+                        en.Update(gameTime);
                         map.Update();
                         bombmanager.Update();
+                        break;
+                    case GameState.Credits:
+                        break;
+                    case GameState.LoadFromFile:
                         break;
                     case GameState.Quit:
                         Exit();
@@ -215,11 +219,15 @@ namespace Lolo
                     spriteBatch.Draw(background, new Rectangle(0, 0,ScreenWidth, ScreenHeight), Color.White); 
                     map.Draw(spriteBatch);
                     p1.Draw(spriteBatch);
-                    //en.Draw(spriteBatch);
+                    en.Draw(spriteBatch);
                     bombmanager.Draw(spriteBatch);
                     break;
                 case GameState.Quit:
                     // Don't draw anything
+                    break;
+                case GameState.Credits:
+                    break;
+                case GameState.LoadFromFile:
                     break;
             }
             spriteBatch.End();

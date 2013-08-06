@@ -17,7 +17,9 @@ namespace Lolo
         Options,  // Displaying game options
         Start,    // (Command) Start the game (a temporal state)
         Playing,  // Displaying in-game
-        Quit      // (Command) Quit the game  
+        LoadFromFile, // Load a level from a txt file
+        Credits, // Shows the game credits
+        Quit      // (Command) Quit the game 
     }
 
     enum ButtonType

@@ -86,7 +86,7 @@ namespace Lolo
 
             if (st.IsKeyDown(Keys.Space) && KeyControl != "space" &&  this.BombCount < this.BombMax)
             {
-                KeyControl = "space";
+                KeyControl = "space";               
                 BombMan.SpawnBomb(Location, "player", this);
                 this.BombCount++;
             }

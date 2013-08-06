@@ -31,7 +31,8 @@ namespace Lolo
             this.enemy = enemy;
             this.Owner = Owner;
             Texture = Content.Load<Texture2D>("bomb");
-            this.Position = position;
+            Vector2 pos = new Vector2(position.X - ((Texture.Width - player.hitBox.Width) / 2), position.Y - ((Texture.Height - player.hitBox.Height) / 2));
+            this.Position = pos;
             this.Columns = Texture.Width / 50;
         }
 
@@ -66,7 +67,8 @@ namespace Lolo
                 {
                     //enemy.BombCount--;
                 }
-                BombMan.RemoveBomb(this, Position, player, enemy);
+                Vector2 pos = new Vector2(hitBox.Center.X, hitBox.Center.Y);
+                BombMan.RemoveBomb(this, pos, player, enemy);
             }
         }
     }

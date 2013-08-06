@@ -19,7 +19,6 @@ using Microsoft.Xna.Framework.Graphics;
  * 9 Brick (breakable 1 hit) 
  * P Main player
  * E Enemy
- * I Item (hidden into Brick)
  * A Pit
  * K Portal (teletransportation)
  * C Ice (slipery floor)
@@ -31,6 +30,8 @@ namespace Lolo
     public class Map
     {        
         public List<Tile> tiles = new List<Tile>();
+        public List<Item> items = new List<Item>();
+        private ContentManager Content;
 
         public void Update()
         {
@@ -38,60 +39,99 @@ namespace Lolo
             {
                 tiles[index].Update();
             }
+
+            for (int index = 0; index < items.Count; index++)
+            {
+                items[index].Update();
+            }
         }
 
         public void RemoveTile(Tile tile)
         {
+            if (tile.BreakAble)
+            {
+                // Decide, randomly if there is any item hidden inside
+                Random rdn = new Random();
+                int v;
+                if (tile.ID == 1)
+                {
+                    v = rdn.Next(0, 50); // If it is a regular brick, chances are lower
+                }
+                else
+                {
+                    v = rdn.Next(0, 8); // If it is a special brick, chances are higher
+                }                
+                if (v == 1)
+                {                    
+                    // An item is hidden inside, yay!!
+                    // TODO, add another random here, to decide what kind of item it is
+                    Item itm = new Item(Content.Load<Texture2D>("item"), new Vector2(tile.hitBox.X, tile.hitBox.Y));
+                    items.Add(itm);
+                }
+            }
+            //TODO, previous to remove the item, an animation must occur
+
             tiles.Remove(tile);
         }
 
         public void GenerateLevel(ContentManager content, Player player)
         {
+            this.Content = content;
             Random rdn = new Random();           
             int row = 0;
-            int v = 0;           
+            int v = 0;            
             for (int r= 0; r< 12; r++)
             {
                 int col = 0;
-                for (int c = 0; c < 12; c++)
+                for (int c = 0; c < 17; c++)
                 {
-                    bool b = true;
-                    if ((r == 0 && c == 0) ||
-                        (r == 0 && c == 1)||
-                        (r == 0 && c == 11) ||
-                        (r == 11 && c == 0) ||
-                        (r == 11 && c == 11)
+                    bool walkable = false;
+
+                    if ((r == 0 && c == 0) || // Vertice, room for player to initially move
+                        (r == 1 && c == 0)||
+                        (r == 0 && c == 1) ||        
+
+                        (r == 10 && c == 15) ||
+                        (r == 11 && c == 15) ||
+                        (r == 11 && c == 14) ||
+
+                        (r == 6 && c == 7) || // Center, a prize item
+                        (r == 6 && c == 8)
                         )
                     {
                         v = 0; // 4 vertices empty
                     }
-                    else if((r==10 && c == 10) ||
-                             (c == 1 && r % 2 == 0) ||
-                             (c == 18 && r % 2 == 0) ||
-                             (c == 3 && r % 2 != 0) ||
-                             (c == 16 && r % 2 != 0)
+                    else if ((c == 1 && r % 2 != 0) ||
+                             (c == 14 && r % 2 != 0) ||
+                             (c == 3 && r % 2 == 0) ||
+                             (c == 12 && r % 2 == 0)
                             )
                     { 
-                        v = 2; // Iron
-                        b = false;
+                        v = 2; // Iron (fixed positions)                        
                     }
                     else
-                    {
-                        v = rdn.Next(0, 20);
+                    {                        
+                        v = rdn.Next(-20, 20); // Now lets do some random...  
                     }                    
-                    if(v==6 || v==7 || v==8 || v>9)
+                    if(v>9)
                     {
-                        v = 0;
+                        v = 0; // But, 0 has a little more chances
                     }
-                    if (v == 9)
+                    if (v<0 || v == 6 || v == 7 || v == 8 || v == 9)
                     {
-                        v = 1;
+                        v = 1; // and regular brucks has even more chances!
+                    }
+
+                    if (v == 0)
+                    {
+                        // If 0, then is a walkable block, but lets put some random to decide if regular empty space or what
+                        walkable = true;
                     }
                     if (v != 0)
-                    {
+                    {                        
                         Vector2 pos = new Vector2(col, row);
-                        Tile t = new Tile(pos, content,player, b, this, v);
-                        tiles.Add(t);                        
+                        Tile t = new Tile(pos, content, player, (v!=2), walkable, this, v);
+                        tiles.Add(t);                    
                     }
                     col += 50;
                 }
@@ -104,6 +144,10 @@ namespace Lolo
             for (int index = 0; index < tiles.Count; index++)
             {
                 tiles[index].Draw(spriteBatch);
+            }
+            for (int index = 0; index < items.Count; index++)
+            {
+                items[index].Draw(spriteBatch);
             }
         }
     }

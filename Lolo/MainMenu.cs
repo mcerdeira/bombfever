@@ -25,7 +25,11 @@ namespace Lolo
             this.BtnTexture = btnTexture;
             Button btn = new Button("Start", btnTexture, font, Color.White, GameState.Start);
             btns.Add(btn);
-            btn = new Button("Options", btnTexture, font, Color.White, GameState.Options);
+            btn = new Button("Customs", btnTexture, font, Color.White, GameState.Options);
+            btns.Add(btn);
+            btn = new Button("Load level", btnTexture, font, Color.White, GameState.LoadFromFile);
+            btns.Add(btn);
+            btn = new Button("Credits", btnTexture, font, Color.White, GameState.Credits);
             btns.Add(btn);
             btn = new Button("Quit",btnTexture, font, Color.White, GameState.Quit);
             btns.Add(btn);
