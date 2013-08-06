@@ -24,11 +24,13 @@ namespace Lolo
         MainMenu menu;
         OptionMenu options;
         BombManager bombmanager;
+        SpriteFont mainFont;
         int ScreenWidth = 800;
         int ScreenHeight = 600;
         private Texture2D background;
         private bool paused = false;
         private bool pauseKeyDown = false;
+        private Keys previousMenuKey = Keys.Zoom;
 
         GameState CurrentGameState = GameState.MainMenu;
 
@@ -74,6 +76,35 @@ namespace Lolo
             pauseKeyDown = pauseKeyDownThisFrame;
         }
 
+        private void checkMenuKey(KeyboardState keyboardState)
+        {
+            if (keyboardState.IsKeyDown(Keys.Up))
+            {
+                if (previousMenuKey != Keys.Up)
+                {
+                    previousMenuKey = Keys.Up;
+                    menu.ButtonFocus(-1);
+                }
+            }
+            else if (keyboardState.IsKeyDown(Keys.Down))
+            {
+                if (previousMenuKey != Keys.Down)
+                {
+                    previousMenuKey = Keys.Down;
+                    menu.ButtonFocus(s1);
+                }
+            }
+            else if (keyboardState.IsKeyDown(Keys.Enter))
+            {
+                CurrentGameState = menu.GetRetState();
+            }
+            else
+            {
+                previousMenuKey = Keys.Zoom;
+            }
+            
+        } 
+
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
         /// This is where it can query for any required services and load any non-graphic
@@ -94,7 +125,9 @@ namespace Lolo
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            menu = new MainMenu(Content.Load<Texture2D>("MainMenu"));
+
+            mainFont = Content.Load<SpriteFont>("mainfont");
+            menu = new MainMenu(Content.Load<Texture2D>("MainMenu"), Content.Load<Texture2D>("btn1"), mainFont, ScreenHeight, ScreenWidth);
             options = new OptionMenu();
             background = Content.Load<Texture2D>("Background");          
         }
@@ -119,7 +152,14 @@ namespace Lolo
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            checkPauseKey(Keyboard.GetState());
+            if (CurrentGameState == GameState.MainMenu)
+            {
+                checkMenuKey(Keyboard.GetState());
+            }
+            if (CurrentGameState == GameState.Playing)
+            {
+                checkPauseKey(Keyboard.GetState());
+            }
 
             if (!paused)
             {

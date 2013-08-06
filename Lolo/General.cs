@@ -20,6 +20,12 @@ namespace Lolo
         Quit      // (Command) Quit the game  
     }
 
+    enum ButtonType
+    {
+        Button,
+        CheckBox
+    }
+
     class General
     {
         public static Vector2 IntersectDepthVector(Rectangle main, Rectangle r)
@@ -42,16 +48,6 @@ namespace Lolo
           float depthX = distanceX > 0 ? minDistanceX - distanceX : -minDistanceX - distanceX;
           float depthY = distanceY > 0 ? minDistanceY - distanceY : -minDistanceY - distanceY;
           return new Vector2(depthX, depthY);
-        }
-
-        public static List<Vector2> PositionButtons(List<Button> buttons)
-        {
-            // Receive a list of buttons, and position them in the screen
-
-            List<Vector2> positions = new List<Vector2>();
-
-
-            return positions;
         }
     }
 }
