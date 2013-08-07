@@ -14,6 +14,7 @@ namespace Lolo
         public bool wallHitted;
         public Texture2D Texture { get; set; }        
         public int Columns { get; set; }
+        private PlayerControls PCtrls;
         private int currentFrame;
         private string KeyControl; 
         private int[] idleFrames = new int[] { 0, 1, 2, 3 };
@@ -33,7 +34,7 @@ namespace Lolo
         int directionX = 0;
         int directionY = 0;
 
-        public Player(Texture2D texture, Vector2 location, BombManager BombMan)
+        public Player(Texture2D texture, Vector2 location, ControlType ctype, BombManager BombMan)
         {
             Speed.X = minVel;
             Speed.Y = minVel;
@@ -43,6 +44,7 @@ namespace Lolo
             currentFrame = 0;
             Columns = texture.Width / 30;
             this.BombMan = BombMan;
+            this.PCtrls = new PlayerControls(ctype);       
         }
 
         public void Update(GameTime gametime)
@@ -79,51 +81,51 @@ namespace Lolo
             //GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed            
             this.Status = "idle";
             KeyboardState st = Keyboard.GetState();
-            if (!st.IsKeyDown(Keys.Space))
+            if (!st.IsKeyDown(PCtrls.Bomb))
             {
                 KeyControl = "";
             }
 
-            if (st.IsKeyDown(Keys.Space) && KeyControl != "space" &&  this.BombCount < this.BombMax)
+            if (st.IsKeyDown(PCtrls.Bomb) && KeyControl != "bomb" && this.BombCount < this.BombMax)
             {
-                KeyControl = "space";               
+                KeyControl = "bomb";               
                 BombMan.SpawnBomb(Location, "player", this);
                 this.BombCount++;
             }
 
-            if (st.IsKeyDown(Keys.Right))
+            if (st.IsKeyDown(PCtrls.Right))
             {
                 this.Status = "walking";
                 directionX = 1;               
             }
 
-            if (st.IsKeyDown(Keys.Left))
+            if (st.IsKeyDown(PCtrls.Left))
             {
                 this.Status = "walking";
                 directionX = -1;
             }
 
-            if (st.IsKeyDown(Keys.Down))
+            if (st.IsKeyDown(PCtrls.Down))
             {
                 this.Status = "walking";
                 directionY = 1;         
             }
 
-            if (st.IsKeyDown(Keys.Up))
+            if (st.IsKeyDown(PCtrls.Up))
             {
                 this.Status = "walking";
                 directionY = -1;
             }
 
-            if (!st.IsKeyDown(Keys.Right) &&
-                !st.IsKeyDown(Keys.Left))
+            if (!st.IsKeyDown(PCtrls.Right) &&
+                !st.IsKeyDown(PCtrls.Left))
             {
                 //Speed.X = 0;
                 directionX = 0;
             }
 
-            if (!st.IsKeyDown(Keys.Up) &&
-                !st.IsKeyDown(Keys.Down))
+            if (!st.IsKeyDown(PCtrls.Up) &&
+                !st.IsKeyDown(PCtrls.Down))
             {                
                 directionY = 0;
             }
