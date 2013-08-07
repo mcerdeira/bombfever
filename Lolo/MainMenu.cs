@@ -23,9 +23,11 @@ namespace Lolo
             this.ScreenWidth = screenwidth;
             this.Texture = texture;
             this.BtnTexture = btnTexture;
-            Button btn = new Button("Start", btnTexture, font, Color.White, GameState.Start);
+            Button btn = new Button("1P vs CPU", btnTexture, font, Color.White, GameState.Start1P);
             btns.Add(btn);
-            btn = new Button("Customs", btnTexture, font, Color.White, GameState.Options);
+            btn = new Button("1P vs 2P", btnTexture, font, Color.White, GameState.Start2P);
+            btns.Add(btn);
+            btn = new Button("Game Options", btnTexture, font, Color.White, GameState.Options);
             btns.Add(btn);
             btn = new Button("Load level", btnTexture, font, Color.White, GameState.LoadFromFile);
             btns.Add(btn);

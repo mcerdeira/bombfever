@@ -19,6 +19,9 @@ namespace Lolo
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Player p1;
+        Player p2;
+        ControlType ctype1;
+        ControlType ctype2;
         Map map;
         Enemy en;
         MainMenu menu;
@@ -47,6 +50,13 @@ namespace Lolo
             //graphics.IsFullScreen = true;
             graphics.ApplyChanges();
             Content.RootDirectory = "Content";
+        }
+
+        private void LoadControls()
+        {
+            #warning Here I must load the config file
+            ctype1 = ControlType.KeyBoard1;
+            ctype2 = ControlType.KeyBoard2;
         }
 
         private void BeginPause(bool UserInitiated)
@@ -123,6 +133,7 @@ namespace Lolo
         /// </summary>
         protected override void LoadContent()
         {
+            LoadControls();
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -156,7 +167,7 @@ namespace Lolo
             {
                 checkMenuKey(Keyboard.GetState());
             }
-            if (CurrentGameState == GameState.Playing)
+            if (CurrentGameState == GameState.Playing1P || CurrentGameState == GameState.Playing2P)
             {
                 checkPauseKey(Keyboard.GetState());
             }
@@ -165,15 +176,24 @@ namespace Lolo
             {
                 switch (CurrentGameState)
                 {
-                    case GameState.Start:
+                    case GameState.Start1P:
+                    case GameState.Start2P:                        
                         // In Game objects
                         map = new Map();
                         bombmanager = new BombManager(Content);
-                        p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(0, 0), bombmanager);
+                        p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(0, 0), ctype1, bombmanager);
                         map.GenerateLevel(Content, p1);
                         bombmanager.UpdateMap(map);
-                        en = new Enemy(Content.Load<Texture2D>("Enemy"), new Vector2(770,566), bombmanager);  
-                        CurrentGameState = GameState.Playing;
+                        if (CurrentGameState == GameState.Start1P)
+                        {
+                            en = new Enemy(Content.Load<Texture2D>("Enemy"), new Vector2(770, 566), bombmanager);
+                            CurrentGameState = GameState.Playing1P;
+                        }
+                        else
+                        {
+                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(770, 566),ctype2, bombmanager);
+                            CurrentGameState = GameState.Playing2P;
+                        }                        
                         break;
                     case GameState.MainMenu:
                         menu.Update(gameTime);
@@ -181,9 +201,17 @@ namespace Lolo
                     case GameState.Options:
                         options.Update(gameTime);
                         break;
-                    case GameState.Playing:
+                    case GameState.Playing1P:
+                    case GameState.Playing2P:
                         p1.Update(gameTime);
-                        en.Update(gameTime);
+                        if (CurrentGameState == GameState.Playing1P)
+                        {
+                            en.Update(gameTime);
+                        }
+                        else
+                        {
+                            p2.Update(gameTime);
+                        }
                         map.Update();
                         bombmanager.Update();
                         break;
@@ -215,11 +243,19 @@ namespace Lolo
                 case GameState.Options:
                     options.Draw(spriteBatch);
                     break;
-                case GameState.Playing:
+                case GameState.Playing1P:
+                case GameState.Playing2P:
                     spriteBatch.Draw(background, new Rectangle(0, 0,ScreenWidth, ScreenHeight), Color.White); 
                     map.Draw(spriteBatch);
                     p1.Draw(spriteBatch);
-                    en.Draw(spriteBatch);
+                    if (CurrentGameState == GameState.Playing1P)
+                    {
+                        en.Draw(spriteBatch);
+                    }
+                    else
+                    {
+                        p2.Draw(spriteBatch);
+                    }
                     bombmanager.Draw(spriteBatch);
                     break;
                 case GameState.Quit:

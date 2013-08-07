@@ -13,19 +13,59 @@ namespace Lolo
 {
     enum GameState
     {
-        MainMenu, // Displaying main menu
-        Options,  // Displaying game options
-        Start,    // (Command) Start the game (a temporal state)
-        Playing,  // Displaying in-game
+        MainMenu,     // Displaying main menu
+        Options,      // Displaying game options
+        Start1P,      // (Command) Starts the game 1P vs CPU
+        Start2P,      // (Command) Starts the game 1P vs 2P
+        Playing1P,    // Displaying in-game
+        Playing2P,    // Displaying in-game
         LoadFromFile, // Load a level from a txt file
-        Credits, // Shows the game credits
-        Quit      // (Command) Quit the game 
+        Credits,      // Shows the game credits
+        Quit          // (Command) Quit the game 
     }
 
     enum ButtonType
     {
         Button,
         CheckBox
+    }
+
+    public enum ControlType
+    {
+        KeyBoard1,
+        KeyBoard2,
+        JoyStick1,
+        JoyStick2
+    }
+
+    public class PlayerControls
+    {
+        public Keys Up;
+        public Keys Down;
+        public Keys Left;
+        public Keys Right;
+        public Keys Bomb;        
+
+        public PlayerControls(ControlType ctpye)
+        {
+            if (ctpye == ControlType.KeyBoard1)
+            {
+                Up = Keys.Up;
+                Down = Keys.Down;
+                Left = Keys.Left;
+                Right = Keys.Right;
+                Bomb = Keys.RightShift;
+            }
+            else if (ctpye == ControlType.KeyBoard2)
+            {
+                Up = Keys.W;
+                Down = Keys.S;
+                Left = Keys.A;
+                Right = Keys.D;
+                Bomb = Keys.Space;
+            }
+            #warning Add here the Joystick wrapper
+        }
     }
 
     class General

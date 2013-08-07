@@ -21,16 +21,20 @@ using Microsoft.Xna.Framework.GamerServices;
 namespace Lolo
 {
     public class Item
-    {
+    {        
         private Texture2D Texture;
         private Vector2 Position;
         public int Status = 0; // frame status
         private int Columns;
         Rectangle hitBox;
+        private int Style;
 
-        public Item(Texture2D texture, Vector2 position)
+        public Item(ContentManager content, Vector2 position)
         {
-            this.Texture = texture;
+            Random rnd = new Random();
+            this.Style = rnd.Next(0, 5);
+            #warning This will be content.Load<Texture2D>("item" + this.Style + this.Style.ToString());
+            this.Texture = content.Load<Texture2D>("item"); 
             this.Position = position;
             this.Columns = Texture.Width / 50;
         }

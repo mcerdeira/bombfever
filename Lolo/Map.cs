@@ -63,9 +63,8 @@ namespace Lolo
                 }                
                 if (v == 1)
                 {                    
-                    // An item is hidden inside, yay!!
-                    // TODO, add another random here, to decide what kind of item it is
-                    Item itm = new Item(Content.Load<Texture2D>("item"), new Vector2(tile.hitBox.X, tile.hitBox.Y));
+                    // An item is hidden inside, yay!!                    
+                    Item itm = new Item(Content, new Vector2(tile.hitBox.X, tile.hitBox.Y));
                     items.Add(itm);
                 }
             }
