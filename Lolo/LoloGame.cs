@@ -22,8 +22,7 @@ namespace Lolo
         Player p2;
         ControlType ctype1;
         ControlType ctype2;
-        Map map;
-        Enemy en;
+        Map map;        
         MainMenu menu;
         OptionMenu options;
         BombManager bombmanager;
@@ -181,19 +180,19 @@ namespace Lolo
                         // In Game objects
                         map = new Map();
                         bombmanager = new BombManager(Content);
-                        p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(0, 0), ctype1, bombmanager);
-                        map.GenerateLevel(Content, p1, p2, en);
-                        bombmanager.UpdateMap(map);
+                        p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(0, 0), ctype1, bombmanager, "p1", PlayerStyle.Human);
                         if (CurrentGameState == GameState.Start1P)
                         {
-                            en = new Enemy(Content.Load<Texture2D>("Enemy"), new Vector2(770, 566), bombmanager);
+                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(770, 566), ctype2, bombmanager, "p2", PlayerStyle.Machine);
                             CurrentGameState = GameState.Playing1P;
                         }
                         else
                         {
-                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(770, 566),ctype2, bombmanager);
+                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(770, 566), ctype2, bombmanager, "p2", PlayerStyle.Human);
                             CurrentGameState = GameState.Playing2P;
-                        }                        
+                        }
+                        map.GenerateLevel(Content, p1, p2);
+                        bombmanager.UpdateMap(map, p1, p2);          
                         break;
                     case GameState.MainMenu:
                         menu.Update(gameTime);
@@ -204,14 +203,7 @@ namespace Lolo
                     case GameState.Playing1P:
                     case GameState.Playing2P:
                         p1.Update(gameTime);
-                        if (CurrentGameState == GameState.Playing1P)
-                        {
-                            en.Update(gameTime);
-                        }
-                        else
-                        {
-                            p2.Update(gameTime);
-                        }
+                        p2.Update(gameTime);                        
                         map.Update();
                         bombmanager.Update();
                         break;
@@ -248,14 +240,7 @@ namespace Lolo
                     spriteBatch.Draw(background, new Rectangle(0, 0,ScreenWidth, ScreenHeight), Color.White); 
                     map.Draw(spriteBatch);
                     p1.Draw(spriteBatch);
-                    if (CurrentGameState == GameState.Playing1P)
-                    {
-                        en.Draw(spriteBatch);
-                    }
-                    else
-                    {
-                        p2.Draw(spriteBatch);
-                    }
+                    p2.Draw(spriteBatch);                    
                     bombmanager.Draw(spriteBatch);
                     break;
                 case GameState.Quit:

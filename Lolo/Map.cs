@@ -73,7 +73,7 @@ namespace Lolo
             tiles.Remove(tile);
         }
 
-        public void GenerateLevel(ContentManager content, Player player, Player player2, Enemy enemy)
+        public void GenerateLevel(ContentManager content, Player player, Player player2)
         {
             this.Content = content;
             Random rdn = new Random();           
@@ -129,7 +129,7 @@ namespace Lolo
                     if (v != 0)
                     {                        
                         Vector2 pos = new Vector2(col, row);
-                        Tile t = new Tile(pos, content, player, player2, enemy, (v!=2), walkable, this, v);
+                        Tile t = new Tile(pos, content, player, player2, (v!=2), walkable, this, v);
                         tiles.Add(t);                    
                     }
                     col += 50;

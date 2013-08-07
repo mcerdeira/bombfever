@@ -17,14 +17,18 @@ namespace Lolo
         private List<BombExplosion> bombex = new List<BombExplosion>();
         private ContentManager content;
         private Map map;
+        private Player Player;
+        private Player Player2;
 
         public BombManager(ContentManager content) // Add enemy
-        {            
+        {
             this.content = content;
         }
 
-        public void UpdateMap(Map map)
+        public void UpdateMap(Map map, Player player, Player player2)
         {
+            this.Player = player;
+            this.Player2 = player2;
             this.map = map;
         }
 
@@ -46,17 +50,17 @@ namespace Lolo
             be = null;
         }
 
-        public void RemoveBomb(Bomb bomb, Vector2 position, Player player = null, Enemy enemy = null)
+        public void RemoveBomb(Bomb bomb, Vector2 position)
         {
             bombs.Remove(bomb);
             bomb = null;
-            BombExplosion ex = new BombExplosion(60, map, this, player, enemy, content.Load<Texture2D>("particle"), position);
+            BombExplosion ex = new BombExplosion(60, map, this, Player, Player2, content.Load<Texture2D>("particle"), position);
             bombex.Add(ex);
         }
 
-        public void SpawnBomb(Vector2 position, string owner, Player player = null, Enemy enemy = null)
+        public void SpawnBomb(Vector2 position, string owner)
         {
-            Bomb b = new Bomb(position, owner, this, content, player, enemy);
+            Bomb b = new Bomb(position, owner, this, content, Player, Player2);
             bombs.Add(b);
         }
 

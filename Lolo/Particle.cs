@@ -13,7 +13,7 @@ namespace Lolo
         private bool disabled;
         private Map map;
         private Player player;
-        private Enemy enemy;
+        private Player player2;
         public Rectangle hitBox;
         public Texture2D Texture { get; set; }
         public Vector2 Position;
@@ -24,13 +24,13 @@ namespace Lolo
         public float Size { get; set; }
         public int TTL { get; set; }
 
-        public Particle(Map map, Player player, Enemy enemy, Texture2D texture, Vector2 position, Vector2 velocity,
+        public Particle(Map map, Player player, Player player2, Texture2D texture, Vector2 position, Vector2 velocity,
             float angle, float angularVelocity, Color color, float size, int ttl)
         {
             this.disabled = false;
             this.map = map;
-            this.enemy = enemy;
             this.player = player;
+            this.player2 = player2;            
             Texture = texture;
             Position = position;
             Velocity = velocity;
@@ -50,6 +50,10 @@ namespace Lolo
                 if (hitBox.Intersects(player.hitBox))
                 {
                     player.Status = "dead";
+                }
+                if (hitBox.Intersects(player2.hitBox))
+                {
+                    player2.Status = "dead";
                 }
             }
 

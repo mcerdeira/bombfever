@@ -22,19 +22,17 @@ namespace Lolo
         private Texture2D Texture;
         private int Columns;
         public Rectangle hitBox;
-        private Player player;
-        private Enemy Enemy;
+        private Player player;        
         private Player player2;
         private Map Map;
 
-        public Tile(Vector2 position, ContentManager Content, Player player, Player player2, Enemy enemy, bool brekable, bool walkable, Map map, int id)
+        public Tile(Vector2 position, ContentManager Content, Player player, Player player2, bool brekable, bool walkable, Map map, int id)
         {
             this.Walkable = walkable;
             this.BreakAble = brekable;
             this.Action = "";
             this.player = player;
-            this.player2 = player2;
-            this.Enemy = enemy;
+            this.player2 = player2;            
             this.ID = id;
             Texture = Content.Load<Texture2D>(this.ID.ToString());            
             this.Position = position;
@@ -61,44 +59,50 @@ namespace Lolo
             }
             if(!this.Walkable)
             {
-                if (hitBox.Intersects(player.hitBox))
-                {
-                    Vector2 v = General.IntersectDepthVector(player.hitBox, this.hitBox);
-                    float absx = Math.Abs(v.X);
-                    float absy = Math.Abs(v.Y);
-                    //string loc ="";
-                    //string axis ="";
-
-                    // if a collision has happened		
-                    if (!(v.X == 0 && v.Y == 0))
-                    {
-                        if (absx > absy) // the shallower impact is the correct one- this is on the y axis
-                        {
-                            //axis = "y";
-                            //if (v.Y < 0)
-                            //    loc = "top";
-                            //else
-                            //    loc = "bottom";
-                            Vector2 newpos = new Vector2(player.hitBox.X, player.hitBox.Y + v.Y);
-                            player.newPosition = newpos;
-                        }
-                        else // the x axis!
-                        {
-                            //axis = "x";
-                            //if (v.X < 0)
-                            //    loc = "left";
-                            //else
-                            //    loc = "right";
-                            Vector2 newpos = new Vector2(player.hitBox.X + v.X, player.hitBox.Y);
-                            player.newPosition = newpos;
-                        }
-                        player.wallHitted = true;
-                    }
-                }
+                CheckCollisions(player);
+                CheckCollisions(player2);
             }
             if(Action == "dead")
             {
                 Map.RemoveTile(this);
+            }
+        }
+
+        private void CheckCollisions(Player player)
+        {
+            if (hitBox.Intersects(player.hitBox))
+            {
+                Vector2 v = General.IntersectDepthVector(player.hitBox, this.hitBox);
+                float absx = Math.Abs(v.X);
+                float absy = Math.Abs(v.Y);
+                //string loc ="";
+                //string axis ="";
+
+                // if a collision has happened		
+                if (!(v.X == 0 && v.Y == 0))
+                {
+                    if (absx > absy) // the shallower impact is the correct one- this is on the y axis
+                    {
+                        //axis = "y";
+                        //if (v.Y < 0)
+                        //    loc = "top";
+                        //else
+                        //    loc = "bottom";
+                        Vector2 newpos = new Vector2(player.hitBox.X, player.hitBox.Y + v.Y);
+                        player.newPosition = newpos;
+                    }
+                    else // the x axis!
+                    {
+                        //axis = "x";
+                        //if (v.X < 0)
+                        //    loc = "left";
+                        //else
+                        //    loc = "right";
+                        Vector2 newpos = new Vector2(player.hitBox.X + v.X, player.hitBox.Y);
+                        player.newPosition = newpos;
+                    }
+                    player.wallHitted = true;
+                }
             }
         }
 

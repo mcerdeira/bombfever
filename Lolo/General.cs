@@ -38,6 +38,12 @@ namespace Lolo
         JoyStick2
     }
 
+    public enum PlayerStyle
+    {
+        Human,
+        Machine
+    }
+
     public class PlayerControls
     {
         public Keys Up;

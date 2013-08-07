@@ -16,7 +16,9 @@ namespace Lolo
         public int Columns { get; set; }
         private PlayerControls PCtrls;
         private int currentFrame;
-        private string KeyControl; 
+        private string KeyControl;
+        private string InstanceName;
+        private PlayerStyle PStlye;
         private int[] idleFrames = new int[] { 0, 1, 2, 3 };
         private int[] walkFrames = new int[] { 4, 5, 6, 7 };
         public string Status; // walking, idle, dead
@@ -34,8 +36,9 @@ namespace Lolo
         int directionX = 0;
         int directionY = 0;
 
-        public Player(Texture2D texture, Vector2 location, ControlType ctype, BombManager BombMan)
+        public Player(Texture2D texture, Vector2 location, ControlType ctype, BombManager BombMan, string instancename, PlayerStyle pstlye)
         {
+            this.Location = location;
             Speed.X = minVel;
             Speed.Y = minVel;
             Status = "idle";
@@ -43,6 +46,8 @@ namespace Lolo
             Texture = texture;
             currentFrame = 0;
             Columns = texture.Width / 30;
+            this.PStlye = pstlye;
+            this.InstanceName = instancename;
             this.BombMan = BombMan;
             this.PCtrls = new PlayerControls(ctype);       
         }
@@ -88,8 +93,8 @@ namespace Lolo
 
             if (st.IsKeyDown(PCtrls.Bomb) && KeyControl != "bomb" && this.BombCount < this.BombMax)
             {
-                KeyControl = "bomb";               
-                BombMan.SpawnBomb(Location, "player", this);
+                KeyControl = "bomb";
+                BombMan.SpawnBomb(Location, InstanceName);
                 this.BombCount++;
             }
 

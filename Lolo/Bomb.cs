@@ -17,19 +17,19 @@ namespace Lolo
         private Vector2 Position;
         private Texture2D Texture;
         private int Columns;
+        private string Owner;
         Rectangle hitBox;
         private Player player;
-        private Enemy enemy;
-        private string Owner;
+        private Player player2;
         private int LifeLoop = 100;
         BombManager BombMan;
 
-        public Bomb(Vector2 position, string Owner, BombManager BombMan, ContentManager Content, Player player = null, Enemy enemy = null)
+        public Bomb(Vector2 position, string owner, BombManager BombMan, ContentManager Content, Player player, Player player2)
         {
+            this.Owner = owner;
             this.BombMan = BombMan;
             this.player = player;
-            this.enemy = enemy;
-            this.Owner = Owner;
+            this.player2 = player2;                      
             Texture = Content.Load<Texture2D>("bomb");
             Vector2 pos = new Vector2(position.X - ((Texture.Width - player.hitBox.Width) / 2), position.Y - ((Texture.Height - player.hitBox.Height) / 2));
             this.Position = pos;
@@ -49,7 +49,7 @@ namespace Lolo
             spriteBatch.Draw(Texture, dest, source, Color.White);
         }
 
-        public void Update()
+        private void CheckCollisions(Player player)
         {
             if (LifeLoop <= 50 && hitBox.Intersects(player.hitBox))
             {
@@ -72,20 +72,28 @@ namespace Lolo
                     player.wallHitted = true;
                 }
             }
+        }
+
+        public void Update()
+        {
+            CheckCollisions(player);
+            CheckCollisions(player2);
             LifeLoop--;
 
             if (LifeLoop == 0)
             {
-                if (Owner == "player")
+                if (Owner == "p1")
                 {
                     player.BombCount--;
+                    Vector2 pos = new Vector2(hitBox.Center.X, hitBox.Center.Y);
+                    BombMan.RemoveBomb(this, pos);
                 }
                 else
                 {
-                    //enemy.BombCount--;
+                    player2.BombCount--;
+                    Vector2 pos = new Vector2(hitBox.Center.X, hitBox.Center.Y);
+                    BombMan.RemoveBomb(this, pos);
                 }
-                Vector2 pos = new Vector2(hitBox.Center.X, hitBox.Center.Y);
-                BombMan.RemoveBomb(this, pos, player, enemy);
             }
         }
     }
