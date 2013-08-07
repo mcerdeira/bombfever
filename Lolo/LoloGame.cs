@@ -182,7 +182,7 @@ namespace Lolo
                         map = new Map();
                         bombmanager = new BombManager(Content);
                         p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(0, 0), ctype1, bombmanager);
-                        map.GenerateLevel(Content, p1);
+                        map.GenerateLevel(Content, p1, p2, en);
                         bombmanager.UpdateMap(map);
                         if (CurrentGameState == GameState.Start1P)
                         {

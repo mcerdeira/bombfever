@@ -24,14 +24,17 @@ namespace Lolo
         public Rectangle hitBox;
         private Player player;
         private Enemy Enemy;
+        private Player player2;
         private Map Map;
 
-        public Tile(Vector2 position, ContentManager Content, Player player, bool brekable, bool walkable, Map map, int id)
+        public Tile(Vector2 position, ContentManager Content, Player player, Player player2, Enemy enemy, bool brekable, bool walkable, Map map, int id)
         {
             this.Walkable = walkable;
             this.BreakAble = brekable;
             this.Action = "";
             this.player = player;
+            this.player2 = player2;
+            this.Enemy = enemy;
             this.ID = id;
             Texture = Content.Load<Texture2D>(this.ID.ToString());            
             this.Position = position;
