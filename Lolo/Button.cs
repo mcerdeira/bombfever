@@ -10,7 +10,7 @@ namespace Lolo
 {
     class Button
     {
-        string Caption; // The button caption
+        public string Caption; // The button caption
         GameState RetState; // The returned game state
         SpriteFont Font;
         ButtonType Type;
@@ -36,6 +36,16 @@ namespace Lolo
             return this.RetState;
         }
 
+        public float getHeight()
+        {
+            return Font.MeasureString(this.Caption).Y;
+        }
+
+        public string getCaption()
+        {
+            return this.Caption;
+        }
+
         public void SetPosition(Vector2 position)
         {
             this.Position = position;
@@ -53,7 +63,7 @@ namespace Lolo
             int column = Status % Columns;
             Rectangle source = new Rectangle(width * column, height * row, width, height);
             Rectangle dest = new Rectangle((int)Position.X, (int)Position.Y, width, height);            
-            spriteBatch.Draw(Texture, dest, source, Color.White);
+            //spriteBatch.Draw(Texture, dest, source, Color.White);
             float centerX = (dest.X + (width / 2)) - (Font.MeasureString(Caption).X / 2);
             Color col;
             if (Status == 0)

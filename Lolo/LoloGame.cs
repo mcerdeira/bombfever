@@ -20,8 +20,11 @@ namespace Lolo
         SpriteBatch spriteBatch;
         Player p1;
         Player p2;
+        string LevelName = "";
         ControlType ctype1;
         ControlType ctype2;
+        LevelLoader lvlLoad;
+        Pause pauseSprite;
         Map map;        
         MainMenu menu;
         OptionMenu options;
@@ -33,6 +36,7 @@ namespace Lolo
         private bool paused = false;
         private bool pauseKeyDown = false;
         private Keys previousMenuKey = Keys.Zoom;
+        private bool EnterKeyDown = false;        
 
         GameState CurrentGameState = GameState.MainMenu;
 
@@ -42,8 +46,7 @@ namespace Lolo
             graphics = new GraphicsDeviceManager(this);
             #warning Put fullscreen back
             //ScreenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            //ScreenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-
+            //ScreenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;            
             graphics.PreferredBackBufferWidth = ScreenWidth;
             graphics.PreferredBackBufferHeight = ScreenHeight;
             //graphics.IsFullScreen = true;
@@ -87,12 +90,21 @@ namespace Lolo
 
         private void checkMenuKey(KeyboardState keyboardState)
         {
+            bool EnterKeyDownThisFrame = keyboardState.IsKeyDown(Keys.Enter);
+
             if (keyboardState.IsKeyDown(Keys.Up))
             {
                 if (previousMenuKey != Keys.Up)
                 {
                     previousMenuKey = Keys.Up;
-                    menu.ButtonFocus(-1);
+                    if (CurrentGameState == GameState.LoadFromFile)
+                    {
+                        lvlLoad.ButtonFocus(-1);
+                    }
+                    else if (CurrentGameState == GameState.MainMenu)
+                    {
+                        menu.ButtonFocus(-1);
+                    }
                 }
             }
             else if (keyboardState.IsKeyDown(Keys.Down))
@@ -100,18 +112,38 @@ namespace Lolo
                 if (previousMenuKey != Keys.Down)
                 {
                     previousMenuKey = Keys.Down;
-                    menu.ButtonFocus(1);
+                    if (CurrentGameState == GameState.LoadFromFile)
+                    {
+                        lvlLoad.ButtonFocus(1);
+                    }
+                    else if (CurrentGameState == GameState.MainMenu)
+                    {
+                        menu.ButtonFocus(1);
+                    }
                 }
             }
-            else if (keyboardState.IsKeyDown(Keys.Enter))
+            else if (!EnterKeyDown && EnterKeyDownThisFrame)
             {
-                CurrentGameState = menu.GetRetState();
+                if (CurrentGameState == GameState.LoadFromFile)
+                {
+                    LevelName = lvlLoad.getCaption();
+                    if (LevelName == "Cancel")
+                    {
+                        LevelName = "";
+                    }
+                    CurrentGameState = lvlLoad.GetRetState();
+                }
+                else if (CurrentGameState == GameState.MainMenu)
+                {
+                    CurrentGameState = menu.GetRetState();
+                }
             }
             else
             {
                 previousMenuKey = Keys.Zoom;
             }
-            
+
+            EnterKeyDown = EnterKeyDownThisFrame;
         } 
 
         /// <summary>
@@ -136,8 +168,11 @@ namespace Lolo
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            pauseSprite = new Pause(ScreenHeight, ScreenWidth, Content.Load<SpriteFont>("mainfont")); 
+
             mainFont = Content.Load<SpriteFont>("mainfont");
             menu = new MainMenu(Content.Load<Texture2D>("MainMenu"), Content.Load<Texture2D>("btn1"), mainFont, ScreenHeight, ScreenWidth);
+            lvlLoad = new LevelLoader(Content.Load<Texture2D>("MainMenu"), Content.Load<Texture2D>("btn1"), mainFont, ScreenHeight, ScreenWidth);
             options = new OptionMenu();
             background = Content.Load<Texture2D>("Background");          
         }
@@ -162,7 +197,7 @@ namespace Lolo
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (CurrentGameState == GameState.MainMenu)
+            if (CurrentGameState == GameState.MainMenu || CurrentGameState == GameState.LoadFromFile)
             {
                 checkMenuKey(Keyboard.GetState());
             }
@@ -191,7 +226,7 @@ namespace Lolo
                             p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(770, 566), ctype2, bombmanager, "p2", PlayerStyle.Human);
                             CurrentGameState = GameState.Playing2P;
                         }
-                        map.GenerateLevel(Content, p1, p2);
+                        map.GenerateLevel(Content, p1, p2, LevelName);
                         bombmanager.UpdateMap(map, p1, p2);          
                         break;
                     case GameState.MainMenu:
@@ -210,6 +245,7 @@ namespace Lolo
                     case GameState.Credits:
                         break;
                     case GameState.LoadFromFile:
+                        lvlLoad.Update(gameTime);
                         break;
                     case GameState.Quit:
                         Exit();
@@ -249,25 +285,12 @@ namespace Lolo
                 case GameState.Credits:
                     break;
                 case GameState.LoadFromFile:
-                    int counter = 0;
-                    //string line;
-
-                    //// Read the file and display it line by line.
-                    //System.IO.StreamReader file = 
-                    //   new System.IO.StreamReader("c:\\test.txt");
-                    //while((line = file.ReadLine()) != null)
-                    //{
-                    //   Console.WriteLine (line);
-                    //   counter++;
-                    //}
-
-                    //file.Close();
-
-                    //// Suspend the screen.
-                    //Console.ReadLine();
-
-
+                    lvlLoad.Draw(spriteBatch);
                     break;
+            }
+            if (paused)
+            {
+                pauseSprite.Draw(spriteBatch);
             }
             spriteBatch.End();
             base.Draw(gameTime);

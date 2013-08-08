@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
 
 /*
  * 0 Empty space
@@ -73,69 +74,116 @@ namespace Lolo
             tiles.Remove(tile);
         }
 
-        public void GenerateLevel(ContentManager content, Player player, Player player2)
+        public void GenerateLevel(ContentManager content, Player player, Player player2, string LevelFile = "")
         {
             this.Content = content;
-            Random rdn = new Random();           
+            Random rdn = new Random();
             int row = 0;
-            int v = 0;            
-            for (int r= 0; r< 12; r++)
+            int col = 0;
+            int v = 0;
+            bool walkable = false;
+            if (LevelFile == "")
             {
-                int col = 0;
-                for (int c = 0; c < 17; c++)
+                for (int r = 0; r < 12; r++)
                 {
-                    bool walkable = false;
-
-                    if ((r == 0 && c == 0) || // Vertice, room for player to initially move
-                        (r == 1 && c == 0)||
-                        (r == 0 && c == 1) ||        
-
-                        (r == 10 && c == 15) ||
-                        (r == 11 && c == 15) ||
-                        (r == 11 && c == 14) ||
-
-                        (r == 6 && c == 7) || // Center, a prize item
-                        (r == 6 && c == 8)
-                        )
+                    col = 0;
+                    for (int c = 0; c < 17; c++)
                     {
-                        v = 0; // 4 vertices empty
-                    }
-                    else if ((c == 1 && r % 2 != 0) ||
-                             (c == 14 && r % 2 != 0) ||
-                             (c == 3 && r % 2 == 0) ||
-                             (c == 12 && r % 2 == 0)
+                        walkable = false;
+                        if ((r == 0 && c == 0) || // Vertice, room for player to initially move
+                            (r == 1 && c == 0) ||
+                            (r == 0 && c == 1) ||
+
+                            (r == 10 && c == 15) ||
+                            (r == 11 && c == 15) ||
+                            (r == 11 && c == 14) ||
+
+                            (r == 6 && c == 7) || // Center, a prize item
+                            (r == 6 && c == 8)
                             )
-                    { 
-                        v = 2; // Iron (fixed positions)                        
-                    }
-                    else
-                    {                        
-                        v = rdn.Next(-20, 20); // Now lets do some random...  
-                    }                    
-                    if(v>9)
-                    {
-                        v = 0; // But, 0 has a little more chances
-                    }
-                    if (v<0 || v == 6 || v == 7 || v == 8 || v == 9)
-                    {
-                        v = 1; // and regular brucks has even more chances!
-                    }
+                        {
+                            v = 0; // 4 vertices empty
+                        }
+                        else if ((c == 1 && r % 2 != 0) ||
+                                 (c == 14 && r % 2 != 0) ||
+                                 (c == 3 && r % 2 == 0) ||
+                                 (c == 12 && r % 2 == 0)
+                                )
+                        {
+                            v = 2; // Iron (fixed positions)                        
+                        }
+                        else
+                        {
+                            v = rdn.Next(-20, 20); // Now lets do some random...  
+                        }
+                        if (v > 9)
+                        {
+                            v = 0; // But, 0 has a little more chances
+                        }
+                        if (v < 0 || v == 6 || v == 7 || v == 8 || v == 9)
+                        {
+                            v = 1; // and regular brucks has even more chances!
+                        }
 
-                    if (v == 0)
-                    {
-                        // If 0, then is a walkable block, but lets put some random to decide if regular empty space or what
-                        walkable = true;
+                        if (v == 0)
+                        {
+                            // If 0, then is a walkable block, but lets put some random to decide if regular empty space or what
+                            walkable = true;
+                        }
+                        if (v != 0)
+                        {
+                            Vector2 pos = new Vector2(col, row);
+                            Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v);
+                            tiles.Add(t);
+                        }
+                        col += 50;
                     }
-                    if (v != 0)
-                    {                        
-                        Vector2 pos = new Vector2(col, row);
-                        Tile t = new Tile(pos, content, player, player2, (v!=2), walkable, this, v);
-                        tiles.Add(t);                    
-                    }
-                    col += 50;
+                    row += 50;
                 }
-                row += 50;
-            }            
+            }
+            else
+            {
+                string line;
+                bool comentary = false ;
+                System.IO.StreamReader file = new System.IO.StreamReader(Directory.GetCurrentDirectory() + "\\" + LevelFile);
+                while ((line = file.ReadLine()) != null)
+                {
+                    if (line != "")
+                    {
+                        if (line.StartsWith(@"/*"))
+                        {
+                            comentary = true;
+                        }
+                        if (!comentary)
+                        {
+                            col = 0;
+                            for (int c = 0; c < 16; c++)
+                            {
+                                walkable = false;
+                                v = Int32.Parse(line.Substring(c, 1));
+                                if (v == 0)
+                                {
+                                    // If 0, then is a walkable block, but lets put some random to decide if regular empty space or what
+                                    walkable = true;
+                                }
+                                if (v != 0)
+                                {
+                                    Vector2 pos = new Vector2(col, row);
+                                    Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v);
+                                    tiles.Add(t);
+                                }
+                                col += 50;
+                            }
+                            row += 50;
+                        }
+                        if (line.EndsWith(@"*/"))
+                        {
+                            comentary = false;
+                        }
+                    }
+                }
+                file.Close();
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)

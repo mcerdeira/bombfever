@@ -21,7 +21,8 @@ namespace Lolo
         Playing2P,    // Displaying in-game
         LoadFromFile, // Load a level from a txt file
         Credits,      // Shows the game credits
-        Quit          // (Command) Quit the game 
+        Quit,          // (Command) Quit the game 
+        GoAndLoadFile  // (Command) Starts the game 1P vs CPU        
     }
 
     enum ButtonType

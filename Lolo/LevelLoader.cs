@@ -5,10 +5,11 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
 
 namespace Lolo
 {
-    class MainMenu
+    class LevelLoader
     {
         int ScreenWidth;
         int ScreenHeight;
@@ -17,23 +18,21 @@ namespace Lolo
         List<Button> btns = new List<Button>();
         private int currButton = -1;
 
-        public MainMenu(Texture2D texture, Texture2D btnTexture, SpriteFont font, int screenheight, int screenwidth)
-        {            
+        public LevelLoader(Texture2D texture, Texture2D btnTexture, SpriteFont font, int screenheight, int screenwidth)
+        {
             this.ScreenHeight = screenheight;
             this.ScreenWidth = screenwidth;
             this.Texture = texture;
             this.BtnTexture = btnTexture;
-            Button btn = new Button("1P vs CPU", btnTexture, font, Color.White, GameState.Start1P);
-            btns.Add(btn);
-            btn = new Button("1P vs 2P", btnTexture, font, Color.White, GameState.Start2P);
-            btns.Add(btn);
-            btn = new Button("Game Options", btnTexture, font, Color.White, GameState.Options);
-            btns.Add(btn);
-            btn = new Button("Load level", btnTexture, font, Color.White, GameState.LoadFromFile);
-            btns.Add(btn);
-            btn = new Button("Credits", btnTexture, font, Color.White, GameState.Credits);
-            btns.Add(btn);
-            btn = new Button("Quit",btnTexture, font, Color.White, GameState.Quit);
+            Button btn;
+
+            string[] filePaths = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.lvl");
+            foreach (string f in filePaths)
+            {                
+                btn = new Button(Path.GetFileName(f), btnTexture, font, Color.White, GameState.MainMenu);
+                btns.Add(btn);
+            }
+            btn = new Button("Cancel", btnTexture, font, Color.White, GameState.MainMenu);
             btns.Add(btn);
             PositionButtons();
             ButtonFocus(1);
@@ -44,10 +43,15 @@ namespace Lolo
             return btns[currButton].GetRetState();
         }
 
+        public string getCaption()
+        {
+            return btns[currButton].getCaption();
+        }
+
         public void ButtonFocus(int direction)
         {
             currButton += direction;
-            if (currButton > btns.Count()-1)
+            if (currButton > btns.Count() - 1)
             {
                 currButton = 0;
             }
@@ -88,7 +92,7 @@ namespace Lolo
             int width = Texture.Width;
             int height = Texture.Height;
             Rectangle source = new Rectangle(0, 0, width, height);
-            Rectangle dest = new Rectangle(0, 0, width, height);            
+            Rectangle dest = new Rectangle(0, 0, width, height);
             spriteBatch.Draw(Texture, dest, source, Color.White);
             for (int index = 0; index < btns.Count; index++)
             {

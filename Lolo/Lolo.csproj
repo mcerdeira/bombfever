@@ -41,11 +41,13 @@
     <Compile Include="Button.cs" />
     <Compile Include="General.cs" />
     <Compile Include="Item.cs" />
+    <Compile Include="LevelLoader.cs" />
     <Compile Include="LoloGame.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="MainMenu.cs" />
     <Compile Include="OptionMenu.cs" />
     <Compile Include="Particle.cs" />
+    <Compile Include="Pause.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -137,7 +139,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
