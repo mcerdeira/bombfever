@@ -11,6 +11,7 @@ namespace Lolo
 {
     public class Player
     {
+        private Vector2 RespawnLoc;
         public bool wallHitted;
         public Texture2D Texture { get; set; }        
         public int Columns { get; set; }
@@ -21,6 +22,7 @@ namespace Lolo
         private PlayerStyle PStlye;
         private int[] idleFrames = new int[] { 0, 1, 2, 3 };
         private int[] walkFrames = new int[] { 4, 5, 6, 7 };
+        private int[] deadFrames = new int[] { 8, 9, 10, 11 };
         public string Status; // walking, idle, dead
         public string PrevStatus;
         public Rectangle hitBox;
@@ -38,6 +40,7 @@ namespace Lolo
 
         public Player(Texture2D texture, Vector2 location, ControlType ctype, BombManager BombMan, string instancename, PlayerStyle pstlye)
         {
+            this.RespawnLoc = location;
             this.Location = location;
             Speed.X = minVel;
             Speed.Y = minVel;
@@ -68,6 +71,12 @@ namespace Lolo
                 resetFrame = 0;
                 totalFrames = 3;
             }
+            else if(this.Status == "dead")
+            {
+                resetFrame = 8;
+                totalFrames = 11;
+            }
+
             if (this.Status != this.PrevStatus)
             {
                 currentFrame = resetFrame;
@@ -76,66 +85,83 @@ namespace Lolo
             currentFrame++;
             if (currentFrame == totalFrames)
             {
-                currentFrame = resetFrame;
+                if (this.Status == "dead")
+                {
+                    currentFrame = resetFrame;
+                    resPawn();
+                }
+                else
+                {
+                    currentFrame = resetFrame;
+                }
             }
+        }
+
+        private void resPawn()
+        {            
+            this.Status = "idle";
+            this.Location = this.RespawnLoc;
         }
 
         private void UpdateInput(float elapsedTime)
         {
             #warning add joystick support
-            //GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed            
-            this.Status = "idle";
-            KeyboardState st = Keyboard.GetState();
-            if (!st.IsKeyDown(PCtrls.Bomb))
+            //GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed   
+            if (this.Status != "dead")
             {
-                KeyControl = "";
-            }
+                this.Status = "idle";
+                KeyboardState st = Keyboard.GetState();
+                if (!st.IsKeyDown(PCtrls.Bomb))
+                {
+                    KeyControl = "";
+                }
 
-            if (st.IsKeyDown(PCtrls.Bomb) && KeyControl != "bomb" && this.BombCount < this.BombMax)
-            {
-                KeyControl = "bomb";
-                BombMan.SpawnBomb(Location, InstanceName);
-                this.BombCount++;
-            }
+                if (st.IsKeyDown(PCtrls.Bomb) && KeyControl != "bomb" && this.BombCount < this.BombMax)
+                {
+                    KeyControl = "bomb";
+                    BombMan.SpawnBomb(Location, InstanceName);
+                    this.BombCount++;
+                }
 
-            if (st.IsKeyDown(PCtrls.Right))
-            {
-                this.Status = "walking";
-                directionX = 1;               
-            }
+                if (st.IsKeyDown(PCtrls.Right))
+                {
+                    this.Status = "walking";
+                    directionX = 1;
+                }
 
-            if (st.IsKeyDown(PCtrls.Left))
-            {
-                this.Status = "walking";
-                directionX = -1;
-            }
+                if (st.IsKeyDown(PCtrls.Left))
+                {
+                    this.Status = "walking";
+                    directionX = -1;
+                }
 
-            if (st.IsKeyDown(PCtrls.Down))
-            {
-                this.Status = "walking";
-                directionY = 1;         
-            }
+                if (st.IsKeyDown(PCtrls.Down))
+                {
+                    this.Status = "walking";
+                    directionY = 1;
+                }
 
-            if (st.IsKeyDown(PCtrls.Up))
-            {
-                this.Status = "walking";
-                directionY = -1;
-            }
+                if (st.IsKeyDown(PCtrls.Up))
+                {
+                    this.Status = "walking";
+                    directionY = -1;
+                }
 
-            if (!st.IsKeyDown(PCtrls.Right) &&
-                !st.IsKeyDown(PCtrls.Left))
-            {
-                //Speed.X = 0;
-                directionX = 0;
-            }
+                if (!st.IsKeyDown(PCtrls.Right) &&
+                    !st.IsKeyDown(PCtrls.Left))
+                {
+                    //Speed.X = 0;
+                    directionX = 0;
+                }
 
-            if (!st.IsKeyDown(PCtrls.Up) &&
-                !st.IsKeyDown(PCtrls.Down))
-            {                
-                directionY = 0;
+                if (!st.IsKeyDown(PCtrls.Up) &&
+                    !st.IsKeyDown(PCtrls.Down))
+                {
+                    directionY = 0;
+                }
+                Location.X += (Speed.X * elapsedTime) * directionX;
+                Location.Y += (Speed.Y * elapsedTime) * directionY;
             }
-            Location.X += (Speed.X * elapsedTime) * directionX;
-            Location.Y += (Speed.Y * elapsedTime) * directionY;
         }
 
         public void Draw(SpriteBatch spriteBatch)
