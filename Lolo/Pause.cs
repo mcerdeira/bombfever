@@ -15,7 +15,6 @@ namespace Lolo
     {
         public int Status = 0; // frame status
         private Vector2 Position;        
-        private int Columns;
         private SpriteFont Font;
         private string Caption = "PAUSE";
 

@@ -21,6 +21,7 @@ namespace Lolo
         Player p1;
         Player p2;
         string LevelName = "";
+        Score score;
         ControlType ctype1;
         ControlType ctype2;
         LevelLoader lvlLoad;
@@ -166,6 +167,7 @@ namespace Lolo
         {
             LoadControls();
             // Create a new SpriteBatch, which can be used to draw textures.
+            score = new Score(ScreenHeight, ScreenWidth, Content.Load<SpriteFont>("mainfont"));
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             pauseSprite = new Pause(ScreenHeight, ScreenWidth, Content.Load<SpriteFont>("mainfont")); 
@@ -212,7 +214,7 @@ namespace Lolo
                 {
                     case GameState.Start1P:
                     case GameState.Start2P:                        
-                        // In Game objects
+                        // In Game objects                        
                         map = new Map();
                         bombmanager = new BombManager(Content);
                         p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(0, 0), ctype1, bombmanager, "p1", PlayerStyle.Human);
@@ -237,6 +239,7 @@ namespace Lolo
                         break;
                     case GameState.Playing1P:
                     case GameState.Playing2P:
+                        score.Update(gameTime);
                         p1.Update(gameTime);
                         p2.Update(gameTime);                        
                         map.Update();
@@ -278,6 +281,7 @@ namespace Lolo
                     p1.Draw(spriteBatch);
                     p2.Draw(spriteBatch);                    
                     bombmanager.Draw(spriteBatch);
+                    score.Draw(spriteBatch);
                     break;
                 case GameState.Quit:
                     // Don't draw anything
@@ -287,7 +291,7 @@ namespace Lolo
                 case GameState.LoadFromFile:
                     lvlLoad.Draw(spriteBatch);
                     break;
-            }
+            }            
             if (paused)
             {
                 pauseSprite.Draw(spriteBatch);
