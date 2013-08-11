@@ -13,27 +13,27 @@ namespace Lolo
         int ScreenWidth;
         int ScreenHeight;
         Texture2D Texture;
-        Texture2D BtnTexture;
         List<Button> btns = new List<Button>();
         private int currButton = -1;
+        private SpriteFont Font;
 
-        public MainMenu(Texture2D texture, Texture2D btnTexture, SpriteFont font, int screenheight, int screenwidth)
+        public MainMenu(Texture2D texture, SpriteFont font, int screenheight, int screenwidth)
         {            
             this.ScreenHeight = screenheight;
             this.ScreenWidth = screenwidth;
             this.Texture = texture;
-            this.BtnTexture = btnTexture;
-            Button btn = new Button("1P vs CPU", btnTexture, font, Color.White, GameState.Start1P);
+            this.Font = font;
+            Button btn = new Button("1P vs CPU", screenwidth, font, Color.White, GameState.Start1P);
             btns.Add(btn);
-            btn = new Button("1P vs 2P", btnTexture, font, Color.White, GameState.Start2P);
+            btn = new Button("1P vs 2P", screenwidth, font, Color.White, GameState.Start2P);
             btns.Add(btn);
-            btn = new Button("Options", btnTexture, font, Color.White, GameState.Options);
+            btn = new Button("Options", screenwidth, font, Color.White, GameState.Options);
             btns.Add(btn);
-            btn = new Button("Load level", btnTexture, font, Color.White, GameState.LoadFromFile);
+            btn = new Button("Load level", screenwidth, font, Color.White, GameState.LoadFromFile);
             btns.Add(btn);
-            btn = new Button("Credits", btnTexture, font, Color.White, GameState.Credits);
+            btn = new Button("Credits", screenwidth, font, Color.White, GameState.Credits);
             btns.Add(btn);
-            btn = new Button("Quit",btnTexture, font, Color.White, GameState.Quit);
+            btn = new Button("Quit", screenwidth, font, Color.White, GameState.Quit);
             btns.Add(btn);
             PositionButtons();
             ButtonFocus(1);
@@ -63,13 +63,13 @@ namespace Lolo
         }
 
         public void PositionButtons()
-        {
-            float centerX = (ScreenWidth / 2) - ((BtnTexture.Width / 2) / 2);
-            float posY = 100;
+        {            
+            float posY = 0;
 
             for (int index = 0; index < btns.Count; index++)
             {
-                Vector2 pos = new Vector2(centerX, posY + BtnTexture.Height);
+                float centerX = General.getScreenCenterTextX(btns[index].getCaption(), ScreenWidth, Font);
+                Vector2 pos = new Vector2(centerX, posY + btns[index].getHeight());
                 btns[index].SetPosition(pos);
                 posY += btns[index].getHeight() / 2;
             }

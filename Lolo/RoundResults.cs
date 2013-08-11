@@ -13,9 +13,8 @@ namespace Lolo
     {
         int ScreenWidth;
         int ScreenHeight;
-        Texture2D Texture;
-        Texture2D BtnTexture;
         List<Button> btns = new List<Button>();
+        Texture2D Texture;
         private string Result;
         private int score1;
         private int score2;
@@ -23,18 +22,17 @@ namespace Lolo
         private int currButton = -1;
         private Score score;
 
-        public RoundResults(Texture2D texture, Texture2D btnTexture, SpriteFont font, Score score, GameState prevGameState, int screenheight, int screenwidth)
+        public RoundResults(Texture2D texture, SpriteFont font, Score score, GameState prevGameState, int screenheight, int screenwidth)
         {
             this.Font = font;
             this.ScreenHeight = screenheight;
             this.ScreenWidth = screenwidth;
+            this.score = score;
             this.Texture = texture;
-            this.BtnTexture = btnTexture;
-            this.score = score;            
             Button btn;
-            btn = new Button("Rematch", btnTexture, font, Color.White, prevGameState);
-            btns.Add(btn);            
-            btn = new Button("Quit", btnTexture, font, Color.White, GameState.MainMenu);
+            btn = new Button("Rematch", screenwidth, font, Color.White, prevGameState);
+            btns.Add(btn);
+            btn = new Button("Quit", screenwidth, font, Color.White, GameState.MainMenu);
             btns.Add(btn);
             PositionButtons();
             ButtonFocus(1);
@@ -70,12 +68,12 @@ namespace Lolo
 
         public void PositionButtons()
         {
-            this.Result = score.getResult(out this.score1, out this.score2);
-            float centerX = (ScreenWidth / 2) - ((BtnTexture.Width / 2) / 2);
+            this.Result = score.getResult(out this.score1, out this.score2);            
             float posY = Font.MeasureString(this.Result).Y + Font.MeasureString(this.score1.ToString()).Y + Font.MeasureString(this.score2.ToString()).Y / 2;
             for (int index = 0; index < btns.Count; index++)
             {
-                Vector2 pos = new Vector2(centerX, posY + BtnTexture.Height);
+                float centerX = General.getScreenCenterTextX(btns[index].getCaption(), ScreenWidth, Font);
+                Vector2 pos = new Vector2(centerX, posY + btns[index].getHeight());
                 btns[index].SetPosition(pos);
                 posY += btns[index].getHeight() / 2;
             }
@@ -104,6 +102,7 @@ namespace Lolo
             Rectangle source = new Rectangle(0, 0, width, height);
             Rectangle dest = new Rectangle(0, 0, width, height);
             spriteBatch.Draw(Texture, dest, source, Color.White);
+
             float startY = 100;
             startY = setText(spriteBatch, startY, "P1: " + this.score1.ToString());
             startY = setText(spriteBatch, startY, "P2: " + this.score2.ToString());

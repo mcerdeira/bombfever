@@ -74,7 +74,7 @@ namespace Lolo
         public void Draw(SpriteBatch spriteBatch)
         {
             // Timer
-            float centerX = (ScreenWidth / 2) - (Font.MeasureString(currentTime.ToString()).X / 2);            
+            float centerX = General.getScreenCenterTextX(currentTime.ToString(), ScreenWidth, Font);
             spriteBatch.DrawString(Font, currentTime.ToString(), new Vector2(centerX, -40), Color.White);
             // Kills
             spriteBatch.DrawString(Font, scoreP1.ToString(), new Vector2(0, -40), Color.White);

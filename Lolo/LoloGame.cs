@@ -185,7 +185,7 @@ namespace Lolo
             pauseSprite = new Pause(ScreenHeight, ScreenWidth, Content.Load<SpriteFont>("mainfont")); 
 
             mainFont = Content.Load<SpriteFont>("mainfont");
-            menu = new MainMenu(Content.Load<Texture2D>("MainMenu"), Content.Load<Texture2D>("btn1"), mainFont, ScreenHeight, ScreenWidth);
+            menu = new MainMenu(Content.Load<Texture2D>("MainMenu"), mainFont, ScreenHeight, ScreenWidth);
             lvlLoad = new LevelLoader(Content.Load<Texture2D>("MainMenu"), Content.Load<Texture2D>("btn1"), mainFont, ScreenHeight, ScreenWidth);
             options = new OptionMenu();
             background = Content.Load<Texture2D>("Background");          
@@ -267,7 +267,7 @@ namespace Lolo
                             // Time is up!
                             GameState st;
                             st = (CurrentGameState == GameState.Playing1P) ? GameState.Start1P : GameState.Start2P;                   
-                            roundR = new RoundResults(Content.Load<Texture2D>("MainMenu"), Content.Load<Texture2D>("btn1"), mainFont, score, st, ScreenHeight, ScreenWidth);
+                            roundR = new RoundResults(Content.Load<Texture2D>("MainMenu"), mainFont, score, st, ScreenHeight, ScreenWidth);
                             CurrentGameState = GameState.RoundResults;
                         }
                         break;
