@@ -35,6 +35,7 @@ namespace Lolo
         int ScreenWidth = 800;
         int ScreenHeight = 600;
         private Texture2D background;
+        private Texture2D menues;
         private bool paused = false;
         private bool pauseKeyDown = false;
         private Keys previousMenuKey = Keys.Zoom;
@@ -179,16 +180,15 @@ namespace Lolo
         protected override void LoadContent()
         {
             LoadControls();
-            // Create a new SpriteBatch, which can be used to draw textures.            
+            // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            background = Content.Load<Texture2D>("Background");
             pauseSprite = new Pause(ScreenHeight, ScreenWidth, Content.Load<SpriteFont>("mainfont")); 
-
+            menues = Content.Load<Texture2D>("MainMenu");
             mainFont = Content.Load<SpriteFont>("mainfont");
-            menu = new MainMenu(Content.Load<Texture2D>("MainMenu"), mainFont, ScreenHeight, ScreenWidth);
-            lvlLoad = new LevelLoader(Content.Load<Texture2D>("MainMenu"), Content.Load<Texture2D>("btn1"), mainFont, ScreenHeight, ScreenWidth);
-            options = new OptionMenu();
-            background = Content.Load<Texture2D>("Background");          
+            menu = new MainMenu(menues, mainFont, ScreenHeight, ScreenWidth);
+            lvlLoad = new LevelLoader(menues, mainFont, ScreenHeight, ScreenWidth);
+            options = new OptionMenu(menues, mainFont, ScreenHeight, ScreenWidth);
         }
 
         /// <summary>

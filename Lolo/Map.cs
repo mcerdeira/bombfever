@@ -158,44 +158,49 @@ namespace Lolo
             {
                 string line;
                 bool comentary = false ;
-                System.IO.StreamReader file = new System.IO.StreamReader(Directory.GetCurrentDirectory() + "\\" + LevelFile);
-                while ((line = file.ReadLine()) != null)
+                try
                 {
-                    if (line != "")
+                    System.IO.StreamReader file = new System.IO.StreamReader(Directory.GetCurrentDirectory() + "\\Levels\\" + LevelFile);
+                    while ((line = file.ReadLine()) != null)
                     {
-                        if (line.StartsWith(@"/*"))
+                        if (line != "")
                         {
-                            comentary = true;
-                        }
-                        if (!comentary)
-                        {
-                            col = 0;
-                            for (int c = 0; c < 16; c++)
+                            if (line.StartsWith(@"/*"))
                             {
-                                walkable = false;
-                                v = Int32.Parse(line.Substring(c, 1));
-                                if (v == 0)
-                                {
-                                    // If 0, then is a walkable block, but lets put some random to decide if regular empty space or what
-                                    walkable = true;
-                                }
-                                if (v != 0)
-                                {
-                                    Vector2 pos = new Vector2(col, row);
-                                    Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v);
-                                    tiles.Add(t);
-                                }
-                                col += 50;
+                                comentary = true;
                             }
-                            row += 50;
-                        }
-                        if (line.EndsWith(@"*/"))
-                        {
-                            comentary = false;
+                            if (!comentary)
+                            {
+                                col = 0;
+                                for (int c = 0; c < 16; c++)
+                                {
+                                    walkable = false;
+                                    v = Int32.Parse(line.Substring(c, 1));
+                                    if (v == 0)
+                                    {
+                                        // If 0, then is a walkable block, but lets put some random to decide if regular empty space or what
+                                        walkable = true;
+                                    }
+                                    if (v != 0)
+                                    {
+                                        Vector2 pos = new Vector2(col, row);
+                                        Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v);
+                                        tiles.Add(t);
+                                    }
+                                    col += 50;
+                                }
+                                row += 50;
+                            }
+                            if (line.EndsWith(@"*/"))
+                            {
+                                comentary = false;
+                            }
                         }
                     }
+                    file.Close();
+                }catch(Exception exc){
+                    
                 }
-                file.Close();
             }
         }
 

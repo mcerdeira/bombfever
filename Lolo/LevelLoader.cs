@@ -13,20 +13,20 @@ namespace Lolo
     {
         int ScreenWidth;
         int ScreenHeight;
-        Texture2D Texture;
-        Texture2D BtnTexture;
+        Texture2D Texture;        
         List<Button> btns = new List<Button>();
+        SpriteFont Font;
         private int currButton = -1;
 
-        public LevelLoader(Texture2D texture, Texture2D btnTexture, SpriteFont font, int screenheight, int screenwidth)
+        public LevelLoader(Texture2D texture, SpriteFont font, int screenheight, int screenwidth)
         {
+            this.Font = font;
             this.ScreenHeight = screenheight;
             this.ScreenWidth = screenwidth;
-            this.Texture = texture;
-            this.BtnTexture = btnTexture;
+            this.Texture = texture;            
             Button btn;
 
-            string[] filePaths = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.lvl");
+            string[] filePaths = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Levels", "*.lvl");
             foreach (string f in filePaths)
             {
                 btn = new Button(Path.GetFileName(f), screenwidth, font, Color.White, GameState.MainMenu);
@@ -68,12 +68,11 @@ namespace Lolo
 
         public void PositionButtons()
         {
-            float centerX = (ScreenWidth / 2) - ((BtnTexture.Width / 2) / 2);
-            float posY = 100;
-
+            float posY = 0;
             for (int index = 0; index < btns.Count; index++)
             {
-                Vector2 pos = new Vector2(centerX, posY + BtnTexture.Height);
+                float centerX = General.getScreenCenterTextX(btns[index].getCaption(), ScreenWidth, Font);
+                Vector2 pos = new Vector2(centerX, posY + btns[index].getHeight());
                 btns[index].SetPosition(pos);
                 posY += btns[index].getHeight() / 2;
             }
