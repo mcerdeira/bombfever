@@ -21,8 +21,8 @@ namespace Lolo
         public Pause(int screenheight, int screenwidth, SpriteFont font)
         {
             this.Font = font;
-            float centerX = (screenwidth / 2) - (Font.MeasureString(Caption).X / 2);
-            float centerY = (screenheight / 2) - (Font.MeasureString(Caption).Y / 2);
+            float centerX = General.getScreenCenterTextX(Caption, screenwidth, font);
+            float centerY = General.getScreenCenterTextY(Caption, screenheight, font);
             this.Position = new Vector2(centerX, centerY);
         }
 
