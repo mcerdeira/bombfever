@@ -31,6 +31,7 @@ namespace Lolo
         Vector2 Speed = new Vector2();
         //Vector2 Acceleration = new Vector2(40, 40);
         BombManager BombMan;
+        Score Score;
         public int BombCount = 0;
         public int BombMax = 3;
         int minVel = 200;
@@ -38,8 +39,9 @@ namespace Lolo
         int directionX = 0;
         int directionY = 0;
 
-        public Player(Texture2D texture, Vector2 location, ControlType ctype, BombManager BombMan, string instancename, PlayerStyle pstlye)
+        public Player(Texture2D texture, Vector2 location, ControlType ctype, BombManager BombMan, Score score, string instancename, PlayerStyle pstlye)
         {
+            this.Score = score;
             this.RespawnLoc = location;
             this.Location = location;
             Speed.X = minVel;
@@ -98,8 +100,10 @@ namespace Lolo
         }
 
         private void resPawn()
-        {            
-            this.Status = "idle";
+        {
+            this.Status = "respawning";
+            string dest = (InstanceName == "p1") ? "p2" : "p1";
+            Score.setScore(dest);            
             this.Location = this.RespawnLoc;
         }
 

@@ -47,11 +47,11 @@ namespace Lolo
             TTL--;
             if (!disabled)
             {
-                if (hitBox.Intersects(player.hitBox))
+                if (hitBox.Intersects(player.hitBox) && player.Status != "respawning")
                 {
                     player.Status = "dead";
                 }
-                if (hitBox.Intersects(player2.hitBox))
+                if (hitBox.Intersects(player2.hitBox) && player2.Status != "respawning")
                 {
                     player2.Status = "dead";
                 }

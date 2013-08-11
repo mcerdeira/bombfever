@@ -9,13 +9,13 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Lolo
 {
-    class Score
+    public class Score
     {
         private int startCount = 0;
         private SpriteFont Font;
-        private int scoreP1;
-        private int scoreP2;
-        private float currentTime = 60f;
+        private int scoreP1 = 0;
+        private int scoreP2 = 0;
+        private float currentTime = 80f;
         private int ScreenHeight;
         private int ScreenWidth;
             
@@ -38,7 +38,7 @@ namespace Lolo
 
         public void setScore(string player)
         {
-            if (player == "player1")
+            if (player == "p1")
             {
                 scoreP1++;
             }
@@ -50,9 +50,12 @@ namespace Lolo
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            float centerX = (ScreenWidth / 2) - (Font.MeasureString(currentTime.ToString()).X / 2);
-            float centerY = (ScreenHeight / 2) - (Font.MeasureString(currentTime.ToString()).Y / 2);                   
+            // Timer
+            float centerX = (ScreenWidth / 2) - (Font.MeasureString(currentTime.ToString()).X / 2);            
             spriteBatch.DrawString(Font, currentTime.ToString(), new Vector2(centerX, -40), Color.White);
+            // Kills
+            spriteBatch.DrawString(Font, scoreP1.ToString(), new Vector2(0, -40), Color.White);
+            spriteBatch.DrawString(Font, scoreP2.ToString(), new Vector2(ScreenWidth - Font.MeasureString(scoreP2.ToString()).X, -40), Color.White);
         }
     }
 }
