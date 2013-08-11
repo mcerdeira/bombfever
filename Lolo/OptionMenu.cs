@@ -14,6 +14,7 @@ namespace Lolo
         int ScreenHeight;
         Texture2D Texture;
         List<Button> btns = new List<Button>();
+        List<CheckBox> chks = new List<CheckBox>();
         private int currButton = -1;
         private SpriteFont Font;
 
@@ -27,6 +28,10 @@ namespace Lolo
             btns.Add(btn);
             btn = new Button("Cancel", screenwidth, font, Color.White, GameState.Quit);
             btns.Add(btn);
+
+            CheckBox chk = new CheckBox("Test", screenwidth, font, Color.White);
+            chks.Add(chk);
+
             PositionButtons();
             ButtonFocus(1);
         }
@@ -57,11 +62,21 @@ namespace Lolo
         public void PositionButtons()
         {
             float posY = 0;
+            float centerX = 0;
 
             for (int index = 0; index < btns.Count; index++)
+            {                
+                Vector2 pos = new Vector2(centerX, posY);
+                btns[index].SetPosition(pos);
+                posY += btns[index].getHeight();
+                centerX += btns[index].getWidth();
+            }
+
+            posY = 0;            
+            for (int index = 0; index < btns.Count; index++)
             {
-                float centerX = General.getScreenCenterTextX(btns[index].getCaption(), ScreenWidth, Font);
-                Vector2 pos = new Vector2(centerX, posY + btns[index].getHeight());
+                centerX = General.getScreenCenterTextX(btns[index].getCaption(), ScreenWidth, Font);
+                Vector2 pos = new Vector2(centerX, posY);
                 btns[index].SetPosition(pos);
                 posY += btns[index].getHeight() / 2;
             }
@@ -85,6 +100,11 @@ namespace Lolo
             for (int index = 0; index < btns.Count; index++)
             {
                 btns[index].Draw(spriteBatch);
+            }
+
+            for (int index = 0; index < chks.Count; index++)
+            {
+                chks[index].Draw(spriteBatch);
             }
         }
     }

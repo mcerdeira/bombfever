@@ -68,11 +68,11 @@ namespace Lolo
 
         public void PositionButtons()
         {
-            float posY = 0;
+            float posY = 100;
             for (int index = 0; index < btns.Count; index++)
             {
                 float centerX = General.getScreenCenterTextX(btns[index].getCaption(), ScreenWidth, Font);
-                Vector2 pos = new Vector2(centerX, posY + btns[index].getHeight());
+                Vector2 pos = new Vector2(centerX, posY);
                 btns[index].SetPosition(pos);
                 posY += btns[index].getHeight() / 2;
             }

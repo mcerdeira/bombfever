@@ -26,12 +26,6 @@ namespace Lolo
         RoundResults   // Displaying round results
     }
 
-    enum ButtonType
-    {
-        Button,
-        CheckBox
-    }
-
     public enum ControlType
     {
         KeyBoard1,

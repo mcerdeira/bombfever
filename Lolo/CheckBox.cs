@@ -8,28 +8,33 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Lolo
 {
-    class Button
+    class CheckBox
     {
-        public string Caption; // The button caption
-        GameState RetState; // The returned game state
-        SpriteFont Font;               
+        public string Caption; // The button caption        
+        SpriteFont Font;
         Vector2 Position;
         Color Color;
         private int ScreenWidth;
+        private bool Value;
         public int Status;
 
-        public Button(string caption, int screenwidth, SpriteFont font, Color color, GameState retstate)
+        public CheckBox(string caption, int screenwidth, SpriteFont font, Color color, bool value = false)
         {
+            this.Value = value;
             this.ScreenWidth = screenwidth;
             this.Font = font;
-            this.Color = color;                        
-            this.RetState = retstate;
+            this.Color = color;           
             this.Caption = caption;
         }
 
-        public GameState GetRetState()
+        public bool getValue()
         {
-            return this.RetState;
+            return this.Value;
+        }
+
+        public void clicked()
+        {
+            this.Value = !this.Value;
         }
 
         public float getWidth()
@@ -68,7 +73,8 @@ namespace Lolo
             {
                 col = Color.LightSkyBlue;
             }
-            spriteBatch.DrawString(Font, Caption, new Vector2(centerX, Position.Y), col);
+            string value = (this.Value) ? " [X]" : " [ ]";
+            spriteBatch.DrawString(Font, Caption + value, new Vector2(centerX, Position.Y), col);
         }
     }
 }

@@ -39,6 +39,7 @@
     <Compile Include="BombExplosion.cs" />
     <Compile Include="BombManager.cs" />
     <Compile Include="Button.cs" />
+    <Compile Include="CheckBox.cs" />
     <Compile Include="General.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="LevelLoader.cs" />
