@@ -13,16 +13,17 @@ namespace Lolo
 {
     enum GameState
     {
-        MainMenu,     // Displaying main menu
-        Options,      // Displaying game options
-        Start1P,      // (Command) Starts the game 1P vs CPU
-        Start2P,      // (Command) Starts the game 1P vs 2P
-        Playing1P,    // Displaying in-game
-        Playing2P,    // Displaying in-game
-        LoadFromFile, // Load a level from a txt file
-        Credits,      // Shows the game credits
+        MainMenu,      // Displaying main menu
+        Options,       // Displaying game options
+        Start1P,       // (Command) Starts the game 1P vs CPU
+        Start2P,       // (Command) Starts the game 1P vs 2P
+        Playing1P,     // Displaying in-game
+        Playing2P,     // Displaying in-game
+        LoadFromFile,  // Load a level from a txt file
+        Credits,       // Shows the game credits
         Quit,          // (Command) Quit the game 
-        GoAndLoadFile  // (Command) Starts the game 1P vs CPU        
+        GoAndLoadFile, // (Command) Starts the game 1P vs CPU        
+        RoundResults   // Displaying round results
     }
 
     enum ButtonType
@@ -43,7 +44,7 @@ namespace Lolo
     {
         Human,
         Machine
-    }
+    }    
 
     public class PlayerControls
     {
@@ -97,6 +98,16 @@ namespace Lolo
           float depthX = distanceX > 0 ? minDistanceX - distanceX : -minDistanceX - distanceX;
           float depthY = distanceY > 0 ? minDistanceY - distanceY : -minDistanceY - distanceY;
           return new Vector2(depthX, depthY);
+        }
+
+        public static float getScreenCenterTextX(string text, int screenwidth, SpriteFont Font)
+        {
+            return (screenwidth / 2) - (Font.MeasureString(text.Trim()).X / 2);
+        }
+
+        public static float getScreenCenterTextY(string text, int screenheight, SpriteFont Font)
+        {
+            return (screenheight / 2) - (Font.MeasureString(text.Trim()).Y / 2);
         }
     }
 }

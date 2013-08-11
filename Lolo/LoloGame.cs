@@ -31,6 +31,7 @@ namespace Lolo
         OptionMenu options;
         BombManager bombmanager;
         SpriteFont mainFont;
+        RoundResults roundR;
         int ScreenWidth = 800;
         int ScreenHeight = 600;
         private Texture2D background;
@@ -106,6 +107,10 @@ namespace Lolo
                     {
                         menu.ButtonFocus(-1);
                     }
+                    else if (CurrentGameState == GameState.RoundResults)
+                    {
+                        roundR.ButtonFocus(-1);
+                    }
                 }
             }
             else if (keyboardState.IsKeyDown(Keys.Down))
@@ -120,6 +125,10 @@ namespace Lolo
                     else if (CurrentGameState == GameState.MainMenu)
                     {
                         menu.ButtonFocus(1);
+                    }
+                    else if (CurrentGameState == GameState.RoundResults)
+                    {
+                        roundR.ButtonFocus(1);
                     }
                 }
             }
@@ -137,6 +146,10 @@ namespace Lolo
                 else if (CurrentGameState == GameState.MainMenu)
                 {
                     CurrentGameState = menu.GetRetState();
+                }
+                else if (CurrentGameState == GameState.RoundResults)
+                {
+                    CurrentGameState = roundR.GetRetState();
                 }
             }
             else
@@ -166,8 +179,7 @@ namespace Lolo
         protected override void LoadContent()
         {
             LoadControls();
-            // Create a new SpriteBatch, which can be used to draw textures.
-            score = new Score(ScreenHeight, ScreenWidth, Content.Load<SpriteFont>("mainfont"));
+            // Create a new SpriteBatch, which can be used to draw textures.            
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             pauseSprite = new Pause(ScreenHeight, ScreenWidth, Content.Load<SpriteFont>("mainfont")); 
@@ -199,7 +211,7 @@ namespace Lolo
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (CurrentGameState == GameState.MainMenu || CurrentGameState == GameState.LoadFromFile)
+            if (CurrentGameState == GameState.MainMenu || CurrentGameState == GameState.LoadFromFile || CurrentGameState == GameState.RoundResults)
             {
                 checkMenuKey(Keyboard.GetState());
             }
@@ -213,8 +225,9 @@ namespace Lolo
                 switch (CurrentGameState)
                 {
                     case GameState.Start1P:
-                    case GameState.Start2P:                        
-                        // In Game objects                                                
+                    case GameState.Start2P:
+                        // In Game objects                        
+                        score = new Score(ScreenHeight, ScreenWidth, Content.Load<SpriteFont>("mainfont"));                        
                         bombmanager = new BombManager(Content);
                         p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(0, 0), ctype1, bombmanager, score, "p1", PlayerStyle.Human);
                         if (CurrentGameState == GameState.Start1P)
@@ -229,7 +242,7 @@ namespace Lolo
                         }
                         map = new Map(p1, p2);
                         map.GenerateLevel(Content, LevelName);
-                        bombmanager.UpdateMap(map, p1, p2);          
+                        bombmanager.UpdateMap(map, p1, p2);                        
                         break;
                     case GameState.MainMenu:
                         menu.Update(gameTime);
@@ -237,13 +250,26 @@ namespace Lolo
                     case GameState.Options:
                         options.Update(gameTime);
                         break;
+                    case GameState.RoundResults:                        
+                        roundR.Update(gameTime);
+                        break;
                     case GameState.Playing1P:
                     case GameState.Playing2P:
-                        score.Update(gameTime);
-                        p1.Update(gameTime);
-                        p2.Update(gameTime);                        
-                        map.Update();
-                        bombmanager.Update();
+                        if (score.Update(gameTime) >= 0)
+                        {
+                            p1.Update(gameTime);
+                            p2.Update(gameTime);
+                            map.Update();
+                            bombmanager.Update();
+                        }
+                        else
+                        {
+                            // Time is up!
+                            GameState st;
+                            st = (CurrentGameState == GameState.Playing1P) ? GameState.Start1P : GameState.Start2P;                   
+                            roundR = new RoundResults(Content.Load<Texture2D>("MainMenu"), Content.Load<Texture2D>("btn1"), mainFont, score, st, ScreenHeight, ScreenWidth);
+                            CurrentGameState = GameState.RoundResults;
+                        }
                         break;
                     case GameState.Credits:
                         break;
@@ -276,12 +302,15 @@ namespace Lolo
                     break;
                 case GameState.Playing1P:
                 case GameState.Playing2P:
-                    spriteBatch.Draw(background, new Rectangle(0, 0,ScreenWidth, ScreenHeight), Color.White); 
+                    spriteBatch.Draw(background, new Rectangle(0, 0, ScreenWidth, ScreenHeight), Color.White); 
                     map.Draw(spriteBatch);
                     p1.Draw(spriteBatch);
                     p2.Draw(spriteBatch);                    
                     bombmanager.Draw(spriteBatch);
                     score.Draw(spriteBatch);
+                    break;
+                case GameState.RoundResults:
+                    roundR.Draw(spriteBatch);
                     break;
                 case GameState.Quit:
                     // Don't draw anything

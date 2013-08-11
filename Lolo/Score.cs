@@ -15,15 +15,38 @@ namespace Lolo
         private SpriteFont Font;
         private int scoreP1 = 0;
         private int scoreP2 = 0;
-        private float currentTime = 80f;
+        private float currentTime;
         private int ScreenHeight;
         private int ScreenWidth;
             
         public Score(int screenheight, int screenwidth, SpriteFont font)
         {
+            this.currentTime = 10f;
             this.ScreenHeight = screenheight;
             this.ScreenWidth = screenwidth;
             this.Font = font;
+        }
+
+        public string getResult(out int scorep1, out int scorep2)
+        {
+            string r;
+            if (scoreP1 > scoreP2)
+            {
+                scorep1 = this.scoreP1;
+                scorep2 = this.scoreP2;
+                r = "P1 Wins!";
+            }
+            else if (scoreP1 < scoreP2)
+            {
+                r = "P2 Wins!";
+            }
+            else
+            {
+                r = "Tied Match";
+            }
+            scorep1 = this.scoreP1;
+            scorep2 = this.scoreP2;
+            return r;
         }
 
         public float Update(GameTime gametime)
