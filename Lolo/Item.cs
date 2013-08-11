@@ -21,27 +21,59 @@ using Microsoft.Xna.Framework.GamerServices;
 namespace Lolo
 {
     public class Item
-    {        
+    {
+        private Map map;
         private Texture2D Texture;
         private Vector2 Position;
         public int Status = 0; // frame status
         private int Columns;
         Rectangle hitBox;
         private int Style;
+        private Player player;
+        private Player player2;
+        private bool collected = false;
 
-        public Item(ContentManager content, Vector2 position)
+        public Item(ContentManager content, Vector2 position, Player player, Player player2, Map map)
         {
             Random rnd = new Random();
-            this.Style = rnd.Next(0, 5);
+            this.Style = rnd.Next(0, 6);
             #warning This will be content.Load<Texture2D>("item" + this.Style + this.Style.ToString());
             this.Texture = content.Load<Texture2D>("item"); 
             this.Position = position;
             this.Columns = Texture.Width / 50;
+            this.player = player;
+            this.player2 = player2;
+            this.map = map;
         }
 
         public void Update()
-        { 
+        {            
+            if (!collected)
+            {
+                // As the check order matters, to make it more fair, the check order is random 50/50
+                Random rnd = new Random();
+                int i = rnd.Next(0, 2);
+                if (i == 0)
+                {
+                    CheckCollisions(player);
+                    CheckCollisions(player2);
+                }
+                else
+                {
+                    CheckCollisions(player2);
+                    CheckCollisions(player);
+                }
+            }
+        }
 
+        private void CheckCollisions(Player player)
+        {
+            if (hitBox.Intersects(player.hitBox))
+            {
+                collected = true;
+                player.setItem(this.Style);
+                map.RemoveItem(this);
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)

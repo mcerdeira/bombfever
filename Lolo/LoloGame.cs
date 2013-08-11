@@ -214,8 +214,7 @@ namespace Lolo
                 {
                     case GameState.Start1P:
                     case GameState.Start2P:                        
-                        // In Game objects                        
-                        map = new Map();
+                        // In Game objects                                                
                         bombmanager = new BombManager(Content);
                         p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(0, 0), ctype1, bombmanager, score, "p1", PlayerStyle.Human);
                         if (CurrentGameState == GameState.Start1P)
@@ -228,7 +227,8 @@ namespace Lolo
                             p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(770, 566), ctype2, bombmanager, score, "p2", PlayerStyle.Human);
                             CurrentGameState = GameState.Playing2P;
                         }
-                        map.GenerateLevel(Content, p1, p2, LevelName);
+                        map = new Map(p1, p2);
+                        map.GenerateLevel(Content, LevelName);
                         bombmanager.UpdateMap(map, p1, p2);          
                         break;
                     case GameState.MainMenu:

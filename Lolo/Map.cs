@@ -33,6 +33,14 @@ namespace Lolo
         public List<Tile> tiles = new List<Tile>();
         public List<Item> items = new List<Item>();
         private ContentManager Content;
+        private Player player;
+        private Player player2;
+
+        public Map(Player player, Player player2)
+        {
+            this.player = player;
+            this.player2 = player2;
+        }
 
         public void Update()
         {
@@ -45,6 +53,11 @@ namespace Lolo
             {
                 items[index].Update();
             }
+        }
+
+        public void RemoveItem(Item item)
+        {
+            items.Remove(item);
         }
 
         public void RemoveTile(Tile tile)
@@ -65,7 +78,7 @@ namespace Lolo
                 if (v == 1)
                 {                    
                     // An item is hidden inside, yay!!                    
-                    Item itm = new Item(Content, new Vector2(tile.hitBox.X, tile.hitBox.Y));
+                    Item itm = new Item(Content, new Vector2(tile.hitBox.X, tile.hitBox.Y), player, player2, this);
                     items.Add(itm);
                 }
             }
@@ -74,7 +87,7 @@ namespace Lolo
             tiles.Remove(tile);
         }
 
-        public void GenerateLevel(ContentManager content, Player player, Player player2, string LevelFile = "")
+        public void GenerateLevel(ContentManager content, string LevelFile = "")
         {
             this.Content = content;
             Random rdn = new Random();

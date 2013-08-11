@@ -20,6 +20,7 @@ namespace Lolo
         private string KeyControl;
         private string InstanceName;
         private PlayerStyle PStlye;
+        private int ItemCollected = -1;
         private int[] idleFrames = new int[] { 0, 1, 2, 3 };
         private int[] walkFrames = new int[] { 4, 5, 6, 7 };
         private int[] deadFrames = new int[] { 8, 9, 10, 11 };
@@ -55,6 +56,11 @@ namespace Lolo
             this.InstanceName = instancename;
             this.BombMan = BombMan;
             this.PCtrls = new PlayerControls(ctype);       
+        }
+
+        public void setItem(int itemstyle)
+        {
+            this.ItemCollected = itemstyle;            
         }
 
         public void Update(GameTime gametime)
