@@ -16,12 +16,13 @@ namespace Lolo
         private int scoreP1 = 0;
         private int scoreP2 = 0;
         private float currentTime;
+        private float TotalTime;
         private int ScreenHeight;
         private int ScreenWidth;
             
-        public Score(int screenheight, int screenwidth, SpriteFont font, float currentTime)
+        public Score(int screenheight, int screenwidth, SpriteFont font, float totaltime)
         {
-            this.currentTime = currentTime;
+            this.currentTime = totaltime;            
             this.ScreenHeight = screenheight;
             this.ScreenWidth = screenwidth;
             this.Font = font;
@@ -51,10 +52,14 @@ namespace Lolo
 
         public float Update(GameTime gametime)
         {
-            if (gametime.TotalGameTime.Seconds > this.startCount)  
-            {  
-                this.startCount = gametime.TotalGameTime.Seconds;  
-                currentTime --;              
+            if (startCount == 0)
+            {
+                startCount = 60;
+                currentTime--;
+            }
+            else
+            {
+                startCount--;
             }
             return currentTime;
         }
