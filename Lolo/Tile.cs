@@ -102,6 +102,7 @@ namespace Lolo
                         player.newPosition = newpos;
                     }
                     player.wallHitted = true;
+                    player.wallHittedBreakable = this.BreakAble;
                 }
             }
         }

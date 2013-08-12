@@ -257,7 +257,7 @@ namespace Lolo
                         p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(0, 0), ctype1, bombmanager, score, "p1", PlayerStyle.Human);
                         if (CurrentGameState == GameState.Start1P)
                         {
-                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(770, 566), ctype2, bombmanager, score, "p2", PlayerStyle.Machine);
+                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(770, 566), ctype2, bombmanager, score, "p2", PlayerStyle.Machine, p1);
                             CurrentGameState = GameState.Playing1P;
                         }
                         else
