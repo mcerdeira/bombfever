@@ -19,9 +19,9 @@ namespace Lolo
         private int ScreenHeight;
         private int ScreenWidth;
             
-        public Score(int screenheight, int screenwidth, SpriteFont font)
+        public Score(int screenheight, int screenwidth, SpriteFont font, float currentTime)
         {
-            this.currentTime = 10f;
+            this.currentTime = currentTime;
             this.ScreenHeight = screenheight;
             this.ScreenWidth = screenwidth;
             this.Font = font;

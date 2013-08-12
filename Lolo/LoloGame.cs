@@ -18,6 +18,7 @@ namespace Lolo
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        float roundTime;
         Player p1;
         Player p2;
         string LevelName = "";
@@ -38,7 +39,7 @@ namespace Lolo
         private Texture2D menues;
         private bool paused = false;
         private bool pauseKeyDown = false;
-        private Keys previousMenuKey = Keys.Zoom;
+        private Keys previousMenuKey = Keys.None;
         private bool EnterKeyDown = false;        
 
         GameState CurrentGameState = GameState.MainMenu;
@@ -62,6 +63,7 @@ namespace Lolo
             #warning Here I must load the config file
             ctype1 = ControlType.KeyBoard1;
             ctype2 = ControlType.KeyBoard2;
+            roundTime = 120;
         }
 
         private void BeginPause(bool UserInitiated)
@@ -175,7 +177,7 @@ namespace Lolo
             }
             else
             {
-                previousMenuKey = Keys.Zoom;
+                previousMenuKey = Keys.None;
             }
 
             EnterKeyDown = EnterKeyDownThisFrame;
@@ -250,7 +252,7 @@ namespace Lolo
                     case GameState.Start1P:
                     case GameState.Start2P:
                         // In Game objects                        
-                        score = new Score(ScreenHeight, ScreenWidth, Content.Load<SpriteFont>("mainfont"));                        
+                        score = new Score(ScreenHeight, ScreenWidth, Content.Load<SpriteFont>("mainfont"), roundTime);
                         bombmanager = new BombManager(Content);
                         p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(0, 0), ctype1, bombmanager, score, "p1", PlayerStyle.Human);
                         if (CurrentGameState == GameState.Start1P)

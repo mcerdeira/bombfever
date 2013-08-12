@@ -11,8 +11,9 @@ namespace Lolo
 {
     public class Player
     {
-        private Vector2 RespawnLoc;
-        public bool wallHitted;
+        private Vector2 RespawnLoc; // Location the respawn will point to
+        public int inmunityCounter = 0; // Frame duration of inmunity (after being hitted)
+        public bool wallHitted; // Player hitted a wall Flag
         public Texture2D Texture { get; set; }        
         public int Columns { get; set; }
         private PlayerControls PCtrls;
@@ -103,10 +104,15 @@ namespace Lolo
                     currentFrame = resetFrame;
                 }
             }
+            if (this.inmunityCounter != 0)
+            {
+                this.inmunityCounter--;
+            }
         }
 
         private void resPawn()
         {
+            this.inmunityCounter = 150;
             this.Status = "respawning";
             string dest = (InstanceName == "p1") ? "p2" : "p1";
             Score.setScore(dest);            
@@ -182,15 +188,18 @@ namespace Lolo
                 wallHitted = false;
             }
 
-            // Draw the player in the new location(x,y)
-            int width = Texture.Width / Columns;
-            int height = Texture.Height;
-            int row = (int)((float)currentFrame / (float)Columns);
-            int column = currentFrame % Columns;
-            Rectangle sourceRectangle = new Rectangle(width * column, height * row, width, height);
-            Rectangle destinationRectangle = new Rectangle((int)Location.X, (int)Location.Y, width, height);
-            hitBox = destinationRectangle;
-            spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White);
+            if (inmunityCounter % 2 == 0)
+            {
+                // Draw the player in the new location(x,y)
+                int width = Texture.Width / Columns;
+                int height = Texture.Height;
+                int row = (int)((float)currentFrame / (float)Columns);
+                int column = currentFrame % Columns;
+                Rectangle sourceRectangle = new Rectangle(width * column, height * row, width, height);
+                Rectangle destinationRectangle = new Rectangle((int)Location.X, (int)Location.Y, width, height);
+                hitBox = destinationRectangle;
+                spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White);
+            }
         }
     }
 }
