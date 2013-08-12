@@ -112,6 +112,10 @@ namespace Lolo
                     {
                         roundR.ButtonFocus(-1);
                     }
+                    else if (CurrentGameState == GameState.Options)
+                    {
+                        options.ButtonFocus(-1);
+                    }
                 }
             }
             else if (keyboardState.IsKeyDown(Keys.Down))
@@ -130,6 +134,10 @@ namespace Lolo
                     else if (CurrentGameState == GameState.RoundResults)
                     {
                         roundR.ButtonFocus(1);
+                    }
+                    else if (CurrentGameState == GameState.Options)
+                    {
+                        options.ButtonFocus(1);
                     }
                 }
             }
@@ -151,6 +159,18 @@ namespace Lolo
                 else if (CurrentGameState == GameState.RoundResults)
                 {
                     CurrentGameState = roundR.GetRetState();
+                }
+                else if (CurrentGameState == GameState.Options)
+                {
+                    GameState tmp = options.GetRetState();
+                    if (tmp != GameState.None)
+                    {
+                        CurrentGameState = tmp;
+                    }
+                    else
+                    {
+                        options.CheckBoxClicked();
+                    }
                 }
             }
             else
@@ -211,7 +231,10 @@ namespace Lolo
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (CurrentGameState == GameState.MainMenu || CurrentGameState == GameState.LoadFromFile || CurrentGameState == GameState.RoundResults)
+            if (CurrentGameState == GameState.MainMenu || 
+                CurrentGameState == GameState.LoadFromFile || 
+                CurrentGameState == GameState.RoundResults ||
+                CurrentGameState == GameState.Options)
             {
                 checkMenuKey(Keyboard.GetState());
             }

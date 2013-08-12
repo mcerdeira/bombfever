@@ -13,8 +13,7 @@ namespace Lolo
         int ScreenWidth;
         int ScreenHeight;
         Texture2D Texture;
-        List<Button> btns = new List<Button>();
-        List<CheckBox> chks = new List<CheckBox>();
+        List<Object> btns = new List<Object>();
         private int currButton = -1;
         private SpriteFont Font;
 
@@ -24,21 +23,31 @@ namespace Lolo
             this.ScreenWidth = screenwidth;
             this.Texture = texture;
             this.Font = font;
+            CheckBox chk = new CheckBox("Test", screenwidth, font, Color.White);
+            btns.Add(chk);
             Button btn = new Button("Acept", screenwidth, font, Color.White, GameState.Start1P);
             btns.Add(btn);
             btn = new Button("Cancel", screenwidth, font, Color.White, GameState.Quit);
             btns.Add(btn);
-
-            CheckBox chk = new CheckBox("Test", screenwidth, font, Color.White);
-            chks.Add(chk);
-
             PositionButtons();
             ButtonFocus(1);
         }
 
         public GameState GetRetState()
         {
-            return btns[currButton].GetRetState();
+            if (btns[currButton].GetType().Name == "Button")
+            {
+                return ((Button)btns[currButton]).GetRetState();
+            }
+            else
+            {
+                return ((CheckBox)btns[currButton]).GetRetState();
+            }
+        }
+
+        public void CheckBoxClicked()
+        {
+            ((CheckBox)btns[currButton]).clicked();
         }
 
         public void ButtonFocus(int direction)
@@ -54,9 +63,23 @@ namespace Lolo
             }
             for (int index = 0; index < btns.Count; index++)
             {
-                btns[index].Status = 0;
+                if (btns[index].GetType().Name == "Button")
+                {
+                    ((Button)btns[index]).Status = 0;
+                }
+                else
+                {
+                    ((CheckBox)btns[index]).Status = 0;
+                }
             }
-            btns[currButton].Status = 1;
+            if (btns[currButton].GetType().Name == "Button")
+            {
+                ((Button)btns[currButton]).Status = 1;
+            }
+            else
+            {
+                ((CheckBox)btns[currButton]).Status = 1;
+            }
         }
 
         public void PositionButtons()
@@ -65,20 +88,39 @@ namespace Lolo
             float centerX = 0;
 
             for (int index = 0; index < btns.Count; index++)
-            {                
+            {
                 Vector2 pos = new Vector2(centerX, posY);
-                btns[index].SetPosition(pos);
-                posY += btns[index].getHeight();
-                centerX += btns[index].getWidth();
+                if (btns[index].GetType().Name == "Button")
+                {
+                    ((Button)btns[index]).SetPosition(pos);
+                    posY += ((Button)btns[index]).getHeight();
+                    centerX += ((Button)btns[index]).getWidth();
+                }
+                else
+                {
+                    ((CheckBox)btns[index]).SetPosition(pos);
+                    posY += ((CheckBox)btns[index]).getHeight();
+                    centerX += ((CheckBox)btns[index]).getWidth();
+                }
             }
 
             posY = 0;            
             for (int index = 0; index < btns.Count; index++)
             {
-                centerX = General.getScreenCenterTextX(btns[index].getCaption(), ScreenWidth, Font);
-                Vector2 pos = new Vector2(centerX, posY);
-                btns[index].SetPosition(pos);
-                posY += btns[index].getHeight() / 2;
+                if (btns[index].GetType().Name == "Button")
+                {
+                    centerX = General.getScreenCenterTextX(((Button)btns[index]).getCaption(), ScreenWidth, Font);
+                    Vector2 pos = new Vector2(centerX, posY);
+                    ((Button)btns[index]).SetPosition(pos);
+                    posY += ((Button)btns[index]).getHeight() / 2;
+                }
+                else
+                {
+                    centerX = General.getScreenCenterTextX(((CheckBox)btns[index]).getCaption(), ScreenWidth, Font);
+                    Vector2 pos = new Vector2(centerX, posY);
+                    ((CheckBox)btns[index]).SetPosition(pos);
+                    posY += ((CheckBox)btns[index]).getHeight() / 2;
+                }
             }
         }
 
@@ -86,7 +128,14 @@ namespace Lolo
         {
             for (int index = 0; index < btns.Count; index++)
             {
-                btns[index].Update(gametime);
+                if (btns[index].GetType().Name == "Button")
+                {
+                    ((Button)btns[index]).Update(gametime);
+                }
+                else
+                {
+                    ((CheckBox)btns[index]).Update(gametime);
+                }
             }
         }
 
@@ -99,12 +148,14 @@ namespace Lolo
             spriteBatch.Draw(Texture, dest, source, Color.White);
             for (int index = 0; index < btns.Count; index++)
             {
-                btns[index].Draw(spriteBatch);
-            }
-
-            for (int index = 0; index < chks.Count; index++)
-            {
-                chks[index].Draw(spriteBatch);
+                if (btns[index].GetType().Name == "Button")
+                {
+                    ((Button)btns[index]).Draw(spriteBatch);
+                }
+                else
+                {
+                    ((CheckBox)btns[index]).Draw(spriteBatch);
+                }
             }
         }
     }

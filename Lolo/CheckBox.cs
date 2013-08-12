@@ -27,6 +27,11 @@ namespace Lolo
             this.Caption = caption;
         }
 
+        public GameState GetRetState()
+        {
+            return GameState.None;
+        }
+
         public bool getValue()
         {
             return this.Value;

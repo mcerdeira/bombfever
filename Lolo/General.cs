@@ -13,6 +13,7 @@ namespace Lolo
 {
     enum GameState
     {
+        None,
         MainMenu,      // Displaying main menu
         Options,       // Displaying game options
         Start1P,       // (Command) Starts the game 1P vs CPU
