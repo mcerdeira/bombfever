@@ -25,6 +25,23 @@ namespace Lolo
             this.content = content;
         }
 
+        public Vector2 getNearestBomb(Vector2 pos)
+        {                        
+            Vector2 min = new Vector2(9999, 9999);
+            float minDist = 999999;
+            float dist = 0;
+            for (int index = 0; index < bombs.Count; index++)
+            {
+                dist = Vector2.Distance(pos, bombs[index].Position);
+                if (dist < minDist)
+                {
+                    minDist = dist;
+                    min = bombs[index].Position;
+                }
+            }
+            return min;
+        }
+
         public void UpdateMap(Map map, Player player, Player player2)
         {
             this.Player = player;

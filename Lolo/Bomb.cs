@@ -14,7 +14,7 @@ namespace Lolo
     public class Bomb
     {
         public int Status = 0; // frame status
-        private Vector2 Position;
+        public Vector2 Position;
         private Texture2D Texture;
         private int Columns;
         private string Owner;

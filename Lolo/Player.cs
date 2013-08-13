@@ -11,15 +11,19 @@ namespace Lolo
 {
     public class Player
     {
+        // <AI Variables>
+        private int moveLoop = 0;
         private Player Human;
+        private Map Map;
+        private int runAwayDelay = 0;
+        // </AI Variables>
         private Vector2 RespawnLoc; // Location the respawn will point to
         public int inmunityCounter = 0; // Frame duration of inmunity (after being hitted)
         public bool wallHitted; // Player hitted a wall Flag
         public bool wallHittedBreakable;
         public Texture2D Texture { get; set; }
         public int Columns { get; set; }
-        private PlayerControls PCtrls;
-        private bool adjustH = false;
+        private PlayerControls PCtrls;        
         private int currentFrame;
         private string KeyControl;
         private string InstanceName;
@@ -44,7 +48,7 @@ namespace Lolo
         int directionX = 0;
         int directionY = 0;
 
-        public Player(Texture2D texture, Vector2 location, ControlType ctype, BombManager BombMan, Score score, string instancename, PlayerStyle pstlye, Player Human = null)
+        public Player(Texture2D texture, Vector2 location, ControlType ctype, BombManager BombMan, Score score, string instancename, PlayerStyle pstlye)
         {            
             this.Score = score;
             this.RespawnLoc = location;
@@ -60,10 +64,6 @@ namespace Lolo
             this.InstanceName = instancename;
             this.BombMan = BombMan;
             this.PCtrls = new PlayerControls(ctype);
-            if (Human != null)
-            {
-                this.Human = Human;
-            }
         }
 
         public void setItem(int itemstyle)
@@ -128,48 +128,100 @@ namespace Lolo
 
         // AI Stuff
 
-        private bool opponentReachable(Vector2 pos)
-        {           
-
-
-            return false;
+        public void InitAI(Player human, Map map)
+        {
+            this.Human = human;
+            this.Map = map;
         }
 
-        private bool bombDanger()
+        private bool opponentReachable(Vector2 pos)
         {
-            return false;
+            Vector2 result = new Vector2();
+            result = pos - Location;
+
+            if (Math.Abs(result.X) < 30 && Math.Abs(result.Y) < 30)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private void AI_Plan(float elapsedTime)
         {
-            this.Status = "idle";
-            Vector2 pos = getOpponentPosition();
-            if (!AI_Avoid())
+            if (this.Status != "dead")
             {
-                if (opponentReachable(pos))
+                this.Status = "idle";
+                if (moveLoop == 0)
                 {
-                    AI_Attack();
+                    moveLoop = 2;
+                    Vector2 pos = getOpponentPosition();
+                    Vector2 avoidpos = AI_Avoid();
+                    if (avoidpos.X == 9999)
+                    {
+                        if (runAwayDelay > 0)
+                        {
+                            //Console.WriteLine("Evade Bomb " + DateTime.Now.ToString());
+                            AI_TryWalk(avoidpos, elapsedTime, -1);
+                            runAwayDelay--;
+                        }
+                        else
+                        {
+                            if (opponentReachable(pos))
+                            {
+                                AI_Attack();
+                            }
+                            else
+                            {
+                                //Console.WriteLine("Seek Character " + DateTime.Now.ToString());
+                                AI_TryWalk(pos, elapsedTime);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //Console.WriteLine("I see a bomb! " + DateTime.Now.ToString());
+                        AI_TryWalk(avoidpos, elapsedTime, -1);
+                        runAwayDelay = 7;
+                    }
                 }
                 else
                 {
-                    AI_Approach(pos, elapsedTime);
+                    moveLoop--;
                 }
             }
         }
 
-        private bool AI_Avoid()
+        private Vector2 AI_Avoid()
         {
-            if (bombDanger())
+            Vector2 bomb = BombMan.getNearestBomb(this.Location);
+            if(bomb.X == 9999)
             {
-                return true;
+                return bomb;
             }
-            return false;
+            else
+            {   
+                float distance = Vector2.Distance(Location, bomb);
+                if (distance < 200)
+                {
+                    //Console.WriteLine("Evade");
+                    return bomb;
+                }
+                else
+                {
+                    //Console.WriteLine("Dont evade");
+                    return new Vector2(9999, 9999);
+                }
+            }
         }
 
-        private void AI_Approach(Vector2 pos, float elapsedTime)
+        private void AI_TryWalk(Vector2 pos, float elapsedTime, int runAway = 1)
         {
-            setDirection(pos, elapsedTime);
-            if(wallHittedBreakable)
+            setDirection(pos, elapsedTime, runAway);
+            #warning Change this, to be aware of the map
+            if(wallHittedBreakable) // This is temporal, its not good to wait till the player hits a wall...
             {
                 wallHittedBreakable = false;
                 if (this.BombCount < this.BombMax)
@@ -181,39 +233,38 @@ namespace Lolo
 
         private void AI_Attack()
         {
-            
+            placeBomb();
         }
 
-        private void setDirection(Vector2 pos, float elapsedTime)
+        private void setDirection(Vector2 pos, float elapsedTime, int runAway)
         {
-            if (adjustH)
+            this.Status = "walking";
+            float YDiff = pos.Y - this.Location.Y;
+            float XDiff = pos.X - this.Location.X;
+            if (YDiff < 0)
             {
-                if (pos.X < this.Location.X)
-                {
-                    directionX = -1;
-                }
-                else
-                {
-                    directionX = 1;
-                }
-                directionY = 0;
+                directionY = -1;
             }
             else
             {
-                if (pos.Y < this.Location.Y)
-                {
-                    directionY = -1;
-                }
-                else
-                {
-                    directionY = 1;
-                }
-                directionX = 0;
+                directionY = 1;
             }
-            this.Status = "walking";
-            adjustH = !adjustH;            
-            Location.X += (Speed.X * elapsedTime) * directionX;
-            Location.Y += (Speed.Y * elapsedTime) * directionY;
+            if (XDiff < 0)
+            {
+                directionX = -1;
+            }
+            else
+            {
+                directionX = 1;
+            }
+            if (Math.Abs(XDiff) > Math.Abs(YDiff))
+            {
+                Location.X += (Speed.X * elapsedTime) * directionX * runAway;
+            }
+            else
+            {
+                Location.Y += (Speed.Y * elapsedTime) * directionY * runAway;
+            }            
         }
 
         private Vector2 getOpponentPosition()

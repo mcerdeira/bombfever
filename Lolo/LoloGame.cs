@@ -257,7 +257,7 @@ namespace Lolo
                         p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(0, 0), ctype1, bombmanager, score, "p1", PlayerStyle.Human);
                         if (CurrentGameState == GameState.Start1P)
                         {
-                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(770, 566), ctype2, bombmanager, score, "p2", PlayerStyle.Machine, p1);
+                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(770, 566), ctype2, bombmanager, score, "p2", PlayerStyle.Machine);
                             CurrentGameState = GameState.Playing1P;
                         }
                         else
@@ -267,7 +267,11 @@ namespace Lolo
                         }
                         map = new Map(p1, p2);
                         map.GenerateLevel(Content, LevelName);
-                        bombmanager.UpdateMap(map, p1, p2);                        
+                        bombmanager.UpdateMap(map, p1, p2);
+                        if (CurrentGameState == GameState.Playing1P)
+                        {
+                            p2.InitAI(p1, map);
+                        }
                         break;
                     case GameState.MainMenu:
                         menu.Update(gameTime);
