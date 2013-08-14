@@ -262,6 +262,15 @@ namespace Lolo
             placeBomb();
         }
 
+        Vector2 FindInterceptingPoint()
+        {
+            Vector2 v, d, t; 
+            v = this.Speed;
+            d = Human.getLocation() - this.Location; // range to close            
+            t = Vector2.Divide(d, v.X);
+            return Human.getLocation() + (Speed * t); // target point
+        }
+
         private Vector2 setDirection(Vector2 pos, float elapsedTime, int runAway)
         {
             Vector2 desiredDirection = Location;
@@ -297,7 +306,7 @@ namespace Lolo
 
         private Vector2 getOpponentPosition()
         {
-            return Human.getLocation();
+            return FindInterceptingPoint();//;Human.getLocation();
         }
 
         private void UpdateInput(float elapsedTime)

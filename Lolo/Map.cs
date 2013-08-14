@@ -100,7 +100,7 @@ namespace Lolo
                 for (int r = 0; r < 12; r++)
                 {
                     col = 0;
-                    for (int c = 0; c < 17; c++)
+                    for (int c = 0; c < 16; c++)
                     {
                         walkable = false;
                         if ((r == 0 && c == 0) || // Vertice, room for player to initially move
