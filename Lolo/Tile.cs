@@ -101,8 +101,7 @@ namespace Lolo
                         Vector2 newpos = new Vector2(player.hitBox.X + v.X, player.hitBox.Y);
                         player.newPosition = newpos;
                     }
-                    player.wallHitted = true;
-                    player.wallHittedBreakable = this.BreakAble;
+                    player.wallHitted = true;                    
                 }
             }
         }

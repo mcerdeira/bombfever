@@ -16,11 +16,11 @@ namespace Lolo
         private Player Human;
         private Map Map;
         private int runAwayDelay = 0;
+        private bool Locked = false;
         // </AI Variables>
         private Vector2 RespawnLoc; // Location the respawn will point to
         public int inmunityCounter = 0; // Frame duration of inmunity (after being hitted)
-        public bool wallHitted; // Player hitted a wall Flag
-        public bool wallHittedBreakable;
+        public bool wallHitted; // Player hitted a wall Flag        
         public Texture2D Texture { get; set; }
         public int Columns { get; set; }
         private PlayerControls PCtrls;        
@@ -182,6 +182,7 @@ namespace Lolo
                     }
                     else
                     {
+                        #warning Will be nicer to wait hidden, until the bomb explodes
                         //Console.WriteLine("I see a bomb! " + DateTime.Now.ToString());
                         AI_TryWalk(avoidpos, elapsedTime, -1);
                         runAwayDelay = 7;
@@ -219,16 +220,41 @@ namespace Lolo
 
         private void AI_TryWalk(Vector2 pos, float elapsedTime, int runAway = 1)
         {
-            setDirection(pos, elapsedTime, runAway);
-            #warning Change this, to be aware of the map
-            if(wallHittedBreakable) // This is temporal, its not good to wait till the player hits a wall...
+            Vector2 desiredLoc = setDirection(pos, elapsedTime, runAway);           
+            AI_chekWalkable(desiredLoc);
+        }
+
+        private void AI_chekWalkable(Vector2 desiredLoc)
+        {
+            bool free = true; // No tile, can walk
+            int width = Texture.Width / Columns;
+            int height = Texture.Height;
+            Rectangle future_pos = new Rectangle((int)desiredLoc.X, (int)desiredLoc.Y, width, height);
+            for (int index = 0; index < Map.tiles.Count; index++)
             {
-                wallHittedBreakable = false;
-                if (this.BombCount < this.BombMax)
+                if (Map.tiles[index].hitBox.Intersects(future_pos))
                 {
-                    placeBomb();
+                    free = false;
+                    if (Map.tiles[index].BreakAble)
+                    {
+                        if (this.BombCount < this.BombMax)
+                        {
+                            placeBomb();
+                        }
+                        return;
+                    }
                 }
-            }            
+            }
+            if (free)
+            {
+                this.Locked = false;
+                Location = desiredLoc;
+            }
+            else
+            {
+                #warning Decide where to go next
+                this.Locked = true;
+            }
         }
 
         private void AI_Attack()
@@ -236,8 +262,9 @@ namespace Lolo
             placeBomb();
         }
 
-        private void setDirection(Vector2 pos, float elapsedTime, int runAway)
+        private Vector2 setDirection(Vector2 pos, float elapsedTime, int runAway)
         {
+            Vector2 desiredDirection = Location;
             this.Status = "walking";
             float YDiff = pos.Y - this.Location.Y;
             float XDiff = pos.X - this.Location.X;
@@ -259,12 +286,13 @@ namespace Lolo
             }
             if (Math.Abs(XDiff) > Math.Abs(YDiff))
             {
-                Location.X += (Speed.X * elapsedTime) * directionX * runAway;
+                desiredDirection.X += (Speed.X * elapsedTime) * directionX * runAway;
             }
             else
             {
-                Location.Y += (Speed.Y * elapsedTime) * directionY * runAway;
-            }            
+                desiredDirection.Y += (Speed.Y * elapsedTime) * directionY * runAway;
+            }
+            return desiredDirection;
         }
 
         private Vector2 getOpponentPosition()
