@@ -12,13 +12,14 @@ namespace Lolo
     public class Player
     {
         // <AI Variables>
-        private int moveLoop = 0;
-        private Player Human;
-        private Map Map;
-        private int runAwayDelay = 0;
-        private bool hasToCorrect = false;
-        private string Direction = "";
-        private string prevDirection = "";
+        private int moveLoop = 0; // Movement loop (the player does not move every frame)
+        private Player Human; // A reference to the human player
+        private Map Map; // A reference to the current map
+        private int runAwayDelay = 0; // A little delay to keep running away after the bomb explodes
+        private bool hasToCorrect = false; // A flag that indicates if the direction is imposible and a correction is needed
+        private string Direction = ""; // Current direction
+        private string prevDirection = ""; // Previous direction
+        private int relevantDiff = 0; // The minimum difference (between X and Y) for the player to change the current direction
         // </AI Variables>
         private Vector2 RespawnLoc; // Location the respawn will point to
         public int inmunityCounter = 0; // Frame duration of inmunity (after being hitted)
@@ -134,6 +135,7 @@ namespace Lolo
         {
             this.Human = human;
             this.Map = map;
+            this.relevantDiff = Map.tiles[0].hitBox.Width;
         }
 
         private bool opponentReachable(Vector2 pos)
@@ -273,6 +275,7 @@ namespace Lolo
 
         private Vector2 workAround(float elapsedTime, string direction)
         {
+            #warning See if we can choose alternate direction based on player position
             Vector2 desiredDirection = Location;
             switch (direction)
             {
@@ -335,7 +338,7 @@ namespace Lolo
             {
                 directionX = 1; // RIGHT
             }
-            if ((Math.Abs( Math.Abs(XDiff) - Math.Abs(YDiff)) > Map.tiles[0].hitBox.Width) || prevDirection == "") // Difference is relevant (or first time)
+            if ((Math.Abs( Math.Abs(XDiff) - Math.Abs(YDiff)) > relevantDiff) || prevDirection == "") // Difference is relevant (or first time)
             {
                 Console.WriteLine("Direction by enemy " + Direction + "(difference");
 
