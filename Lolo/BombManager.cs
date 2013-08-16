@@ -26,7 +26,7 @@ namespace Lolo
         }
 
         public Vector2 getNearestBomb(Vector2 pos)
-        {                        
+        {            
             Vector2 min = new Vector2(9999, 9999);
             float minDist = 999999;
             float dist = 0;
@@ -36,7 +36,16 @@ namespace Lolo
                 if (dist < minDist)
                 {
                     minDist = dist;
-                    min = bombs[index].Position;
+                    min = bombs[index].Position;                    
+                }
+            }
+            for (int index = 0; index < bombex.Count; index++)
+            {
+                dist = Vector2.Distance(pos, bombex[index].EmitterLocation);
+                if (dist < minDist)
+                {
+                    minDist = dist;
+                    min = bombex[index].EmitterLocation;
                 }
             }
             return min;

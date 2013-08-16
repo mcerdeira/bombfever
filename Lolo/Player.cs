@@ -16,8 +16,10 @@ namespace Lolo
         private Player Human;
         private Map Map;
         private int runAwayDelay = 0;
-        private bool Locked = false;
-        private string Direction = ""; // </AI Variables>
+        private bool hasToCorrect = false;
+        private string Direction = "";
+        private Bomb runAwayBomb;
+        // </AI Variables>
         private Vector2 RespawnLoc; // Location the respawn will point to
         public int inmunityCounter = 0; // Frame duration of inmunity (after being hitted)
         public bool wallHitted; // Player hitted a wall Flag        
@@ -154,7 +156,7 @@ namespace Lolo
             if (this.Status != "dead")
             {
                 this.Status = "idle";
-                if (moveLoop == 0)
+                if (moveLoop == 0 || this.hasToCorrect)
                 {
                     moveLoop = 2;
                     Vector2 pos = getOpponentPosition();
@@ -221,7 +223,15 @@ namespace Lolo
         private void AI_TryWalk(Vector2 pos, float elapsedTime, int runAway = 1)
         {
             this.Status = "walking";
-            Vector2 desiredLoc = setDirection(pos, elapsedTime, runAway); // Go and check for an alternative
+            Vector2 desiredLoc;
+            if (this.hasToCorrect)
+            {
+                desiredLoc = workAround(elapsedTime, Direction);
+            }
+            else
+            {
+                desiredLoc = setDirection(pos, elapsedTime, runAway); // Go and check for an alternative
+            }
             AI_chekWalkable(desiredLoc, elapsedTime);
         }
 
@@ -249,43 +259,45 @@ namespace Lolo
             if (free)
             {
                 //Console.WriteLine("try to go " + Direction + " and could");
-                this.Locked = false;
+                Direction = "";                
+                this.hasToCorrect = false;
                 Location = desiredLoc;
             }
             else
             {
                 //Console.WriteLine("try to go " + Direction + " and could NOT");
-                this.Locked = true;
+                this.hasToCorrect = true;                
             }
         }
 
-        //private void workAround(Vector2 desiredLoc, float elapsedTime)
-        //{
-        //    desiredLoc = Location; // Reset desired direction
-        //    switch (Direction)
-        //    {
-        //        case "R":
-        //            directionY = -1; // UP
-        //            new_direction = "U";
-        //            desiredDirection.Y += (Speed.Y * elapsedTime) * directionY;
-        //            break;
-        //        case "L":
-        //            directionY = 1; // DOWN
-        //            new_direction = "D";
-        //            desiredDirection.Y += (Speed.Y * elapsedTime) * directionY;
-        //            break;
-        //        case "U":
-        //            directionX = 1; // RIGHT
-        //            new_direction = "R";
-        //            desiredDirection.X += (Speed.X * elapsedTime) * directionX;
-        //            break;
-        //        case "D":
-        //            directionX = -1; // LEFT 
-        //            new_direction = "L";
-        //            desiredDirection.X += (Speed.X * elapsedTime) * directionX;
-        //            break;
-        //    }         
-        //}
+        private Vector2 workAround(float elapsedTime, string direction)
+        {
+            Vector2 desiredDirection = Location;
+            switch (direction)
+            {
+                case "R":
+                    directionY = -1; // UP
+                    Direction = "U";
+                    desiredDirection.Y += (Speed.Y * elapsedTime) * directionY;
+                    break;
+                case "L":
+                    directionY = 1; // DOWN
+                    Direction = "D";
+                    desiredDirection.Y += (Speed.Y * elapsedTime) * directionY;
+                    break;
+                case "U":
+                    directionX = -1; // LEFT
+                    Direction = "L";
+                    desiredDirection.X += (Speed.X * elapsedTime) * directionX;
+                    break;
+                case "D":
+                    directionX = 1; // RIGHT 
+                    Direction = "R";
+                    desiredDirection.X += (Speed.X * elapsedTime) * directionX;
+                    break;
+            }
+            return desiredDirection;
+        }
 
         private void AI_Attack()
         {
@@ -303,7 +315,7 @@ namespace Lolo
 
         private Vector2 setDirection(Vector2 pos, float elapsedTime, int runAway)
         {            
-            Vector2 desiredDirection = Location;           
+            Vector2 desiredDirection = Location;
             float YDiff = pos.Y - this.Location.Y;
             float XDiff = pos.X - this.Location.X;
             if (YDiff < 0)
