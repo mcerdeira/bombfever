@@ -18,7 +18,7 @@ namespace Lolo
         private int runAwayDelay = 0;
         private bool hasToCorrect = false;
         private string Direction = "";
-        private Bomb runAwayBomb;
+        private string prevDirection = "";
         // </AI Variables>
         private Vector2 RespawnLoc; // Location the respawn will point to
         public int inmunityCounter = 0; // Frame duration of inmunity (after being hitted)
@@ -222,7 +222,7 @@ namespace Lolo
 
         private void AI_TryWalk(Vector2 pos, float elapsedTime, int runAway = 1)
         {
-            this.Status = "walking";
+            this.Status = "walking";            
             Vector2 desiredLoc;
             if (this.hasToCorrect)
             {
@@ -258,15 +258,16 @@ namespace Lolo
             }
             if (free)
             {
-                //Console.WriteLine("try to go " + Direction + " and could");
-                Direction = "";                
+                Console.WriteLine("try to go " + Direction + " and could");
+                prevDirection = Direction;                     
                 this.hasToCorrect = false;
                 Location = desiredLoc;
             }
             else
             {
-                //Console.WriteLine("try to go " + Direction + " and could NOT");
-                this.hasToCorrect = true;                
+                Console.WriteLine("try to go " + Direction + " and could NOT");
+                prevDirection = Direction;
+                this.hasToCorrect = true;              
             }
         }
 
@@ -314,7 +315,7 @@ namespace Lolo
         }
 
         private Vector2 setDirection(Vector2 pos, float elapsedTime, int runAway)
-        {            
+        {
             Vector2 desiredDirection = Location;
             float YDiff = pos.Y - this.Location.Y;
             float XDiff = pos.X - this.Location.X;
@@ -334,16 +335,44 @@ namespace Lolo
             {
                 directionX = 1; // RIGHT
             }
-            if (Math.Abs(XDiff) > Math.Abs(YDiff))
+            if ((Math.Abs( Math.Abs(XDiff) - Math.Abs(YDiff)) > Map.tiles[0].hitBox.Width) || prevDirection == "") // Difference is relevant (or first time)
             {
-                desiredDirection.X += (Speed.X * elapsedTime) * directionX * runAway;
-                Direction = (directionX == 1) ? "R" : "L";
+                Console.WriteLine("Direction by enemy " + Direction + "(difference");
+
+                if (Math.Abs(XDiff) > Math.Abs(YDiff))
+                {
+                    desiredDirection.X += (Speed.X * elapsedTime) * directionX * runAway;
+                    Direction = (directionX == 1) ? "R" : "L";
+                }
+                else
+                {
+                    desiredDirection.Y += (Speed.Y * elapsedTime) * directionY * runAway;
+                    Direction = (directionY == 1) ? "D" : "U";
+                }
             }
-            else
+            else // Difference is not relevant, keep the previous direction
             {
-                desiredDirection.Y += (Speed.Y * elapsedTime) * directionY * runAway;
-                Direction = (directionY == 1) ? "D" : "U";
-            }        
+                switch (prevDirection)
+                {
+                    case "U":
+                        directionY = -1; // UP                        
+                        desiredDirection.Y += (Speed.Y * elapsedTime) * directionY * runAway;
+                        break;
+                    case "D":
+                        directionY = 1; // DOWN                        
+                        desiredDirection.Y += (Speed.Y * elapsedTime) * directionY * runAway;
+                        break;
+                    case "L":
+                        directionX = -1; // LEFT 
+                        desiredDirection.X += (Speed.X * elapsedTime) * directionX * runAway;
+                        break;
+                    case "R":
+                        directionX = 1; // RIGHT                         
+                        desiredDirection.X += (Speed.X * elapsedTime) * directionX * runAway;
+                        break;
+                }
+                Console.WriteLine("Direction by enemy " + Direction + "(previous");
+            }           
             return desiredDirection;
         }
 
