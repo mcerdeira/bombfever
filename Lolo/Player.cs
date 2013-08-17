@@ -322,6 +322,9 @@ namespace Lolo
             Vector2 desiredDirection = Location;
             float YDiff = pos.Y - this.Location.Y;
             float XDiff = pos.X - this.Location.X;
+            float distance;
+            distance = Vector2.Distance(Location, pos);
+
             if (YDiff < 0)
             {
                 directionY = -1; // UP
@@ -338,7 +341,7 @@ namespace Lolo
             {
                 directionX = 1; // RIGHT
             }
-            if ((Math.Abs( Math.Abs(XDiff) - Math.Abs(YDiff)) > relevantDiff) || prevDirection == "") // Difference is relevant (or first time)
+            if (distance < 500 || ((Math.Abs( Math.Abs(XDiff) - Math.Abs(YDiff)) > relevantDiff) || prevDirection == "")) // Difference is relevant (or first time)
             {
                 Console.WriteLine("Direction by enemy " + Direction + "(difference");
 
