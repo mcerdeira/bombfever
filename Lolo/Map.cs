@@ -103,32 +103,45 @@ namespace Lolo
                     for (int c = 0; c < 16; c++)
                     {
                         walkable = false;
-                        if ((r == 0 && c == 0) || // Vertice, room for player to initially move
-                            (r == 1 && c == 0) ||
-                            (r == 0 && c == 1) ||
+                        if ((r == 1 && c == 1) || // Vertice, room for player to initially move
+                            (r == 1 && c == 2) ||
+                            (r == 2 && c == 1) ||
 
-                            (r == 10 && c == 15) ||
-                            (r == 11 && c == 15) ||
-                            (r == 11 && c == 14) ||
-
-                            (r == 6 && c == 7) || // Center, a prize item
-                            (r == 6 && c == 8)
+                            (r == 9 && c == 14) ||
+                            (r == 10 && c == 14) ||
+                            (r == 10 && c == 13) 
                             )
                         {
                             v = 0; // 4 vertices empty
                         }
-                        else if ((c == 1 && r % 2 != 0) ||
-                                 (c == 14 && r % 2 != 0) ||
-                                 (c == 3 && r % 2 == 0) ||
-                                 (c == 12 && r % 2 == 0)
+                        else if (r== 0 ||
+                                r == 11 ||
+                                c == 0 ||
+                                c == 15||
+                                (c == 4 && r % 2 != 0) ||
+                                 (c == 13 && r % 2 != 0) ||
+                                 (c == 2 && r % 2 == 0) ||
+                                 (c == 11 && r % 2 == 0)
                                 )
                         {
-                            v = 2; // Iron (fixed positions)                        
+                            v = 2; // Iron (fixed positions)                                                
+                        }
+                        else if ((r == 6 && c == 7) || (r == 6 && c == 8))
+                        {
+                            // Center, a prize item     
+                            v = 0;
                         }
                         else
                         {
-                            v = rdn.Next(-20, 20); // Now lets do some random...  
+                            v = 0;//rdn.Next(-20, 20); // Now lets do some random...  
                         }
+
+                        if (c == 0 && r == 5 || c == 0 && r == 6 ||
+                                c == 15 && r == 5 || c == 15 && r == 6) 
+                        {
+                            v = 0; // Warps
+                        }
+
                         if (v > 9)
                         {
                             v = 0; // But, 0 has a little more chances

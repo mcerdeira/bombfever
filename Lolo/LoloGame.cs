@@ -16,6 +16,12 @@ namespace Lolo
     /// </summary>
     public class LoloGame : Game
     {
+        #warning comment this
+        // <Fps stuff>
+        int _total_frames = 0;
+        float _elapsed_time = 0.0f;
+        int _fps = 0;
+        // </Fps stuff>
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         float roundTime;
@@ -229,6 +235,17 @@ namespace Lolo
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            #warning comment this
+            //<FPS>
+            _elapsed_time += (float)gameTime.ElapsedGameTime.TotalMilliseconds;            
+            if (_elapsed_time >= 1000.0f)
+            {
+                _fps = _total_frames;
+                _total_frames = 0;
+                _elapsed_time = 0;
+            }
+            //</FPS>
+
             #warning remove this
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
@@ -254,15 +271,15 @@ namespace Lolo
                         // In Game objects                        
                         score = new Score(ScreenHeight, ScreenWidth, Content.Load<SpriteFont>("mainfont"), roundTime);
                         bombmanager = new BombManager(Content);
-                        p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(0, 0), ctype1, bombmanager, score, "p1", PlayerStyle.Human);
+                        p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human);
                         if (CurrentGameState == GameState.Start1P)
                         {
-                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(770, 566), ctype2, bombmanager, score, "p2", PlayerStyle.Machine);
+                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(720, 520), ctype2, bombmanager, score, "p2", PlayerStyle.Machine);
                             CurrentGameState = GameState.Playing1P;
                         }
                         else
                         {
-                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(770, 566), ctype2, bombmanager, score, "p2", PlayerStyle.Human);
+                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(720, 520), ctype2, bombmanager, score, "p2", PlayerStyle.Human);
                             CurrentGameState = GameState.Playing2P;
                         }
                         map = new Map(p1, p2);
@@ -319,6 +336,12 @@ namespace Lolo
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            #warning comment this
+            //<FPS>
+            _total_frames++;
+            this.Window.Title = string.Format("FPS={0}", _fps);
+            //</FPS>
+
             GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
             switch (CurrentGameState)

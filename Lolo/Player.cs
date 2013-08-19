@@ -446,6 +446,10 @@ namespace Lolo
                     }
                     Location.X += (Speed.X * elapsedTime) * directionX;
                     Location.Y += (Speed.Y * elapsedTime) * directionY;
+                    if(this.InstanceName == "p1")
+                    {
+                        Console.WriteLine(Location.X);
+                    }
                 }
             }
             else
@@ -475,6 +479,15 @@ namespace Lolo
 
             if (inmunityCounter % 2 == 0)
             {
+                if (Location.X < -49)
+                {
+                    Location.X = 800;
+                }
+                if (Location.X > 801)
+                {
+                    Location.X = -48;
+                }
+
                 // Draw the player in the new location(x,y)
                 int width = Texture.Width / Columns;
                 int height = Texture.Height;
