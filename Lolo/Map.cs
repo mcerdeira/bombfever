@@ -133,7 +133,7 @@ namespace Lolo
                         }
                         else
                         {
-                            v = 0;//rdn.Next(-20, 20); // Now lets do some random...  
+                            v = rdn.Next(-20, 20); // Now lets do some random...  
                         }
 
                         if (c == 0 && r == 5 || c == 0 && r == 6 ||
