@@ -247,23 +247,34 @@ namespace Lolo
 
             if (this.hasToCorrect) // If I can't...
             {
-
-                switch (Direction.SecondaryDirection)
+                switch (prevDirection.MainDirection)
                 {
                     case "R":
+                        desiredLoc.X += (Speed.X * elapsedTime) * 1 * runAway;
+                        break;
                     case "L":
-                        desiredLoc.X = Direction.X;
+                        desiredLoc.X += (Speed.X * elapsedTime) * -1 * runAway;
                         desiredLoc.Y = Location.Y;
                         break;
                     case "D":
+                        desiredLoc.Y += (Speed.Y * elapsedTime) * 1 * runAway;
+                        break;
                     case "U":
                         desiredLoc.X = Location.X;
-                        desiredLoc.Y = Direction.Y;
+                        desiredLoc.Y += (Speed.Y * elapsedTime) * -1 * runAway;
                         break;
                 }
-                Console.WriteLine("... and can't, so now I try " + Direction.SecondaryDirection);
+                Console.WriteLine("... and can't, so now I try " + prevDirection.MainDirection);
                 AI_chekWalkable(desiredLoc); // Check if I can go
             }
+            else
+            {
+                prevDirection.MainDirection = Direction.MainDirection;
+                prevDirection.SecondaryDirection = Direction.SecondaryDirection;
+                prevDirection.X = Direction.X;
+                prevDirection.Y = Direction.Y;
+            }
+
             if (this.hasToCorrect)
             {
                 desiredLoc.Y = Location.Y;
@@ -416,8 +427,7 @@ namespace Lolo
                 {                    
                     Direction.MainDirection = (directionY == 1) ? "D" : "U";
                     Direction.SecondaryDirection = (directionX == 1) ? "R" : "L";
-                }
-                prevDirection = Direction;
+                }                
             }
             else // Difference is not relevant, keep the previous direction
             {
