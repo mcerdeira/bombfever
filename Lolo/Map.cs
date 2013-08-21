@@ -31,7 +31,7 @@ namespace Lolo
     public class Map
     {        
         public List<Tile> tiles = new List<Tile>();
-        public List<Item> items = new List<Item>();
+        public List<Item> items = new List<Item>();        
         private ContentManager Content;
         private Player player;
         private Player player2;
@@ -86,6 +86,11 @@ namespace Lolo
 
             tiles.Remove(tile);
         }
+
+        //public Vector2 findNearestTiles(Vector2 pos)
+        //{
+
+        //}
 
         public void GenerateLevel(ContentManager content, string LevelFile = "")
         {
@@ -161,7 +166,7 @@ namespace Lolo
                             Vector2 pos = new Vector2(col, row);
                             Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v);
                             tiles.Add(t);
-                        }
+                        }                       
                         col += 50;
                     }
                     row += 50;
@@ -188,7 +193,14 @@ namespace Lolo
                                 for (int c = 0; c < 16; c++)
                                 {
                                     walkable = false;
-                                    v = Int32.Parse(line.Substring(c, 1));
+                                    if (line.Substring(c, 1) == "@")
+                                    {
+                                        v = rdn.Next(0, 5); // Now lets do some random...
+                                    }
+                                    else
+                                    {
+                                        v = Int32.Parse(line.Substring(c, 1));
+                                    }
                                     if (v == 0)
                                     {
                                         // If 0, then is a walkable block, but lets put some random to decide if regular empty space or what

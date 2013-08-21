@@ -122,7 +122,7 @@ namespace Lolo
 
         private void resPawn()
         {
-            this.inmunityCounter = 150;
+            this.inmunityCounter = 170; // Lasts, more or less a bomb explosion time
             this.Status = "respawning";
             string dest = (InstanceName == "p1") ? "p2" : "p1";
             Score.setScore(dest);            
@@ -158,7 +158,7 @@ namespace Lolo
             if (this.Status != "dead")
             {
                 this.Status = "idle";
-                if (moveLoop == 0 || this.hasToCorrect)
+                if (moveLoop == 0)
                 {
                     moveLoop = 2;
                     Vector2 pos = getOpponentPosition();
@@ -242,8 +242,8 @@ namespace Lolo
                     break;
             }
 
-            AI_chekWalkable(desiredLoc); // Check if I can go
-            Console.WriteLine("Want to go to " + Direction.MainDirection);
+            AI_chekWalkable(desiredLoc); // Check if I can go, to the main direction
+            Console.WriteLine(runAway + " Want to go to " + Direction.MainDirection);
 
             if (this.hasToCorrect) // If I can't...
             {
@@ -251,12 +251,14 @@ namespace Lolo
                 {
                     case "R":
                         desiredLoc.X += (Speed.X * elapsedTime) * 1 * runAway;
+                        desiredLoc.Y = Location.Y;
                         break;
                     case "L":
                         desiredLoc.X += (Speed.X * elapsedTime) * -1 * runAway;
                         desiredLoc.Y = Location.Y;
                         break;
                     case "D":
+                        desiredLoc.X = Location.X;
                         desiredLoc.Y += (Speed.Y * elapsedTime) * 1 * runAway;
                         break;
                     case "U":
@@ -264,8 +266,8 @@ namespace Lolo
                         desiredLoc.Y += (Speed.Y * elapsedTime) * -1 * runAway;
                         break;
                 }
-                Console.WriteLine("... and can't, so now I try " + prevDirection.MainDirection);
-                AI_chekWalkable(desiredLoc); // Check if I can go
+                Console.WriteLine(runAway +" ... and can't, so now I try " + prevDirection.MainDirection);
+                AI_chekWalkable(desiredLoc); // Check if I can go, to the 
             }
             else
             {
@@ -280,21 +282,15 @@ namespace Lolo
                 desiredLoc.Y = Location.Y;
                 desiredLoc.X = Location.X;
 
-                switch (Direction.SecondaryDirection)
-                {
-                    case "R":
-                    case "L":
-                        desiredLoc.X += (Speed.X * elapsedTime) * directionX * runAway * -1;                        
-                        break;
-                    case "D":
-                    case "U":                        
-                        desiredLoc.Y += (Speed.Y * elapsedTime) * directionY * runAway * -1;
-                        break;
-                }
-                Console.WriteLine("and it is not possible... so I try " + Opposite(Direction.SecondaryDirection));
+
+                //Map.findNearestEmpty(Location);
+
                 AI_chekWalkable(desiredLoc); // Check if I can go
             }
-            Location = desiredLoc;
+            if (!this.hasToCorrect)
+            {
+                Location = desiredLoc;
+            }
         }
 
         private string Opposite(string direction)

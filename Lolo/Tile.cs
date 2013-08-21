@@ -27,16 +27,16 @@ namespace Lolo
         private Map Map;
 
         public Tile(Vector2 position, ContentManager Content, Player player, Player player2, bool brekable, bool walkable, Map map, int id)
-        {
+        {           
             this.Walkable = walkable;
             this.BreakAble = brekable;
             this.Action = "";
             this.player = player;
             this.player2 = player2;            
             this.ID = id;
-            Texture = Content.Load<Texture2D>(this.ID.ToString());            
-            this.Position = position;
-            this.Columns = Texture.Width / 50;
+            Texture = Content.Load<Texture2D>(this.ID.ToString());
+            this.Columns = Texture.Width / 50;            
+            this.Position = position;            
             this.Map = map;
         }
 
