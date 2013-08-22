@@ -19,7 +19,8 @@ namespace Lolo
         private bool hasToCorrect = false; // A flag that indicates if the direction is imposible and a correction is needed        
         private PlayerDirection Direction = new PlayerDirection(); // Current direction
         private PlayerDirection prevDirection = new PlayerDirection(); // Previous direction
-        private int relevantDiff = 0; // The minimum difference (between X and Y) for the player to change the current direction        
+        private int relevantDiff = 0; // The minimum difference (between X and Y) for the player to change the current direction    
+        private bool runningAway = false;
         // </AI Variables>
         private Vector2 RespawnLoc; // Location the respawn will point to
         public int inmunityCounter = 0; // Frame duration of inmunity (after being hitted)
@@ -159,7 +160,7 @@ namespace Lolo
             {
                 this.Status = "idle";
                 if (moveLoop == 0)
-                {
+                {                    
                     moveLoop = 2;
                     Vector2 pos = getOpponentPosition();
                     Vector2 avoidpos = AI_Avoid();
@@ -185,8 +186,7 @@ namespace Lolo
                         }
                     }
                     else
-                    {
-                        #warning Will be nicer to wait hidden, until the bomb explodes
+                    {                        
                         //Console.WriteLine("I see a bomb! " + DateTime.Now.ToString());
                         AI_TryWalk(avoidpos, elapsedTime, -1);
                         runAwayDelay = 15;
@@ -201,9 +201,10 @@ namespace Lolo
 
         private Vector2 AI_Avoid()
         {
+            this.runningAway = false;
             Vector2 bomb = BombMan.getNearestBomb(this.Location);
             if(bomb.X == 9999)
-            {
+            {                
                 return bomb;
             }
             else
@@ -211,12 +212,11 @@ namespace Lolo
                 float distance = Vector2.Distance(Location, bomb);
                 if (distance < 200)
                 {
-                    //Console.WriteLine("Evade");
+                    this.runningAway = true;                    
                     return bomb;
                 }
                 else
-                {
-                    //Console.WriteLine("Dont evade");
+                {                                        
                     return new Vector2(9999, 9999);
                 }
             }
@@ -243,7 +243,7 @@ namespace Lolo
             }
 
             AI_chekWalkable(desiredLoc); // Check if I can go, to the main direction
-            Console.WriteLine(runAway + " Want to go to " + Direction.MainDirection);
+            Console.WriteLine("1° " + Direction.MainDirection);
 
             if (this.hasToCorrect) // If I can't...
             {
@@ -266,7 +266,7 @@ namespace Lolo
                         desiredLoc.Y += (Speed.Y * elapsedTime) * -1 * runAway;
                         break;
                 }
-                Console.WriteLine(runAway +" ... and can't, so now I try " + prevDirection.MainDirection);
+                Console.WriteLine("2° " + getRealDirecion(prevDirection.MainDirection, runAway));
                 AI_chekWalkable(desiredLoc); // Check if I can go, to the 
             }
             else
@@ -281,11 +281,31 @@ namespace Lolo
             {
                 desiredLoc.Y = Location.Y;
                 desiredLoc.X = Location.X;
-
-
-                //Map.findNearestEmpty(Location);
-
-                AI_chekWalkable(desiredLoc); // Check if I can go
+                if (runAway == -1)
+                {
+                    runAway = 1;
+                }
+                switch (prevDirection.SecondaryDirection)
+                {
+                    case "R":
+                        desiredLoc.X += (Speed.X * elapsedTime) * 1 * runAway;
+                        desiredLoc.Y = Location.Y;
+                        break;
+                    case "L":
+                        desiredLoc.X += (Speed.X * elapsedTime) * -1 * runAway;
+                        desiredLoc.Y = Location.Y;
+                        break;
+                    case "D":
+                        desiredLoc.X = Location.X;
+                        desiredLoc.Y += (Speed.Y * elapsedTime) * 1 * runAway;
+                        break;
+                    case "U":
+                        desiredLoc.X = Location.X;
+                        desiredLoc.Y += (Speed.Y * elapsedTime) * -1 * runAway;
+                        break;
+                }
+                Console.WriteLine("3° " + getRealDirecion(prevDirection.SecondaryDirection, runAway));
+                AI_chekWalkable(desiredLoc); // Check if I can go, to the                
             }
             if (!this.hasToCorrect)
             {
@@ -293,9 +313,14 @@ namespace Lolo
             }
         }
 
-        private string Opposite(string direction)
+        private string getRealDirecion(string direction, int mult)
         {
-            string r="";
+            string r = "";
+            if(mult == 1)
+            {
+                return direction;
+            }
+
             if(direction == "R")
             {
                 r = "L";
@@ -329,7 +354,14 @@ namespace Lolo
                     {
                         if (this.BombCount < this.BombMax)
                         {
-                            placeBomb();
+                            if (!runningAway)
+                            {
+                                placeBomb();
+                            }
+                            else
+                            {
+                                this.hasToCorrect = true; // I set this to true, so the player thinks it cannot go anywhere 
+                            }
                         }
                     }
                     else
@@ -536,9 +568,9 @@ namespace Lolo
         }
 
         private void placeBomb()
-        {
+        {                       
             BombMan.SpawnBomb(Location, InstanceName);
-            this.BombCount++;
+            this.BombCount++; 
         }
 
         public void Draw(SpriteBatch spriteBatch)
