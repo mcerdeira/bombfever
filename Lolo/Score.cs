@@ -28,22 +28,23 @@ namespace Lolo
             this.Font = font;
         }
 
-        public string getResult(out int scorep1, out int scorep2)
+        public string getResult(out int scorep1, out int scorep2, Match match)
         {
             string r;
             if (scoreP1 > scoreP2)
             {
-                scorep1 = this.scoreP1;
-                scorep2 = this.scoreP2;
                 r = "P1 Wins!";
+                match.p1Win();
             }
             else if (scoreP1 < scoreP2)
             {
                 r = "P2 Wins!";
+                match.p2Win();
             }
             else
             {
                 r = "Tied Match";
+                match.DrawGame();
             }
             scorep1 = this.scoreP1;
             scorep2 = this.scoreP2;

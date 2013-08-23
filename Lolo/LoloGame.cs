@@ -39,6 +39,7 @@ namespace Lolo
         BombManager bombmanager;
         SpriteFont mainFont;
         RoundResults roundR;
+        Match cMatch;
         int ScreenWidth = 800;
         int ScreenHeight = 600;
         private Texture2D background;
@@ -46,7 +47,7 @@ namespace Lolo
         private bool paused = false;
         private bool pauseKeyDown = false;
         private Keys previousMenuKey = Keys.None;
-        private bool EnterKeyDown = false;        
+        private bool EnterKeyDown = false;
 
         GameState CurrentGameState = GameState.MainMenu;
 
@@ -69,7 +70,7 @@ namespace Lolo
             #warning Here I must load the config file
             ctype1 = ControlType.KeyBoard1;
             ctype2 = ControlType.KeyBoard2;
-            roundTime = 120;
+            roundTime = 5; // 120
         }
 
         private void BeginPause(bool UserInitiated)
@@ -217,6 +218,7 @@ namespace Lolo
             menu = new MainMenu(menues, mainFont, ScreenHeight, ScreenWidth);
             lvlLoad = new LevelLoader(menues, mainFont, ScreenHeight, ScreenWidth);
             options = new OptionMenu(menues, mainFont, ScreenHeight, ScreenWidth);
+            cMatch = new Match();
         }
 
         /// <summary>
@@ -268,7 +270,7 @@ namespace Lolo
                 {
                     case GameState.Start1P:
                     case GameState.Start2P:
-                        // In Game objects                        
+                        // In Game objects                                    
                         score = new Score(ScreenHeight, ScreenWidth, Content.Load<SpriteFont>("mainfont"), roundTime);
                         bombmanager = new BombManager(Content);
                         p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human);
@@ -290,7 +292,11 @@ namespace Lolo
                             p2.InitAI(p1, map);
                         }
                         break;
-                    case GameState.MainMenu:
+                    case GameState.GotoMainMenu:
+                        cMatch.reset();
+                        CurrentGameState = GameState.MainMenu;
+                        break;
+                    case GameState.MainMenu:                        
                         menu.Update(gameTime);
                         break;
                     case GameState.Options:
@@ -312,8 +318,8 @@ namespace Lolo
                         {
                             // Time is up!
                             GameState st;
-                            st = (CurrentGameState == GameState.Playing1P) ? GameState.Start1P : GameState.Start2P;                   
-                            roundR = new RoundResults(Content.Load<Texture2D>("MainMenu"), mainFont, score, st, ScreenHeight, ScreenWidth);
+                            st = (CurrentGameState == GameState.Playing1P) ? GameState.Start1P : GameState.Start2P;
+                            roundR = new RoundResults(Content.Load<Texture2D>("MainMenu"), mainFont, score, st, cMatch, ScreenHeight, ScreenWidth, Content.Load<Texture2D>("1"));
                             CurrentGameState = GameState.RoundResults;
                         }
                         break;

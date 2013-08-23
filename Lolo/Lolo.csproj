@@ -46,6 +46,7 @@
     <Compile Include="LoloGame.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="MainMenu.cs" />
+    <Compile Include="Match.cs" />
     <Compile Include="OptionMenu.cs" />
     <Compile Include="Particle.cs" />
     <Compile Include="Pause.cs" />

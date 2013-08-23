@@ -21,9 +21,13 @@ namespace Lolo
         private SpriteFont Font;
         private int currButton = -1;
         private Score score;
+        private Match Match;
+        private Texture2D charts;
 
-        public RoundResults(Texture2D texture, SpriteFont font, Score score, GameState prevGameState, int screenheight, int screenwidth)
+        public RoundResults(Texture2D texture, SpriteFont font, Score score, GameState prevGameState, Match match, int screenheight, int screenwidth, Texture2D charts)
         {
+            this.charts = charts;
+            this.Match = match;
             this.Font = font;
             this.ScreenHeight = screenheight;
             this.ScreenWidth = screenwidth;
@@ -32,7 +36,7 @@ namespace Lolo
             Button btn;
             btn = new Button("Rematch", screenwidth, font, Color.White, prevGameState);
             btns.Add(btn);
-            btn = new Button("Quit", screenwidth, font, Color.White, GameState.MainMenu);
+            btn = new Button("Quit", screenwidth, font, Color.White, GameState.GotoMainMenu);
             btns.Add(btn);
             PositionButtons();
             ButtonFocus(1);
@@ -68,7 +72,7 @@ namespace Lolo
 
         public void PositionButtons()
         {
-            this.Result = score.getResult(out this.score1, out this.score2);            
+            this.Result = score.getResult(out this.score1, out this.score2, Match);        
             float posY = Font.MeasureString(this.Result).Y + Font.MeasureString(this.score1.ToString()).Y + Font.MeasureString(this.score2.ToString()).Y / 2;
             for (int index = 0; index < btns.Count; index++)
             {
@@ -95,18 +99,39 @@ namespace Lolo
             return startY;
         }
 
+        private void DrawCharts(float Y, SpriteBatch spriteBatch)
+        {
+            // Chart
+            int totalp1 = this.Match.p1Score();
+            int totalp2 = this.Match.p2Score();
+            int totaldw = this.Match.Draws();
+            int total = totalp1 + totalp2 + totaldw;
+            int perp1 = totalp1 * 100 / total;
+            int perp2 = totalp2 * 100 / total;
+            int perpd = totaldw * 100 / total;
+
+            Rectangle p1 = new Rectangle(70, (int)Y, 60, perp1);
+            Rectangle p2 = new Rectangle(140, (int)Y, 60, perp2);
+            Rectangle dw = new Rectangle(210, (int)Y, 60, perpd);
+
+            spriteBatch.Draw(charts, p1, Color.BlueViolet);
+            spriteBatch.Draw(charts, p2, Color.RosyBrown);
+            spriteBatch.Draw(charts, dw, Color.LawnGreen);
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
             int width = Texture.Width;
             int height = Texture.Height;
             Rectangle source = new Rectangle(0, 0, width, height);
             Rectangle dest = new Rectangle(0, 0, width, height);
-            spriteBatch.Draw(Texture, dest, source, Color.White);
-
-            float startY = 100;
+            spriteBatch.Draw(Texture, dest, source, Color.White);            
+            float startY = 0;
             startY = setText(spriteBatch, startY, "P1: " + this.score1.ToString());
             startY = setText(spriteBatch, startY, "P2: " + this.score2.ToString());
             startY = setText(spriteBatch, startY, this.Result);
+
+            DrawCharts(startY, spriteBatch);
 
             for (int index = 0; index < btns.Count; index++)
             {

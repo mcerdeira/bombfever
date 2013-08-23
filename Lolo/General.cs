@@ -15,6 +15,7 @@ namespace Lolo
     {
         None,
         MainMenu,      // Displaying main menu
+        GotoMainMenu,  // Call the main menu display
         Options,       // Displaying game options
         Start1P,       // (Command) Starts the game 1P vs CPU
         Start2P,       // (Command) Starts the game 1P vs 2P
