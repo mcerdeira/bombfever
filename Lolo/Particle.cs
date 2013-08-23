@@ -86,6 +86,18 @@ namespace Lolo
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            if (Position.Y >= 250 && Position.Y <= 320)
+            {
+                // Warps
+                if (Position.X < -21)
+                {
+                    Position.X = 796;
+                }
+                if (Position.X > 798)
+                {
+                    Position.X = -20;
+                }
+            }
             Rectangle sourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
             Vector2 origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
             spriteBatch.Draw(Texture, Position, sourceRectangle, Color, 0, origin, Size, SpriteEffects.None, 0f);           

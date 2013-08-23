@@ -42,7 +42,15 @@ namespace Lolo
             int height = Texture.Height;
             int row = (int)((float)Status / (float)Columns);
             int column = Status % Columns;
-
+            // Warps
+            if (Position.X < -21)
+            {
+                Position.X = 796;
+            }
+            if (Position.X > 798)
+            {
+                Position.X = -20;
+            }           
             Rectangle source = new Rectangle(width * column, height * row, width, height);
             Rectangle dest = new Rectangle((int)Position.X, (int)Position.Y, width, height);
             hitBox = dest;
