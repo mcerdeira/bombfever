@@ -100,12 +100,16 @@ namespace Lolo
             int col = 0;
             int v = 0;
             bool walkable = false;
+            int[,] arrtiles = new int[16, 12];
+            int[] colsMap = new int[] { 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
+            int[] rowsMap = new int[] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
+
             if (LevelFile == "")
             {
                 for (int r = 0; r < 12; r++)
                 {
                     col = 0;
-                    for (int c = 0; c < 16; c++)
+                    for (int c = 0; c < 8; c++)
                     {
                         walkable = false;
                         if ((r == 1 && c == 1) || // Vertice, room for player to initially move
@@ -139,6 +143,7 @@ namespace Lolo
                         else
                         {
                             v = rdn.Next(-20, 20); // Now lets do some random...  
+                            arrtiles[c, r] = v; // Save the random, for mirroring
                         }
 
                         if (c == 0 && r == 5 || c == 0 && r == 6 ||
@@ -153,7 +158,7 @@ namespace Lolo
                         }
                         if (v < 0 || v == 6 || v == 7 || v == 8 || v == 9)
                         {
-                            v = 1; // and regular brucks has even more chances!
+                            v = 1; // and regular bricks has even more chances!
                         }
 
                         if (v == 0)
@@ -167,6 +172,78 @@ namespace Lolo
                             Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v);
                             tiles.Add(t);
                         }                       
+                        col += 50;
+                    }
+                    row += 50;
+                }
+
+                // Mirroring
+                row = 0;
+                for (int r = 0; r < 12; r++)
+                {
+                    col = 400;
+                    for (int c = 8; c < 16; c++)
+                    {
+                        walkable = false;
+                        if ((r == 1 && c == 1) || // Vertice, room for player to initially move
+                            (r == 1 && c == 2) ||
+                            (r == 2 && c == 1) ||
+
+                            (r == 9 && c == 14) ||
+                            (r == 10 && c == 14) ||
+                            (r == 10 && c == 13)
+                            )
+                        {
+                            v = 0; // 4 vertices empty
+                        }
+                        else if (r == 0 ||
+                                r == 11 ||
+                                c == 0 ||
+                                c == 15 ||
+                                (c == 4 && r % 2 != 0) ||
+                                 (c == 13 && r % 2 != 0) ||
+                                 (c == 2 && r % 2 == 0) ||
+                                 (c == 11 && r % 2 == 0)
+                                )
+                        {
+                            v = 2; // Iron (fixed positions)                                                
+                        }
+                        else if ((r == 6 && c == 7) || (r == 6 && c == 8))
+                        {
+                            // Center, a prize item     
+                            v = 0;
+                        }
+                        else
+                        {
+                            v = arrtiles[colsMap[c], rowsMap[r]];
+                        }
+
+                        if (c == 0 && r == 5 || c == 0 && r == 6 ||
+                                c == 15 && r == 5 || c == 15 && r == 6)
+                        {
+                            v = 0; // Warps
+                        }
+
+                        if (v > 9)
+                        {
+                            v = 0; // But, 0 has a little more chances
+                        }
+                        if (v < 0 || v == 6 || v == 7 || v == 8 || v == 9)
+                        {
+                            v = 1; // and regular bricks has even more chances!
+                        }
+
+                        if (v == 0)
+                        {
+                            // If 0, then is a walkable block, but lets put some random to decide if regular empty space or what
+                            walkable = true;
+                        }
+                        if (v != 0)
+                        {
+                            Vector2 pos = new Vector2(col, row);
+                            Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v);
+                            tiles.Add(t);
+                        }
                         col += 50;
                     }
                     row += 50;
