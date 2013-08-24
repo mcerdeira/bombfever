@@ -40,6 +40,7 @@
     <Compile Include="BombManager.cs" />
     <Compile Include="Button.cs" />
     <Compile Include="CheckBox.cs" />
+    <Compile Include="ComboList.cs" />
     <Compile Include="General.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="LevelLoader.cs" />
@@ -148,6 +149,9 @@
       <SubType>Designer</SubType>
     </None>
     <Content Include="Content\pbar.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\chartsfont.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

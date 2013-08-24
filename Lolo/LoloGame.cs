@@ -38,6 +38,7 @@ namespace Lolo
         OptionMenu options;
         BombManager bombmanager;
         SpriteFont mainFont;
+        SpriteFont chartFont;
         RoundResults roundR;
         Match cMatch;
         int ScreenWidth = 800;
@@ -70,7 +71,7 @@ namespace Lolo
             #warning Here I must load the config file
             ctype1 = ControlType.KeyBoard1;
             ctype2 = ControlType.KeyBoard2;
-            roundTime = 2; // 120
+            roundTime = 120;
         }
 
         private void BeginPause(bool UserInitiated)
@@ -215,6 +216,7 @@ namespace Lolo
             pauseSprite = new Pause(ScreenHeight, ScreenWidth, Content.Load<SpriteFont>("mainfont")); 
             menues = Content.Load<Texture2D>("MainMenu");
             mainFont = Content.Load<SpriteFont>("mainfont");
+            chartFont = Content.Load<SpriteFont>("chartsfont");
             menu = new MainMenu(menues, mainFont, ScreenHeight, ScreenWidth);
             lvlLoad = new LevelLoader(menues, mainFont, ScreenHeight, ScreenWidth);
             options = new OptionMenu(menues, mainFont, ScreenHeight, ScreenWidth);
@@ -319,7 +321,7 @@ namespace Lolo
                             // Time is up!
                             GameState st;
                             st = (CurrentGameState == GameState.Playing1P) ? GameState.Start1P : GameState.Start2P;
-                            roundR = new RoundResults(Content.Load<Texture2D>("MainMenu"), mainFont, score, st, cMatch, ScreenHeight, ScreenWidth, Content.Load<Texture2D>("pbar"));
+                            roundR = new RoundResults(Content.Load<Texture2D>("MainMenu"), mainFont, chartFont, score, st, cMatch, ScreenHeight, ScreenWidth, Content.Load<Texture2D>("pbar"));
                             CurrentGameState = GameState.RoundResults;
                         }
                         break;

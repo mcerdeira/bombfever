@@ -19,13 +19,15 @@ namespace Lolo
         private int score1;
         private int score2;
         private SpriteFont Font;
+        private SpriteFont ChartFont;
         private int currButton = -1;
         private Score score;
         private Match Match;
         private Texture2D charts;
 
-        public RoundResults(Texture2D texture, SpriteFont font, Score score, GameState prevGameState, Match match, int screenheight, int screenwidth, Texture2D charts)
+        public RoundResults(Texture2D texture, SpriteFont font, SpriteFont chartfont, Score score, GameState prevGameState, Match match, int screenheight, int screenwidth, Texture2D charts)
         {
+            this.ChartFont = chartfont;
             this.charts = charts;
             this.Match = match;
             this.Font = font;
@@ -72,8 +74,8 @@ namespace Lolo
 
         public void PositionButtons()
         {
-            this.Result = score.getResult(out this.score1, out this.score2, Match);        
-            float posY = Font.MeasureString(this.Result).Y + Font.MeasureString(this.score1.ToString()).Y + Font.MeasureString(this.score2.ToString()).Y / 2;
+            this.Result = score.getResult(out this.score1, out this.score2, Match);
+            float posY = ScreenWidth / 2;
             for (int index = 0; index < btns.Count; index++)
             {
                 float centerX = General.getScreenCenterTextX(btns[index].getCaption(), ScreenWidth, Font);
@@ -91,10 +93,13 @@ namespace Lolo
             }
         }        
 
-        private float setText(SpriteBatch spriteBatch, float startY, string text)
-        {            
-            float centerX= General.getScreenCenterTextX(text, ScreenWidth, Font);
-            spriteBatch.DrawString(Font, text, new Vector2(centerX, startY), Color.White);
+        private float setText(SpriteBatch spriteBatch, SpriteFont Font, float startY, string text)
+        {
+            if (text != "@EMPTY")
+            {
+                float centerX = General.getScreenCenterTextX(text, ScreenWidth, Font);
+                spriteBatch.DrawString(Font, text, new Vector2(centerX, startY), Color.White);
+            }
             startY += Font.MeasureString(text).Y / 2;
             return startY;
         }
@@ -105,19 +110,26 @@ namespace Lolo
             int totalp1 = this.Match.p1Score();
             int totalp2 = this.Match.p2Score();
             int totaldw = this.Match.Draws();
-            int total = totalp1 + totalp2 + totaldw;
-            #warning Testing
-            int perp1 = 10;//totalp1 * 100 / total;
-            int perp2 = 25;//totalp2 * 100 / total;
-            int perpd = 65;//totaldw * 100 / total;
+            int total = totalp1 + totalp2 + totaldw;            
+            int perp1 = totalp1 * 100 / total;
+            int perp2 = totalp2 * 100 / total;
+            int perpd = totaldw * 100 / total;
 
-            Rectangle p1 = new Rectangle(ScreenWidth / 2- (60 / 2)  - 80, (int)Y - perp1, 60, perp1);
+            Rectangle p1 = new Rectangle(ScreenWidth / 2- (60 / 2)  - 100, (int)Y - perp1, 60, perp1);
             Rectangle p2 = new Rectangle(ScreenWidth / 2 - (60 / 2) , (int)Y - perp2, 60, perp2);
-            Rectangle dw = new Rectangle(ScreenWidth / 2 - (60 / 2) + 80, (int)Y - perpd, 60, perpd);
+            Rectangle dw = new Rectangle(ScreenWidth / 2 - (60 / 2) + 100, (int)Y - perpd, 60, perpd);            
 
             spriteBatch.Draw(charts, p1, Color.Crimson);
             spriteBatch.Draw(charts, p2, Color.BlueViolet);
             spriteBatch.Draw(charts, dw, Color.Teal);
+
+            spriteBatch.DrawString(ChartFont, perp1.ToString() + "%", new Vector2(p1.X + ((p1.Width / 2) - (ChartFont.MeasureString(perp1.ToString() + "%").X / 2)), p1.Y - ChartFont.MeasureString(perp1.ToString() + "%").Y), Color.White);
+            spriteBatch.DrawString(ChartFont, perp2.ToString() + "%", new Vector2(p2.X + ((p2.Width / 2) - (ChartFont.MeasureString(perp2.ToString() + "%").X / 2)), p2.Y - ChartFont.MeasureString(perp2.ToString() + "%").Y), Color.White);
+            spriteBatch.DrawString(ChartFont, perpd.ToString() + "%", new Vector2(dw.X + ((dw.Width / 2) - (ChartFont.MeasureString(perpd.ToString() + "%").X / 2)), dw.Y - ChartFont.MeasureString(perpd.ToString() + "%").Y), Color.White);
+
+            spriteBatch.DrawString(ChartFont, "P1", new Vector2(p1.X + ((p1.Width / 2) - (ChartFont.MeasureString("P1").X / 2)), p1.Y + p1.Height ), Color.White);
+            spriteBatch.DrawString(ChartFont, "P2", new Vector2(p2.X + ((p2.Width / 2) - (ChartFont.MeasureString("P2").X / 2)), p2.Y + p2.Height), Color.White);
+            spriteBatch.DrawString(ChartFont, "TIED", new Vector2(dw.X + ((dw.Width / 2) - (ChartFont.MeasureString("TIED").X / 2)), dw.Y + dw.Height), Color.White);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -126,13 +138,17 @@ namespace Lolo
             int height = Texture.Height;
             Rectangle source = new Rectangle(0, 0, width, height);
             Rectangle dest = new Rectangle(0, 0, width, height);
-            spriteBatch.Draw(Texture, dest, source, Color.White);            
+            spriteBatch.Draw(Texture, dest, source, Color.White);
             float startY = 0;
-            startY = setText(spriteBatch, startY, "P1: " + this.score1.ToString());
-            startY = setText(spriteBatch, startY, "P2: " + this.score2.ToString());
-            startY = setText(spriteBatch, startY, this.Result);
+            startY = setText(spriteBatch, Font, startY, "P1: " + this.score1.ToString());
+            startY = setText(spriteBatch, Font, startY, "P2: " + this.score2.ToString());
+            startY = setText(spriteBatch, Font, startY, this.Result);
 
-            DrawCharts(startY + 150, spriteBatch);
+            startY = setText(spriteBatch, Font, startY, "@EMPTY");            
+            startY = setText(spriteBatch, ChartFont, startY, "Stats");
+            startY = setText(spriteBatch, Font, startY, "@EMPTY");
+
+            DrawCharts(startY+120, spriteBatch);
 
             for (int index = 0; index < btns.Count; index++)
             {

@@ -15,8 +15,7 @@ namespace Lolo
         private SpriteFont Font;
         private int scoreP1 = 0;
         private int scoreP2 = 0;
-        private float currentTime;
-        private float TotalTime;
+        private float currentTime;        
         private int ScreenHeight;
         private int ScreenWidth;
             
@@ -81,10 +80,10 @@ namespace Lolo
         {
             // Timer
             float centerX = General.getScreenCenterTextX(currentTime.ToString(), ScreenWidth, Font);
-            spriteBatch.DrawString(Font, currentTime.ToString(), new Vector2(centerX, -40), Color.White);
+            spriteBatch.DrawString(Font, currentTime.ToString(), new Vector2(centerX, 0), Color.White);
             // Kills
-            spriteBatch.DrawString(Font, scoreP1.ToString(), new Vector2(0, -40), Color.White);
-            spriteBatch.DrawString(Font, scoreP2.ToString(), new Vector2(ScreenWidth - Font.MeasureString(scoreP2.ToString()).X, -40), Color.White);
+            spriteBatch.DrawString(Font, scoreP1.ToString(), new Vector2(0, 0), Color.White);
+            spriteBatch.DrawString(Font, scoreP2.ToString(), new Vector2(ScreenWidth - Font.MeasureString(scoreP2.ToString()).X, 0), Color.White);
         }
     }
 }

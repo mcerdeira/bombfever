@@ -2,13 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Lolo
 {
-    class OptionMenu
+    [Serializable()]
+    public class Data
+    {
+        public string timelimit { get; set; }
+        public string gametype { get; set; }
+    }
+
+    public class OptionMenu
     {
         int ScreenWidth;
         int ScreenHeight;
@@ -22,32 +30,72 @@ namespace Lolo
             this.ScreenHeight = screenheight;
             this.ScreenWidth = screenwidth;
             this.Texture = texture;
-            this.Font = font;
+            this.Font = font;            
             CheckBox chk = new CheckBox("Test", screenwidth, font, Color.White);
             btns.Add(chk);
+            ComboList cboTime = new ComboList("Time Limit", screenwidth, font, Color.White, new List<String>(new String[] { "60", "80", "100", "120" }), "timelimit");
+            btns.Add(cboTime);
+            ComboList cbotype = new ComboList("Game type", screenwidth, font, Color.White, new List<String>(new String[] { "Time attack", "First hit wins"}), "gametype");
+            btns.Add(cbotype);
             Button btn = new Button("Acept", screenwidth, font, Color.White, GameState.Start1P);
             btns.Add(btn);
-            btn = new Button("Cancel", screenwidth, font, Color.White, GameState.Quit);
+            btn = new Button("Cancel", screenwidth, font, Color.White, GameState.GotoMainMenu);
             btns.Add(btn);
             PositionButtons();
             ButtonFocus(1);
         }
 
+        private void saveOptions()
+        {
+            //Data tx = new Data();
+            //tx.gametype = 
+            //tx
+
+            //// Write to XML
+            //XmlSerializer writer = new XmlSerializer(typeof(Data));
+            //using (FileStream file = File.OpenWrite("data.xml"))
+            //{
+            //    writer.Serialize(file, tx);
+            //}
+
+            //// Read from XML
+            //Data rx;
+
+            //XmlSerializer reader = new XmlSerializer(typeof(Data));
+            //using (FileStream input = File.OpenRead("data.xml"))
+            //{
+            //    rx = reader.Deserialize(input) as Data;
+            //}
+        }
+        
         public GameState GetRetState()
         {
             if (btns[currButton].GetType().Name == "Button")
             {
+                if (((Button)btns[currButton]).Caption == "Acept")
+                {
+                    saveOptions();
+                }
                 return ((Button)btns[currButton]).GetRetState();
             }
-            else
+            else if (btns[currButton].GetType().Name == "CheckBox")
             {
-                return ((CheckBox)btns[currButton]).GetRetState();
+                return ((CheckBox)btns[currButton]).GetRetState();             
             }
+            else if (btns[currButton].GetType().Name == "ComboList")
+            {
+                return GameState.None;
+            }
+
+            return GameState.None;
         }
 
         public void CheckBoxClicked()
         {
-            ((CheckBox)btns[currButton]).clicked();
+            if (btns[currButton].GetType().Name == "CheckBox")
+            {
+                ((CheckBox)btns[currButton]).clicked();
+            }
         }
 
         public void ButtonFocus(int direction)
@@ -67,18 +115,26 @@ namespace Lolo
                 {
                     ((Button)btns[index]).Status = 0;
                 }
-                else
+                else if (btns[index].GetType().Name == "CheckBox")
                 {
                     ((CheckBox)btns[index]).Status = 0;
+                }
+                else if (btns[index].GetType().Name == "ComboList")
+                {
+                    ((ComboList)btns[index]).Status = 0;
                 }
             }
             if (btns[currButton].GetType().Name == "Button")
             {
                 ((Button)btns[currButton]).Status = 1;
             }
-            else
+            else if (btns[currButton].GetType().Name == "CheckBox")
             {
                 ((CheckBox)btns[currButton]).Status = 1;
+            }
+            else if (btns[currButton].GetType().Name == "ComboList")
+            {
+                ((ComboList)btns[currButton]).Status = 1;
             }
         }
 
@@ -96,11 +152,17 @@ namespace Lolo
                     posY += ((Button)btns[index]).getHeight();
                     centerX += ((Button)btns[index]).getWidth();
                 }
-                else
+                else if (btns[index].GetType().Name == "CheckBox")
                 {
                     ((CheckBox)btns[index]).SetPosition(pos);
                     posY += ((CheckBox)btns[index]).getHeight();
                     centerX += ((CheckBox)btns[index]).getWidth();
+                }
+                else if (btns[index].GetType().Name == "ComboList")
+                {
+                    ((ComboList)btns[index]).SetPosition(pos);
+                    posY += ((ComboList)btns[index]).getHeight();
+                    centerX += ((ComboList)btns[index]).getWidth();
                 }
             }
 
@@ -114,12 +176,19 @@ namespace Lolo
                     ((Button)btns[index]).SetPosition(pos);
                     posY += ((Button)btns[index]).getHeight() / 2;
                 }
-                else
+                else if (btns[index].GetType().Name == "CheckBox")
                 {
                     centerX = General.getScreenCenterTextX(((CheckBox)btns[index]).getCaption(), ScreenWidth, Font);
                     Vector2 pos = new Vector2(centerX, posY);
                     ((CheckBox)btns[index]).SetPosition(pos);
                     posY += ((CheckBox)btns[index]).getHeight() / 2;
+                }
+                else if (btns[index].GetType().Name == "ComboList")
+                {
+                    centerX = General.getScreenCenterTextX(((ComboList)btns[index]).getCaption(), ScreenWidth, Font);
+                    Vector2 pos = new Vector2(centerX, posY);
+                    ((ComboList)btns[index]).SetPosition(pos);
+                    posY += ((ComboList)btns[index]).getHeight() / 2;
                 }
             }
         }
@@ -132,9 +201,13 @@ namespace Lolo
                 {
                     ((Button)btns[index]).Update(gametime);
                 }
-                else
+                else if (btns[index].GetType().Name == "CheckBox")
                 {
                     ((CheckBox)btns[index]).Update(gametime);
+                }
+                else if (btns[index].GetType().Name == "ComboList")
+                {
+                    ((ComboList)btns[index]).Update(gametime);
                 }
             }
         }
@@ -152,9 +225,13 @@ namespace Lolo
                 {
                     ((Button)btns[index]).Draw(spriteBatch);
                 }
-                else
+                else if (btns[index].GetType().Name == "CheckBox")
                 {
                     ((CheckBox)btns[index]).Draw(spriteBatch);
+                }
+                else if (btns[index].GetType().Name == "ComboList")
+                {
+                    ((ComboList)btns[index]).Draw(spriteBatch);
                 }
             }
         }
