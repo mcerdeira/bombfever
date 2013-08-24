@@ -70,7 +70,7 @@ namespace Lolo
             #warning Here I must load the config file
             ctype1 = ControlType.KeyBoard1;
             ctype2 = ControlType.KeyBoard2;
-            roundTime = 5; // 120
+            roundTime = 2; // 120
         }
 
         private void BeginPause(bool UserInitiated)
@@ -319,7 +319,7 @@ namespace Lolo
                             // Time is up!
                             GameState st;
                             st = (CurrentGameState == GameState.Playing1P) ? GameState.Start1P : GameState.Start2P;
-                            roundR = new RoundResults(Content.Load<Texture2D>("MainMenu"), mainFont, score, st, cMatch, ScreenHeight, ScreenWidth, Content.Load<Texture2D>("1"));
+                            roundR = new RoundResults(Content.Load<Texture2D>("MainMenu"), mainFont, score, st, cMatch, ScreenHeight, ScreenWidth, Content.Load<Texture2D>("pbar"));
                             CurrentGameState = GameState.RoundResults;
                         }
                         break;

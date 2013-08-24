@@ -106,17 +106,18 @@ namespace Lolo
             int totalp2 = this.Match.p2Score();
             int totaldw = this.Match.Draws();
             int total = totalp1 + totalp2 + totaldw;
-            int perp1 = totalp1 * 100 / total;
-            int perp2 = totalp2 * 100 / total;
-            int perpd = totaldw * 100 / total;
+            #warning Testing
+            int perp1 = 10;//totalp1 * 100 / total;
+            int perp2 = 25;//totalp2 * 100 / total;
+            int perpd = 65;//totaldw * 100 / total;
 
-            Rectangle p1 = new Rectangle(70, (int)Y, 60, perp1);
-            Rectangle p2 = new Rectangle(140, (int)Y, 60, perp2);
-            Rectangle dw = new Rectangle(210, (int)Y, 60, perpd);
+            Rectangle p1 = new Rectangle(ScreenWidth / 2- (60 / 2)  - 80, (int)Y - perp1, 60, perp1);
+            Rectangle p2 = new Rectangle(ScreenWidth / 2 - (60 / 2) , (int)Y - perp2, 60, perp2);
+            Rectangle dw = new Rectangle(ScreenWidth / 2 - (60 / 2) + 80, (int)Y - perpd, 60, perpd);
 
-            spriteBatch.Draw(charts, p1, Color.BlueViolet);
-            spriteBatch.Draw(charts, p2, Color.RosyBrown);
-            spriteBatch.Draw(charts, dw, Color.LawnGreen);
+            spriteBatch.Draw(charts, p1, Color.Crimson);
+            spriteBatch.Draw(charts, p2, Color.BlueViolet);
+            spriteBatch.Draw(charts, dw, Color.Teal);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -131,7 +132,7 @@ namespace Lolo
             startY = setText(spriteBatch, startY, "P2: " + this.score2.ToString());
             startY = setText(spriteBatch, startY, this.Result);
 
-            DrawCharts(startY, spriteBatch);
+            DrawCharts(startY + 150, spriteBatch);
 
             for (int index = 0; index < btns.Count; index++)
             {
