@@ -2,70 +2,86 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Lolo
-{
-    [Serializable()]
-    public class Data
-    {
-        public string timelimit { get; set; }
-        public string gametype { get; set; }
-    }
-
+{   
     public class OptionMenu
     {
         int ScreenWidth;
         int ScreenHeight;
         Texture2D Texture;
         List<Object> btns = new List<Object>();
+        private GameOptions gameOpt;
         private int currButton = -1;
         private SpriteFont Font;
 
-        public OptionMenu(Texture2D texture, SpriteFont font, int screenheight, int screenwidth)
+        public OptionMenu(Texture2D texture, SpriteFont font, int screenheight, int screenwidth, GameOptions gameopt)
         {
+            this.gameOpt = gameopt;
             this.ScreenHeight = screenheight;
             this.ScreenWidth = screenwidth;
             this.Texture = texture;
-            this.Font = font;            
-            CheckBox chk = new CheckBox("Test", screenwidth, font, Color.White);
-            btns.Add(chk);
-            ComboList cboTime = new ComboList("Time Limit", screenwidth, font, Color.White, new List<String>(new String[] { "60", "80", "100", "120" }), "timelimit");
+            this.Font = font;
+            ComboList cboP1Ctrl = new ComboList("P1 Control", screenwidth, font, Color.White, new List<String>(new String[] { "Keyboard", "Joystick" }));
+            btns.Add(cboP1Ctrl);
+            ComboList cboP2Ctrl = new ComboList("P2 Control", screenwidth, font, Color.White, new List<String>(new String[] { "Keyboard", "Joystick" }));
+            btns.Add(cboP2Ctrl);
+            ComboList cboTime = new ComboList("Time Limit", screenwidth, font, Color.White, new List<String>(new String[] { "60", "80", "100", "120" }));
             btns.Add(cboTime);
-            ComboList cbotype = new ComboList("Game type", screenwidth, font, Color.White, new List<String>(new String[] { "Time attack", "First hit wins"}), "gametype");
+            ComboList cbotype = new ComboList("Game type", screenwidth, font, Color.White, new List<String>(new String[] { "Time attack", "First hit wins"}));
             btns.Add(cbotype);
-            Button btn = new Button("Acept", screenwidth, font, Color.White, GameState.Start1P);
+            Button btn = new Button("Acept", screenwidth, font, Color.White, GameState.GotoMainMenu);
             btns.Add(btn);
             btn = new Button("Cancel", screenwidth, font, Color.White, GameState.GotoMainMenu);
             btns.Add(btn);
             PositionButtons();
             ButtonFocus(1);
+            loadOptions();
         }
 
         private void saveOptions()
+        {            
+            this.gameOpt.p1control = ((ComboList)btns[0]).Val;
+            this.gameOpt.p2control = ((ComboList)btns[1]).Val;
+            this.gameOpt.timelimit = ((ComboList)btns[2]).Val;
+            this.gameOpt.gametype = ((ComboList)btns[3]).Val;
+
+            // Write to XML
+            XmlSerializer writer = new XmlSerializer(typeof(GameOptions));
+            using (FileStream file = File.OpenWrite("gamedata.xml"))
+            {
+                writer.Serialize(file, this.gameOpt);
+            }
+        }
+
+
+        private void loadOptions()
         {
-            //Data tx = new Data();
-            //tx.gametype = 
-            //tx
-
-            //// Write to XML
-            //XmlSerializer writer = new XmlSerializer(typeof(Data));
-            //using (FileStream file = File.OpenWrite("data.xml"))
-            //{
-            //    writer.Serialize(file, tx);
-            //}
-
-            //// Read from XML
-            //Data rx;
-
-            //XmlSerializer reader = new XmlSerializer(typeof(Data));
-            //using (FileStream input = File.OpenRead("data.xml"))
-            //{
-            //    rx = reader.Deserialize(input) as Data;
-            //}
+            try
+            {
+                // Read from XML
+                XmlSerializer reader = new XmlSerializer(typeof(GameOptions));
+                using (FileStream input = File.OpenRead("gamedata.xml"))
+                {
+                    this.gameOpt = reader.Deserialize(input) as GameOptions;
+                }
+            }
+            catch(FileNotFoundException)
+            {
+                this.gameOpt.p1control = 0;
+                this.gameOpt.p2control = 0;
+                this.gameOpt.timelimit = 0;
+                this.gameOpt.gametype = 0;
+            }
+            ((ComboList)btns[0]).Val = this.gameOpt.p1control;
+            ((ComboList)btns[1]).Val = this.gameOpt.p2control;
+            ((ComboList)btns[2]).Val = this.gameOpt.timelimit;
+            ((ComboList)btns[3]).Val = this.gameOpt.gametype;
         }
         
         public GameState GetRetState()

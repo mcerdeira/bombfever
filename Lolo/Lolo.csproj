@@ -41,6 +41,7 @@
     <Compile Include="Button.cs" />
     <Compile Include="CheckBox.cs" />
     <Compile Include="ComboList.cs" />
+    <Compile Include="GameOptions.cs" />
     <Compile Include="General.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="LevelLoader.cs" />
@@ -152,6 +153,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\chartsfont.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\GaussianBlur.mgfxo">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Dark.mgfxo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

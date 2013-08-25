@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
-using Microsoft.Xna.Framework.GamerServices;
 #endregion
 
 namespace Lolo
@@ -41,6 +40,8 @@ namespace Lolo
         SpriteFont chartFont;
         RoundResults roundR;
         Match cMatch;
+        GameOptions gameOPT;
+        Effect PauseFX;
         int ScreenWidth = 800;
         int ScreenHeight = 600;
         private Texture2D background;
@@ -63,7 +64,7 @@ namespace Lolo
             graphics.PreferredBackBufferHeight = ScreenHeight;
             //graphics.IsFullScreen = true;
             graphics.ApplyChanges();
-            Content.RootDirectory = "Content";
+            Content.RootDirectory = "Content";            
         }
 
         private void LoadControls()
@@ -71,7 +72,7 @@ namespace Lolo
             #warning Here I must load the config file
             ctype1 = ControlType.KeyBoard1;
             ctype2 = ControlType.KeyBoard2;
-            roundTime = 120;
+            roundTime = 60;
         }
 
         private void BeginPause(bool UserInitiated)
@@ -209,6 +210,7 @@ namespace Lolo
         /// </summary>
         protected override void LoadContent()
         {
+            gameOPT = new GameOptions();
             LoadControls();
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -217,9 +219,12 @@ namespace Lolo
             menues = Content.Load<Texture2D>("MainMenu");
             mainFont = Content.Load<SpriteFont>("mainfont");
             chartFont = Content.Load<SpriteFont>("chartsfont");
+            PauseFX = Content.Load<Effect>("Dark.mgfxo");
+            PauseFX.Parameters["Percentage"].SetValue(0.40f);
+
             menu = new MainMenu(menues, mainFont, ScreenHeight, ScreenWidth);
             lvlLoad = new LevelLoader(menues, mainFont, ScreenHeight, ScreenWidth);
-            options = new OptionMenu(menues, mainFont, ScreenHeight, ScreenWidth);
+            options = new OptionMenu(menues, mainFont, ScreenHeight, ScreenWidth, gameOPT);
             cMatch = new Match();
         }
 
@@ -334,7 +339,7 @@ namespace Lolo
                         Exit();
                         break;
                 }
-                base.Update(gameTime);
+                base.Update(gameTime);            
             }
         }
 
@@ -351,7 +356,14 @@ namespace Lolo
             //</FPS>
 
             GraphicsDevice.Clear(Color.Black);
-            spriteBatch.Begin();
+            if (paused)
+            {
+                spriteBatch.Begin(0, BlendState.Opaque, null, null, null, PauseFX);
+            }
+            else
+            {                
+                spriteBatch.Begin();
+            }
             switch (CurrentGameState)
             {
                 case GameState.MainMenu:
@@ -382,7 +394,9 @@ namespace Lolo
                     break;
             }            
             if (paused)
-            {
+            {                
+                spriteBatch.End();
+                spriteBatch.Begin();
                 pauseSprite.Draw(spriteBatch);
             }
             spriteBatch.End();

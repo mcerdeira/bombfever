@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
+using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -21,22 +23,13 @@ namespace Lolo
         public int Val;
         private Keys previousMenuKey = Keys.None;
 
-        public ComboList(string caption, int screenwidth, SpriteFont font, Color color, List<string> value, string xmltag = "")
+        public ComboList(string caption, int screenwidth, SpriteFont font, Color color, List<string> value)
         {
             this.Value = value;
             this.ScreenWidth = screenwidth;
             this.Font = font;
             this.Color = color;
             this.Caption = caption;
-            if (xmltag != "")
-            {
-                loadOptions();
-            }
-        }
-
-        private void loadOptions()
-        {
-
         }
 
         public string getValue()
