@@ -27,7 +27,7 @@ namespace Lolo
             btns.Add(btn);
             btn = new Button("1P vs 2P", screenwidth, font, Color.White, GameState.Start2P);
             btns.Add(btn);
-            btn = new Button("Options", screenwidth, font, Color.White, GameState.Options);
+            btn = new Button("Options", screenwidth, font, Color.White, GameState.GotoOptions);
             btns.Add(btn);
             btn = new Button("Load level", screenwidth, font, Color.White, GameState.LoadFromFile);
             btns.Add(btn);

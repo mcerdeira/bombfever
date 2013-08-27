@@ -82,8 +82,8 @@ namespace Lolo
             float centerX = General.getScreenCenterTextX(currentTime.ToString(), ScreenWidth, Font);
             spriteBatch.DrawString(Font, currentTime.ToString(), new Vector2(centerX, 0), Color.White);
             // Kills
-            spriteBatch.DrawString(Font, scoreP1.ToString(), new Vector2(0, 0), Color.White);
-            spriteBatch.DrawString(Font, scoreP2.ToString(), new Vector2(ScreenWidth - Font.MeasureString(scoreP2.ToString()).X, 0), Color.White);
+            spriteBatch.DrawString(Font, scoreP1.ToString(), new Vector2(0 + 5, 0), Color.White);
+            spriteBatch.DrawString(Font, scoreP2.ToString(), new Vector2(ScreenWidth - Font.MeasureString(scoreP2.ToString()).X - 5, 0), Color.White);
         }
     }
 }

@@ -14,8 +14,9 @@ namespace Lolo
     {
         None,
         MainMenu,      // Displaying main menu
-        GotoMainMenu,  // Call the main menu display
+        GotoMainMenu,  // (Command) Call the main menu display
         Options,       // Displaying game options
+        GotoOptions,   // (Command) Call the options menu
         Start1P,       // (Command) Starts the game 1P vs CPU
         Start2P,       // (Command) Starts the game 1P vs 2P
         Playing1P,     // Displaying in-game
@@ -34,12 +35,11 @@ namespace Lolo
         JoyStick1,
         JoyStick2
     }
-
     public enum PlayerStyle
     {
         Human,
         Machine
-    }    
+    }
 
     public class PlayerControls
     {
@@ -73,6 +73,21 @@ namespace Lolo
 
     class General
     {
+        public static List<string> getControlTypes()
+        {
+            return new List<String>(new String[] { "Keyboard", "Joystick" });
+        }
+
+        public static List<string> getRoundTimes()
+        {
+            return new List<String>(new String[] { "60", "80", "100", "120" });
+        }
+
+        public static List<string> getGameTypes()
+        {
+            return new List<String>(new String[] { "Time attack", "First hit wins" });
+        }
+
         public static Vector2 IntersectDepthVector(Rectangle main, Rectangle r)
         {
           // Calculate centers.

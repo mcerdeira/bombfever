@@ -20,28 +20,26 @@ namespace Lolo
         private int currButton = -1;
         private SpriteFont Font;
 
-        public OptionMenu(Texture2D texture, SpriteFont font, int screenheight, int screenwidth, GameOptions gameopt)
-        {
-            this.gameOpt = gameopt;
+        public OptionMenu(Texture2D texture, SpriteFont font, int screenheight, int screenwidth)
+        {            
             this.ScreenHeight = screenheight;
             this.ScreenWidth = screenwidth;
             this.Texture = texture;
             this.Font = font;
-            ComboList cboP1Ctrl = new ComboList("P1 Control", screenwidth, font, Color.White, new List<String>(new String[] { "Keyboard", "Joystick" }));
+            ComboList cboP1Ctrl = new ComboList("P1 Control", screenwidth, font, Color.White, General.getControlTypes());
             btns.Add(cboP1Ctrl);
-            ComboList cboP2Ctrl = new ComboList("P2 Control", screenwidth, font, Color.White, new List<String>(new String[] { "Keyboard", "Joystick" }));
+            ComboList cboP2Ctrl = new ComboList("P2 Control", screenwidth, font, Color.White, General.getControlTypes());
             btns.Add(cboP2Ctrl);
-            ComboList cboTime = new ComboList("Time Limit", screenwidth, font, Color.White, new List<String>(new String[] { "60", "80", "100", "120" }));
+            ComboList cboTime = new ComboList("Time Limit", screenwidth, font, Color.White, General.getRoundTimes());
             btns.Add(cboTime);
-            ComboList cbotype = new ComboList("Game type", screenwidth, font, Color.White, new List<String>(new String[] { "Time attack", "First hit wins"}));
+            ComboList cbotype = new ComboList("Game type", screenwidth, font, Color.White, General.getGameTypes());
             btns.Add(cbotype);
             Button btn = new Button("Acept", screenwidth, font, Color.White, GameState.GotoMainMenu);
             btns.Add(btn);
             btn = new Button("Cancel", screenwidth, font, Color.White, GameState.GotoMainMenu);
             btns.Add(btn);
             PositionButtons();
-            ButtonFocus(1);
-            loadOptions();
+            ButtonFocus(1);            
         }
 
         private void saveOptions()
@@ -60,7 +58,7 @@ namespace Lolo
         }
 
 
-        private void loadOptions()
+        public GameOptions loadOptions()
         {
             try
             {
@@ -82,6 +80,8 @@ namespace Lolo
             ((ComboList)btns[1]).Val = this.gameOpt.p2control;
             ((ComboList)btns[2]).Val = this.gameOpt.timelimit;
             ((ComboList)btns[3]).Val = this.gameOpt.gametype;
+
+            return this.gameOpt;
         }
         
         public GameState GetRetState()

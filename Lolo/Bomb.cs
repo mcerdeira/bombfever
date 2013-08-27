@@ -83,8 +83,9 @@ namespace Lolo
 
         public void Update()
         {
-            CheckCollisions(player);
-            CheckCollisions(player2);
+            #warning See what happens with no bomb colitions
+            //CheckCollisions(player);
+            //CheckCollisions(player2);
             LifeLoop--;
 
             if (LifeLoop == 0)

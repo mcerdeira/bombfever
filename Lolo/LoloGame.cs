@@ -71,8 +71,7 @@ namespace Lolo
         {
             #warning Here I must load the config file
             ctype1 = ControlType.KeyBoard1;
-            ctype2 = ControlType.KeyBoard2;
-            roundTime = 60;
+            ctype2 = ControlType.KeyBoard2;            
         }
 
         private void BeginPause(bool UserInitiated)
@@ -220,12 +219,11 @@ namespace Lolo
             mainFont = Content.Load<SpriteFont>("mainfont");
             chartFont = Content.Load<SpriteFont>("chartsfont");
             PauseFX = Content.Load<Effect>("Dark.mgfxo");
-            PauseFX.Parameters["Percentage"].SetValue(0.40f);
-
+            PauseFX.Parameters["Percentage"].SetValue(0.30f);
             menu = new MainMenu(menues, mainFont, ScreenHeight, ScreenWidth);
             lvlLoad = new LevelLoader(menues, mainFont, ScreenHeight, ScreenWidth);
-            options = new OptionMenu(menues, mainFont, ScreenHeight, ScreenWidth, gameOPT);
-            cMatch = new Match();
+            options = new OptionMenu(menues, mainFont, ScreenHeight, ScreenWidth);            
+            cMatch = new Match();            
         }
 
         /// <summary>
@@ -277,6 +275,10 @@ namespace Lolo
                 {
                     case GameState.Start1P:
                     case GameState.Start2P:
+                        // Load game options
+                        gameOPT = options.loadOptions();
+                        roundTime = float.Parse(General.getRoundTimes()[gameOPT.timelimit]);
+
                         // In Game objects                                    
                         score = new Score(ScreenHeight, ScreenWidth, Content.Load<SpriteFont>("mainfont"), roundTime);
                         bombmanager = new BombManager(Content);
@@ -305,6 +307,10 @@ namespace Lolo
                         break;
                     case GameState.MainMenu:                        
                         menu.Update(gameTime);
+                        break;
+                    case GameState.GotoOptions:
+                        gameOPT = options.loadOptions();
+                        CurrentGameState = GameState.Options;
                         break;
                     case GameState.Options:
                         options.Update(gameTime);
@@ -392,7 +398,7 @@ namespace Lolo
                 case GameState.LoadFromFile:
                     lvlLoad.Draw(spriteBatch);
                     break;
-            }            
+            }
             if (paused)
             {                
                 spriteBatch.End();
