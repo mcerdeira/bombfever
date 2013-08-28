@@ -225,6 +225,18 @@ namespace Lolo
 
         private void AI_TryWalk(Vector2 pos, float elapsedTime, int runAway = 1)
         {
+			/*Must branch this in two: 
+				If(runAway == -1)
+				{
+					New_Logic
+					// Must define "where" the NPC will want to escape
+				}
+				else
+				{
+					Actual_Logic
+				}
+			*/
+					
             List<string> tries = new List<string>();
             this.Status = "walking";            
             setDirection(pos, elapsedTime, runAway); // See where I wanna go
