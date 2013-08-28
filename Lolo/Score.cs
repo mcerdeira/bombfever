@@ -18,9 +18,11 @@ namespace Lolo
         private float currentTime;        
         private int ScreenHeight;
         private int ScreenWidth;
+        private string GameType;
             
-        public Score(int screenheight, int screenwidth, SpriteFont font, float totaltime)
+        public Score(int screenheight, int screenwidth, SpriteFont font, float totaltime, string gametype)
         {
+            this.GameType = gametype;
             this.currentTime = totaltime;            
             this.ScreenHeight = screenheight;
             this.ScreenWidth = screenwidth;
@@ -66,6 +68,10 @@ namespace Lolo
 
         public void setScore(string player)
         {
+            if (this.GameType == "First hit wins")
+            {
+                currentTime = 0;
+            }
             if (player == "p1")
             {
                 scoreP1++;

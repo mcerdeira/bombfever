@@ -59,19 +59,19 @@ namespace Lolo
             graphics = new GraphicsDeviceManager(this);
             #warning Put fullscreen back
             //ScreenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            //ScreenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;            
+            //ScreenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             graphics.PreferredBackBufferWidth = ScreenWidth;
             graphics.PreferredBackBufferHeight = ScreenHeight;
             //graphics.IsFullScreen = true;
             graphics.ApplyChanges();
-            Content.RootDirectory = "Content";            
+            Content.RootDirectory = "Content";
         }
 
         private void LoadControls()
         {
             #warning Here I must load the config file
             ctype1 = ControlType.KeyBoard1;
-            ctype2 = ControlType.KeyBoard2;            
+            ctype2 = ControlType.KeyBoard2;
         }
 
         private void BeginPause(bool UserInitiated)
@@ -82,7 +82,7 @@ namespace Lolo
 
         private void EndPause()
         {
-            //TODO: Resume audio            
+            //TODO: Resume audio
             paused = false;
         }
 
@@ -280,7 +280,7 @@ namespace Lolo
                         roundTime = float.Parse(General.getRoundTimes()[gameOPT.timelimit]);
 
                         // In Game objects                                    
-                        score = new Score(ScreenHeight, ScreenWidth, Content.Load<SpriteFont>("mainfont"), roundTime);
+                        score = new Score(ScreenHeight, ScreenWidth, Content.Load<SpriteFont>("mainfont"), roundTime, General.getGameTypes()[gameOPT.gametype]);
                         bombmanager = new BombManager(Content);
                         p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human);
                         if (CurrentGameState == GameState.Start1P)
