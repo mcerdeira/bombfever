@@ -21,6 +21,7 @@ namespace Lolo
         private PlayerDirection prevDirection = new PlayerDirection(); // Previous direction
         private int relevantDiff = 0; // The minimum difference (between X and Y) for the player to change the current direction    
         private bool runningAway = false;
+        private string maintainDirection = "";
         // </AI Variables>
         private Vector2 RespawnLoc; // Location the respawn will point to
         public int inmunityCounter = 0; // Frame duration of inmunity (after being hitted)
@@ -224,11 +225,11 @@ namespace Lolo
 
         private void AI_TryWalk(Vector2 pos, float elapsedTime, int runAway = 1)
         {
+            List<string> tries = new List<string>();
             this.Status = "walking";            
             setDirection(pos, elapsedTime, runAway); // See where I wanna go
             Vector2 desiredLoc = new Vector2();
-
-            switch (Direction.MainDirection)
+            switch (getRealDirecion(Direction.MainDirection, runAway))
             {
                 case "R":
                 case "L":
@@ -243,7 +244,8 @@ namespace Lolo
             }
 
             AI_chekWalkable(desiredLoc); // Check if I can go, to the main direction
-            Console.WriteLine("1° " + Direction.MainDirection);
+            tries.Add(Direction.MainDirection);
+            Console.WriteLine("1° " + getRealDirecion(Direction.MainDirection, runAway));
 
             if (this.hasToCorrect) // If I can't...
             {
@@ -266,11 +268,13 @@ namespace Lolo
                         desiredLoc.Y += (Speed.Y * elapsedTime) * -1 * runAway;
                         break;
                 }
-                Console.WriteLine("2° " + getRealDirecion(prevDirection.MainDirection, runAway));
-                AI_chekWalkable(desiredLoc); // Check if I can go, to the 
+                AI_chekWalkable(desiredLoc); // Check if I can go, to the 2nd
+                tries.Add(getRealDirecion(prevDirection.MainDirection, runAway));
+                Console.WriteLine("2° " + getRealDirecion(prevDirection.MainDirection, runAway));                
             }
             else
             {
+                maintainDirection = "";
                 prevDirection.MainDirection = Direction.MainDirection;
                 prevDirection.SecondaryDirection = Direction.SecondaryDirection;
                 prevDirection.X = Direction.X;
@@ -281,10 +285,11 @@ namespace Lolo
             {
                 desiredLoc.Y = Location.Y;
                 desiredLoc.X = Location.X;
-                if (runAway == -1)
-                {
-                    runAway = 1;
-                }
+                // I can't remember why I did this runAway reset, so I commented it...
+                //if (runAway == -1)
+                //{
+                //    runAway = 1;
+                //}
                 switch (prevDirection.SecondaryDirection)
                 {
                     case "R":
@@ -304,13 +309,73 @@ namespace Lolo
                         desiredLoc.Y += (Speed.Y * elapsedTime) * -1 * runAway;
                         break;
                 }
+                AI_chekWalkable(desiredLoc); // Check if I can go, to the 3°...
+                tries.Add(getRealDirecion(prevDirection.SecondaryDirection, runAway));
                 Console.WriteLine("3° " + getRealDirecion(prevDirection.SecondaryDirection, runAway));
-                AI_chekWalkable(desiredLoc); // Check if I can go, to the                
             }
-            if (!this.hasToCorrect)
+            else
+            {
+                maintainDirection = "";
+            }
+
+            if (this.hasToCorrect)
+            {
+                string dir = getNotUsed(tries);
+                while (dir != "")
+                {
+                    desiredLoc.Y = Location.Y;
+                    desiredLoc.X = Location.X;
+                    tries.Add(dir);
+                    switch (dir)
+                    {
+                        case "R":
+                            desiredLoc.X += (Speed.X * elapsedTime) * 1;
+                            desiredLoc.Y = Location.Y;
+                            break;
+                        case "L":
+                            desiredLoc.X += (Speed.X * elapsedTime) * -1;
+                            desiredLoc.Y = Location.Y;
+                            break;
+                        case "D":
+                            desiredLoc.X = Location.X;
+                            desiredLoc.Y += (Speed.Y * elapsedTime) * 1;
+                            break;
+                        case "U":
+                            desiredLoc.X = Location.X;
+                            desiredLoc.Y += (Speed.Y * elapsedTime) * -1;
+                            break;
+                    }
+                    AI_chekWalkable(desiredLoc); // Let's try any that we didn't try earlier...                
+                    Console.WriteLine("N° " + dir);
+                    maintainDirection = dir;
+                    dir = getNotUsed(tries);
+                }
+            }
+            if (!this.hasToCorrect) // If you get here, and couldn't go, you are f*****!
             {
                 Location = desiredLoc;
             }
+        }
+
+        private string getNotUsed(List<string> directions)
+        {
+            if (!directions.Contains("U"))
+            {
+                return "U";
+            }
+            if (!directions.Contains("D"))
+            {
+                return "D";
+            }
+            if (!directions.Contains("L"))
+            {
+                return "L";
+            }
+            if (!directions.Contains("R"))
+            {
+                return "R";
+            }
+            return ""; // All directions used... =(
         }
 
         private string getRealDirecion(string direction, int mult)
@@ -371,35 +436,6 @@ namespace Lolo
                     return;
                 }
             }
-        }
-
-        private Vector2 workAround(float elapsedTime, string direction)
-        {            
-            Vector2 desiredDirection = Location;
-            //switch (direction)
-            //{
-            //    case "R":
-            //        directionY = -1; // UP
-            //        Direction = "U";
-            //        desiredDirection.Y += (Speed.Y * elapsedTime) * directionY;
-            //        break;
-            //    case "L":
-            //        directionY = 1; // DOWN
-            //        Direction = "D";
-            //        desiredDirection.Y += (Speed.Y * elapsedTime) * directionY;
-            //        break;
-            //    case "U":
-            //        directionX = -1; // LEFT
-            //        Direction = "L";
-            //        desiredDirection.X += (Speed.X * elapsedTime) * directionX;
-            //        break;
-            //    case "D":
-            //        directionX = 1; // RIGHT 
-            //        Direction = "R";
-            //        desiredDirection.X += (Speed.X * elapsedTime) * directionX;
-            //        break;
-            //}
-            return desiredDirection;
         }
 
         private void AI_Attack()
