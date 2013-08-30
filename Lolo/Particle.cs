@@ -45,6 +45,10 @@ namespace Lolo
         {
             hitBox = new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
             TTL--;
+            if(TTL <= 50)
+            {
+                disabled = true;
+            }
             if (!disabled)
             {
                 if (hitBox.Intersects(player.hitBox) && player.Status != "respawning" && player.inmunityCounter == 0)
