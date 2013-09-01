@@ -104,7 +104,15 @@ namespace Lolo
             }
             Rectangle sourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
             Vector2 origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
-            spriteBatch.Draw(Texture, Position, sourceRectangle, Color, 0, origin, Size, SpriteEffects.None, 0f);           
+
+            if (TTL <= 50)
+            {
+                spriteBatch.Draw(Texture, Position, sourceRectangle, Color.Gray, 0, origin, Size, SpriteEffects.None, 0f);
+            }
+            else
+            {
+                spriteBatch.Draw(Texture, Position, sourceRectangle, Color, 0, origin, Size, SpriteEffects.None, 0f);
+            }
         }
     }
 }

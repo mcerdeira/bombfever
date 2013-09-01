@@ -27,12 +27,12 @@ namespace Lolo
         public int inmunityCounter = 0; // Frame duration of inmunity (after being hitted)
         public bool wallHitted; // Player hitted a wall Flag        
         public Texture2D Texture { get; set; }
-        public int Columns { get; set; }
-        private PlayerControls PCtrls;        
+        public int Columns { get; set; }        
         private int currentFrame;
         private string KeyControl;
         private string InstanceName;
         private PlayerStyle PStlye;
+        private ControlWrapper cwrap;
         private int ItemCollected = -1;
         private int[] idleFrames = new int[] { 0, 1, 2, 3 };
         private int[] walkFrames = new int[] { 4, 5, 6, 7 };
@@ -68,7 +68,10 @@ namespace Lolo
             this.PStlye = pstlye;
             this.InstanceName = instancename;
             this.BombMan = BombMan;
-            this.PCtrls = new PlayerControls(ctype);
+            if(this.PStlye == PlayerStyle.Human)
+            {
+                cwrap = new ControlWrapper(ctype);
+            }
         }
 
         public void setItem(int itemstyle)
@@ -556,57 +559,65 @@ namespace Lolo
         private void UpdateInput(float elapsedTime)
         {
             if (PStlye == PlayerStyle.Human)
-            {
-                #warning add joystick support
-                //GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed   
+            {                
                 if (this.Status != "dead")
                 {
                     this.Status = "idle";
-                    KeyboardState st = Keyboard.GetState();
-                    if (!st.IsKeyDown(PCtrls.Bomb))
+                    
+                    //if (!st.IsKeyDown(PCtrls.Bomb))
+                    if(!cwrap.IsKeyDown(PlayerActions.Bomb))
                     {
                         KeyControl = "";
                     }
 
-                    if (st.IsKeyDown(PCtrls.Bomb) && KeyControl != "bomb" && this.BombCount < this.BombMax)
+                    //if (st.IsKeyDown(PCtrls.Bomb) && KeyControl != "bomb" && this.BombCount < this.BombMax)
+                    if (cwrap.IsKeyDown(PlayerActions.Bomb) && KeyControl != "bomb" && this.BombCount < this.BombMax)
                     {
                         KeyControl = "bomb";
                         placeBomb();
                     }
 
-                    if (st.IsKeyDown(PCtrls.Right))
+                    //if (st.IsKeyDown(PCtrls.Right))
+                    if(cwrap.IsKeyDown(PlayerActions.Right))
                     {
                         this.Status = "walking";
                         directionX = 1;
                     }
 
-                    if (st.IsKeyDown(PCtrls.Left))
+                    //if (st.IsKeyDown(PCtrls.Left))
+                    if(cwrap.IsKeyDown(PlayerActions.Left))
                     {
                         this.Status = "walking";
                         directionX = -1;
                     }
 
-                    if (st.IsKeyDown(PCtrls.Down))
+                    //if (st.IsKeyDown(PCtrls.Down))
+                    if(cwrap.IsKeyDown(PlayerActions.Down))
                     {
                         this.Status = "walking";
                         directionY = 1;
                     }
 
-                    if (st.IsKeyDown(PCtrls.Up))
+                    //if (st.IsKeyDown(PCtrls.Up))
+                    if(cwrap.IsKeyDown(PlayerActions.Up))
                     {
                         this.Status = "walking";
                         directionY = -1;
                     }
 
-                    if (!st.IsKeyDown(PCtrls.Right) &&
-                        !st.IsKeyDown(PCtrls.Left))
+                    //if (!st.IsKeyDown(PCtrls.Right) &&
+                    //    !st.IsKeyDown(PCtrls.Left))
+                    if(!cwrap.IsKeyDown(PlayerActions.Right) &&
+                        !cwrap.IsKeyDown(PlayerActions.Left))
                     {
                         //Speed.X = 0;
                         directionX = 0;
                     }
 
-                    if (!st.IsKeyDown(PCtrls.Up) &&
-                        !st.IsKeyDown(PCtrls.Down))
+                    //if (!st.IsKeyDown(PCtrls.Up) &&
+                    //    !st.IsKeyDown(PCtrls.Down))
+                    if (!cwrap.IsKeyDown(PlayerActions.Up) &&
+                        !cwrap.IsKeyDown(PlayerActions.Down))
                     {
                         directionY = 0;
                     }

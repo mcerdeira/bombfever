@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Storage;
 
 namespace Lolo
 {
@@ -35,40 +34,20 @@ namespace Lolo
         JoyStick1,
         JoyStick2
     }
+    
     public enum PlayerStyle
     {
         Human,
         Machine
     }
 
-    public class PlayerControls
-    {
-        public Keys Up;
-        public Keys Down;
-        public Keys Left;
-        public Keys Right;
-        public Keys Bomb;        
-
-        public PlayerControls(ControlType ctpye)
-        {
-            if (ctpye == ControlType.KeyBoard1)
-            {
-                Up = Keys.Up;
-                Down = Keys.Down;
-                Left = Keys.Left;
-                Right = Keys.Right;
-                Bomb = Keys.RightShift;
-            }
-            else if (ctpye == ControlType.KeyBoard2)
-            {
-                Up = Keys.W;
-                Down = Keys.S;
-                Left = Keys.A;
-                Right = Keys.D;
-                Bomb = Keys.Space;
-            }
-            #warning Add here the Joystick wrapper
-        }
+    public enum PlayerActions
+    { 
+        Up,
+        Down,
+        Right,
+        Left,
+        Bomb
     }
 
     class General

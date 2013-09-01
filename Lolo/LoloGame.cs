@@ -70,7 +70,7 @@ namespace Lolo
         private void LoadControls()
         {
             #warning Here I must load the config file
-            ctype1 = ControlType.KeyBoard1;
+            ctype1 = ControlType.JoyStick1;
             ctype2 = ControlType.KeyBoard2;
         }
 
