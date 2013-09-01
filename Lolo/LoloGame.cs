@@ -69,9 +69,29 @@ namespace Lolo
 
         private void LoadControls()
         {
-            #warning Here I must load the config file
-            ctype1 = ControlType.JoyStick1;
-            ctype2 = ControlType.KeyBoard2;
+            string ctrl1 = General.getControlTypes()[gameOPT.p1control];
+            string ctrl2 = General.getControlTypes()[gameOPT.p2control];
+
+            if (ctrl1 == "Keyboard" && ctrl2 == "Keyboard")
+            {
+                ctype1 = ControlType.KeyBoard1;
+                ctype2 = ControlType.KeyBoard2;
+            }
+            else if (ctrl1 == "Joystick" && ctrl2 == "Joystick")
+            {
+                ctype1 = ControlType.JoyStick1;
+                ctype2 = ControlType.JoyStick2;
+            }
+            else if (ctrl1 == "Keyboard" && ctrl2 == "Joystick")
+            {
+                ctype1 = ControlType.KeyBoard1;
+                ctype2 = ControlType.JoyStick1;
+            }
+            else if (ctrl1 == "Joystick" && ctrl2 == "Keyboard")
+            {
+                ctype1 = ControlType.JoyStick1;
+                ctype2 = ControlType.KeyBoard1;
+            }
         }
 
         private void BeginPause(bool UserInitiated)
@@ -210,7 +230,6 @@ namespace Lolo
         protected override void LoadContent()
         {
             gameOPT = new GameOptions();
-            LoadControls();
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             background = Content.Load<Texture2D>("Background");
@@ -222,7 +241,9 @@ namespace Lolo
             PauseFX.Parameters["Percentage"].SetValue(0.30f);
             menu = new MainMenu(menues, mainFont, ScreenHeight, ScreenWidth);
             lvlLoad = new LevelLoader(menues, mainFont, ScreenHeight, ScreenWidth);
-            options = new OptionMenu(menues, mainFont, ScreenHeight, ScreenWidth);            
+            options = new OptionMenu(menues, mainFont, ScreenHeight, ScreenWidth);
+            gameOPT = options.loadOptions();
+            LoadControls();
             cMatch = new Match();            
         }
 
@@ -277,6 +298,7 @@ namespace Lolo
                     case GameState.Start2P:
                         // Load game options
                         gameOPT = options.loadOptions();
+                        LoadControls();
                         roundTime = float.Parse(General.getRoundTimes()[gameOPT.timelimit]);
 
                         // In Game objects                                    

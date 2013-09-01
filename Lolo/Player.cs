@@ -563,7 +563,6 @@ namespace Lolo
                 if (this.Status != "dead")
                 {
                     this.Status = "idle";
-                    
                     //if (!st.IsKeyDown(PCtrls.Bomb))
                     if(!cwrap.IsKeyDown(PlayerActions.Bomb))
                     {
