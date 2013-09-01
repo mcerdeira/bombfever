@@ -34,6 +34,8 @@ namespace Lolo
             btns.Add(cboTime);
             ComboList cbotype = new ComboList("Game type", screenwidth, font, Color.White, General.getGameTypes());
             btns.Add(cbotype);
+
+            #warning Add checkboxes with item availability
             Button btn = new Button("Acept", screenwidth, font, Color.White, GameState.GotoMainMenu);
             btns.Add(btn);
             btn = new Button("Cancel", screenwidth, font, Color.White, GameState.GotoMainMenu);
