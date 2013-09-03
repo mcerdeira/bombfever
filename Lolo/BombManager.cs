@@ -17,10 +17,10 @@ namespace Lolo
         private ContentManager content;
         private Map map;
         private Player Player;
-        private Player Player2;
+        private Player Player2;        
 
         public BombManager(ContentManager content) // Add enemy
-        {
+        {            
             this.content = content;
         }
 

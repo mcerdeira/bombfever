@@ -22,7 +22,6 @@ namespace Lolo
         private Player player2;
         private BombManager bombman;
         private Map map;
-        //private bool tmp;
 
         public BombExplosion(int TTL, Map map, BombManager bombman, Player player, Player player2, Texture2D texture, Vector2 location)
         {

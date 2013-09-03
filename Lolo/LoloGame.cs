@@ -41,7 +41,7 @@ namespace Lolo
         RoundResults roundR;
         Match cMatch;
         GameOptions gameOPT;
-        Effect PauseFX;
+        Effect PauseFX;        
         int ScreenWidth = 800;
         int ScreenHeight = 600;
         private Texture2D background;
@@ -238,7 +238,7 @@ namespace Lolo
             mainFont = Content.Load<SpriteFont>("mainfont");
             chartFont = Content.Load<SpriteFont>("chartsfont");
             PauseFX = Content.Load<Effect>("Dark.mgfxo");
-            PauseFX.Parameters["Percentage"].SetValue(0.30f);
+            PauseFX.Parameters["Percentage"].SetValue(0.30f);            
             menu = new MainMenu(menues, mainFont, ScreenHeight, ScreenWidth);
             lvlLoad = new LevelLoader(menues, mainFont, ScreenHeight, ScreenWidth);
             options = new OptionMenu(menues, mainFont, ScreenHeight, ScreenWidth);
@@ -383,10 +383,10 @@ namespace Lolo
             this.Window.Title = string.Format("FPS={0}", _fps);
             //</FPS>
 
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.Transparent);
             if (paused)
             {
-                spriteBatch.Begin(0, BlendState.Opaque, null, null, null, PauseFX);
+                spriteBatch.Begin(0, BlendState.Opaque, null, null, null, PauseFX);                                
             }
             else
             {                

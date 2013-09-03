@@ -14,6 +14,7 @@ namespace Lolo
         private Map map;
         private Player player;
         private Player player2;
+        private int TTL_Total;
         public Rectangle hitBox;
         public Texture2D Texture { get; set; }
         public Vector2 Position;
@@ -23,10 +24,12 @@ namespace Lolo
         public Color Color { get; set; }
         public float Size { get; set; }
         public int TTL { get; set; }
+        //private Effect ExplodeFX;
 
         public Particle(Map map, Player player, Player player2, Texture2D texture, Vector2 position, Vector2 velocity,
-            float angle, float angularVelocity, Color color, float size, int ttl)
+            float angle, float angularVelocity, Color color, float size, int ttl)//, Effect explodefx)
         {
+            //this.ExplodeFX = explodefx;
             this.disabled = false;
             this.map = map;
             this.player = player;
@@ -39,13 +42,14 @@ namespace Lolo
             Color = color;
             Size = size;
             TTL = ttl;
+            TTL_Total = ttl;
         }
 
         public void Update()
         {
             hitBox = new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
             TTL--;
-            if(TTL <= 50)
+            if(TTL <= (TTL_Total / 2) - 2)
             {
                 disabled = true;
             }
@@ -105,13 +109,13 @@ namespace Lolo
             Rectangle sourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
             Vector2 origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
 
-            if (TTL <= 50)
-            {
+            if (disabled)
+            {                
                 spriteBatch.Draw(Texture, Position, sourceRectangle, Color.Gray, 0, origin, Size, SpriteEffects.None, 0f);
             }
             else
-            {
-                spriteBatch.Draw(Texture, Position, sourceRectangle, Color, 0, origin, Size, SpriteEffects.None, 0f);
+            {                                
+                spriteBatch.Draw(Texture, Position, sourceRectangle, Color, 0, origin, Size, SpriteEffects.None, 0f);                
             }
         }
     }
