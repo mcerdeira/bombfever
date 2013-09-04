@@ -96,7 +96,7 @@ namespace Lolo
             float size = (float)random.NextDouble();
             int ttl = 20 + random.Next(100);
 
-            return new Particle(map, player, player2, texture, position, velocity, angle, angularVelocity, color, size, ttl);
+            return new Particle(map, player, player2, texture, position, velocity, angle, angularVelocity, color, size, ttl, EmitterLocation);
         }
 
         public void Draw(SpriteBatch spriteBatch)

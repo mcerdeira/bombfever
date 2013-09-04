@@ -67,6 +67,11 @@ namespace Lolo
             return new List<String>(new String[] { "Time attack", "First hit wins" });
         }
 
+        public static Vector2 Rectangle2Vector(Rectangle rect)
+        {
+            return new Vector2(rect.X, rect.Y);
+        }
+
         public static Vector2 IntersectDepthVector(Rectangle main, Rectangle r)
         {
           // Calculate centers.

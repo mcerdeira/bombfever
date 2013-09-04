@@ -24,12 +24,14 @@ namespace Lolo
         public Color Color { get; set; }
         public float Size { get; set; }
         public int TTL { get; set; }
+        private Vector2 EmitterLocation;
         //private Effect ExplodeFX;
 
         public Particle(Map map, Player player, Player player2, Texture2D texture, Vector2 position, Vector2 velocity,
-            float angle, float angularVelocity, Color color, float size, int ttl)//, Effect explodefx)
+            float angle, float angularVelocity, Color color, float size, int ttl, Vector2 emitterlocation)//, Effect explodefx)
         {
             //this.ExplodeFX = explodefx;
+            this.EmitterLocation = emitterlocation;
             this.disabled = false;
             this.map = map;
             this.player = player;
@@ -72,6 +74,14 @@ namespace Lolo
                     if (!disabled && map.tiles[index].BreakAble)
                     {
                         map.tiles[index].Action = "dead";
+                    }
+                    else
+                    {
+                        float distance = Vector2.Distance(General.Rectangle2Vector(map.tiles[index].hitBox), this.EmitterLocation);
+                        if (Math.Abs(distance) < 100)
+                        {
+                            map.tiles[index].Shake();
+                        }
                     }
 
                     disabled = true; // If the particle has bounced, its no longuer deathly (maybe it should dissapear too)

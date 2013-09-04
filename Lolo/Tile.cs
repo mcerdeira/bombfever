@@ -24,6 +24,9 @@ namespace Lolo
         private Player player;        
         private Player player2;
         private Map Map;
+        private int ShakeCount = 0;
+        private int shakeY = 0;
+        private int shakeX = 0;
 
         public Tile(Vector2 position, ContentManager Content, Player player, Player player2, bool brekable, bool walkable, Map map, int id)
         {           
@@ -31,7 +34,7 @@ namespace Lolo
             this.BreakAble = brekable;
             this.Action = "";
             this.player = player;
-            this.player2 = player2;            
+            this.player2 = player2;
             this.ID = id;
             Texture = Content.Load<Texture2D>(this.ID.ToString());
             this.Columns = Texture.Width / 50;            
@@ -40,7 +43,24 @@ namespace Lolo
         }
 
         public void Update()
-        {            
+        {
+            if (ShakeCount > 0)
+            {
+                if (ShakeCount % 2 == 0)
+                {
+                    shakeY *= -1;
+                }
+                else
+                {
+                    shakeX *= -1;
+                }
+                ShakeCount--;
+                if (ShakeCount == 0)
+                {
+                    shakeY = 0;
+                    shakeX = 0;
+                }
+            }
             // Decide sprite things, based on id
             switch (this.ID)
             {
@@ -64,6 +84,16 @@ namespace Lolo
             if(Action == "dead")
             {
                 Map.RemoveTile(this);
+            }
+        }
+
+        public void Shake()
+        {
+            if (this.ShakeCount == 0)
+            {
+                this.ShakeCount = 50;
+                this.shakeY = 3;
+                this.shakeX = 3;
             }
         }
 
@@ -111,9 +141,8 @@ namespace Lolo
             int height = Texture.Height;
             int row = (int)((float)Status / (float)Columns);
             int column = Status % Columns;
-
             Rectangle source = new Rectangle(width * column, height * row, width, height);
-            Rectangle dest = new Rectangle((int)Position.X, (int)Position.Y, width, height);
+            Rectangle dest = new Rectangle((int)Position.X + shakeX, (int)Position.Y + shakeY, width, height);
             hitBox = dest;
             spriteBatch.Draw(Texture, dest, source, Color.White);
         }
