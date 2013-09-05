@@ -62,7 +62,7 @@ namespace Lolo
 
         public void RemoveTile(Tile tile)
         {
-            if (tile.BreakAble)
+            if (tile.BreakAble && tile.ID != -100 && tile.ID != -200)
             {
                 // Decide, randomly if there is any item hidden inside
                 Random rdn = new Random();
@@ -137,8 +137,15 @@ namespace Lolo
                         }
                         else if ((r == 6 && c == 7) || (r == 6 && c == 8))
                         {
-                            // Center, a prize item     
-                            v = 0;
+                            // Center, flags items  
+                            if (c == 7)
+                            {
+                                v = -100;
+                            }
+                            else
+                            {
+                                v = -200;
+                            }                            
                         }
                         else
                         {
@@ -158,7 +165,10 @@ namespace Lolo
                         }
                         if (v < 0 || v == 6 || v == 7 || v == 8 || v == 9)
                         {
-                            v = 1; // and regular bricks has even more chances!
+                            if (v != -200 && v != -100)
+                            {
+                                v = 1; // and regular bricks has even more chances!
+                            }
                         }
 
                         if (v == 0)
@@ -210,8 +220,15 @@ namespace Lolo
                         }
                         else if ((r == 6 && c == 7) || (r == 6 && c == 8))
                         {
-                            // Center, a prize item     
-                            v = 0;
+                            // Center, flags items  
+                            if (c == 7)
+                            {
+                                v = -100;
+                            }
+                            else
+                            {
+                                v = -200;
+                            }   
                         }
                         else
                         {
@@ -230,7 +247,10 @@ namespace Lolo
                         }
                         if (v < 0 || v == 6 || v == 7 || v == 8 || v == 9)
                         {
-                            v = 1; // and regular bricks has even more chances!
+                            if (v != -200 && v != -100)
+                            {
+                                v = 1; // and regular bricks has even more chances!
+                            }
                         }
 
                         if (v == 0)

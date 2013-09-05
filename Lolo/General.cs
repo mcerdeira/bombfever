@@ -50,6 +50,19 @@ namespace Lolo
         Bomb
     }
 
+    public enum ItemTypes
+    {        
+        Inmortal,
+        Shield,
+        Speed_Shoe,
+        Freeze,
+        Sudden_Death,
+        Extra_Time,
+        Extra_Bomb,
+        Triggered_Bombs,
+        Bouncing_Bombs,
+    }
+
     class General
     {
         public static List<string> getControlTypes()

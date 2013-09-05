@@ -36,7 +36,21 @@ namespace Lolo
             this.player = player;
             this.player2 = player2;
             this.ID = id;
-            Texture = Content.Load<Texture2D>(this.ID.ToString());
+            if (this.ID < 0)
+            {
+                if (this.ID == -100)
+                {
+                    Texture = Content.Load<Texture2D>("1pflag");
+                }
+                else if (this.ID == -200)
+                {
+                    Texture = Content.Load<Texture2D>("2pflag");
+                }
+            }
+            else
+            {
+                Texture = Content.Load<Texture2D>(this.ID.ToString());
+            }            
             this.Columns = Texture.Width / 50;            
             this.Position = position;            
             this.Map = map;
