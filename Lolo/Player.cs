@@ -570,10 +570,20 @@ namespace Lolo
                     }
 
                     //if (st.IsKeyDown(PCtrls.Bomb) && KeyControl != "bomb" && this.BombCount < this.BombMax)
-                    if (cwrap.IsKeyDown(PlayerActions.Bomb) && KeyControl != "bomb" && this.BombCount < this.BombMax)
+                    if (cwrap.IsKeyDown(PlayerActions.Bomb) && KeyControl != "bomb")
                     {
-                        KeyControl = "bomb";
-                        placeBomb();
+                        if (this.BombMan.KickingBomb(this))
+                        {
+                            KeyControl = "bomb";
+                        }
+                        else
+                        {
+                            if (this.BombCount < this.BombMax)
+                            {
+                                KeyControl = "bomb";
+                                placeBomb();
+                            }
+                        }
                     }
 
                     //if (st.IsKeyDown(PCtrls.Right))

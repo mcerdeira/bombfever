@@ -24,6 +24,50 @@ namespace Lolo
             this.content = content;
         }
 
+        public bool KickingBomb(Player player)
+        {
+            bool retVal = false;
+            for (int index = 0; index < bombs.Count; index++)
+            {
+                if (player.hitBox.Intersects(bombs[index].hitBox))
+                {
+                    Vector2 v = General.IntersectDepthVector(player.hitBox, bombs[index].hitBox);
+                    float absx = Math.Abs(v.X);
+                    float absy = Math.Abs(v.Y);
+                    string direction = "";
+                    if (!(v.X == 0 && v.Y == 0))
+                    {
+                        if (absx > absy) // the shallower impact is the correct one- this is on the y axis
+                        {
+                            if (v.Y < 0)
+                            {
+                                direction = "top";
+                            }
+                            else
+                            {
+                                direction = "bottom";
+                            }
+                        }
+                        else // the x axis!
+                        {
+                            if (v.X < 0)
+                            {
+                                direction = "left";
+                            }
+                            else
+                            {
+                                direction = "right";
+                            }
+                        }
+                    }
+                    bombs[index].Kicked(direction);
+                    retVal = true;
+                    break;
+                }
+            }
+            return retVal;
+        }
+
         public Vector2 getNearestBomb(Vector2 pos)
         {            
             Vector2 min = new Vector2(9999, 9999);

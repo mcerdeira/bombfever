@@ -17,9 +17,11 @@ namespace Lolo
         private Texture2D Texture;
         private int Columns;
         private string Owner;
-        Rectangle hitBox;
+        public Rectangle hitBox;
         private Player player;
         private Player player2;
+        private int xMove = 0;
+        private int yMove = 0;
         private int LifeLoop = 100;
         BombManager BombMan;
 
@@ -33,6 +35,28 @@ namespace Lolo
             Vector2 pos = new Vector2(position.X - ((Texture.Width - player.hitBox.Width) / 2), position.Y - ((Texture.Height - player.hitBox.Height) / 2));
             this.Position = pos;
             this.Columns = Texture.Width / 50;
+        }
+
+        public void Kicked(string direction)
+        {
+            this.LifeLoop += 5; // A little extra time if it gets kicked
+            yMove = 0;
+            xMove = 0;
+            switch (direction)
+            {
+                case "top":
+                    yMove = 10;
+                    break;
+                case "bottom":
+                    yMove = -10;
+                    break;
+                case "left":
+                    xMove = 10;
+                    break;
+                case "right":
+                    xMove = -10;
+                    break;
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -87,7 +111,8 @@ namespace Lolo
             //CheckCollisions(player);
             //CheckCollisions(player2);
             LifeLoop--;
-
+            Position.X += xMove;
+            Position.Y += yMove;
             if (LifeLoop == 0)
             {
                 if (Owner == "p1")
