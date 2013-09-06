@@ -315,7 +315,7 @@ namespace Lolo
                             p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(720, 520), ctype2, bombmanager, score, "p2", PlayerStyle.Human);
                             CurrentGameState = GameState.Playing2P;
                         }
-                        map = new Map(p1, p2);
+                        map = new Map(p1, p2, bombmanager);
                         map.GenerateLevel(Content, LevelName);
                         bombmanager.UpdateMap(map, p1, p2);
                         if (CurrentGameState == GameState.Playing1P)

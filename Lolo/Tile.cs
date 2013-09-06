@@ -27,9 +27,11 @@ namespace Lolo
         private int ShakeCount = 0;
         private int shakeY = 0;
         private int shakeX = 0;
+        private BombManager bombmanager;
 
-        public Tile(Vector2 position, ContentManager Content, Player player, Player player2, bool brekable, bool walkable, Map map, int id)
-        {           
+        public Tile(Vector2 position, ContentManager Content, Player player, Player player2, bool brekable, bool walkable, Map map, int id, BombManager bombmanager)
+        {
+            this.bombmanager = bombmanager;
             this.Walkable = walkable;
             this.BreakAble = brekable;
             this.Action = "";
@@ -94,6 +96,7 @@ namespace Lolo
             {
                 CheckCollisions(player);
                 CheckCollisions(player2);
+                CheckCollisionsBomb();
             }
             if(Action == "dead")
             {
@@ -108,6 +111,18 @@ namespace Lolo
                 this.ShakeCount = 50;
                 this.shakeY = 3;
                 this.shakeX = 3;
+            }
+        }
+
+        private void CheckCollisionsBomb()
+        {
+            for (int index = 0; index < bombmanager.bombs.Count; index++)
+            {
+                if (this.hitBox.Intersects(bombmanager.bombs[index].hitBox))
+                {
+                    bombmanager.bombs[index].wallHitted = true;
+                    break;
+                }
             }
         }
 

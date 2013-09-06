@@ -35,9 +35,11 @@ namespace Lolo
         private ContentManager Content;
         private Player player;
         private Player player2;
+        private BombManager bombmanager;
 
-        public Map(Player player, Player player2)
+        public Map(Player player, Player player2, BombManager bombmanager)
         {
+            this.bombmanager = bombmanager;
             this.player = player;
             this.player2 = player2;
         }
@@ -179,7 +181,7 @@ namespace Lolo
                         if (v != 0)
                         {
                             Vector2 pos = new Vector2(col, row);
-                            Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v);
+                            Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v, bombmanager);
                             tiles.Add(t);
                         }                       
                         col += 50;
@@ -261,7 +263,7 @@ namespace Lolo
                         if (v != 0)
                         {
                             Vector2 pos = new Vector2(col, row);
-                            Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v);
+                            Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v, bombmanager);
                             tiles.Add(t);
                         }
                         col += 50;
@@ -306,7 +308,7 @@ namespace Lolo
                                     if (v != 0)
                                     {
                                         Vector2 pos = new Vector2(col, row);
-                                        Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v);
+                                        Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v, bombmanager);
                                         tiles.Add(t);
                                     }
                                     col += 50;

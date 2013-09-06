@@ -23,6 +23,7 @@ namespace Lolo
         private int xMove = 0;
         private int yMove = 0;
         private int LifeLoop = 100;
+        public bool wallHitted = false;
         BombManager BombMan;
 
         public Bomb(Vector2 position, string owner, BombManager BombMan, ContentManager Content, Player player, Player player2)
@@ -30,11 +31,11 @@ namespace Lolo
             this.Owner = owner;
             this.BombMan = BombMan;
             this.player = player;
-            this.player2 = player2;                      
+            this.player2 = player2;
             Texture = Content.Load<Texture2D>("bomb");
             Vector2 pos = new Vector2(position.X - ((Texture.Width - player.hitBox.Width) / 2), position.Y - ((Texture.Height - player.hitBox.Height) / 2));
             this.Position = pos;
-            this.Columns = Texture.Width / 50;
+            this.Columns = Texture.Width / 30;
         }
 
         public void Kicked(string direction)
@@ -111,6 +112,13 @@ namespace Lolo
             //CheckCollisions(player);
             //CheckCollisions(player2);
             LifeLoop--;
+
+            if (wallHitted)
+            {
+                xMove = 0;
+                yMove = 0;
+                wallHitted = false;
+            }
             Position.X += xMove;
             Position.Y += yMove;
             if (LifeLoop == 0)

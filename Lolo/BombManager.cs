@@ -12,7 +12,7 @@ namespace Lolo
 {
     public class BombManager
     {
-        private List<Bomb> bombs = new List<Bomb>();
+        public List<Bomb> bombs = new List<Bomb>();
         private List<BombExplosion> bombex = new List<BombExplosion>();
         private ContentManager content;
         private Map map;

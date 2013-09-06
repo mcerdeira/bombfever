@@ -209,7 +209,7 @@ namespace Lolo
             this.runningAway = false;
             Vector2 bomb = BombMan.getNearestBomb(this.Location);
             if(bomb.X == 9999)
-            {                
+            {
                 return bomb;
             }
             else
