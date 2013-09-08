@@ -52,6 +52,7 @@
     <Compile Include="Match.cs" />
     <Compile Include="OptionMenu.cs" />
     <Compile Include="Particle.cs" />
+    <Compile Include="PathFind.cs" />
     <Compile Include="Pause.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PlayerDirection.cs" />

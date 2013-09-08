@@ -233,13 +233,8 @@ namespace Lolo
             //    see ScreenMap.xlss!Layout in List for more detail
             while(true)
             {
-                
+                Map.getNeighbor(initNode);
             }
-        }
-
-        private List<int> neighbor(int node)
-        {
-            
         }
 
         private int IndexFromCell(Vector2 cell)
