@@ -79,7 +79,7 @@ namespace Lolo
                 if (dist < minDist)
                 {
                     minDist = dist;
-                    min = bombs[index].Position;
+                    min = bombs[index].Position;                    
                 }
             }
             for (int index = 0; index < bombex.Count; index++)

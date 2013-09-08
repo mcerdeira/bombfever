@@ -23,7 +23,7 @@ namespace Lolo
         private int xMove = 0;
         private int yMove = 0;
         private int LifeLoop = 100;
-        public bool wallHitted = false;
+        public bool wallHitted = false;        
         BombManager BombMan;
 
         public Bomb(Vector2 position, string owner, BombManager BombMan, ContentManager Content, Player player, Player player2)
@@ -78,7 +78,7 @@ namespace Lolo
             Rectangle source = new Rectangle(width * column, height * row, width, height);
             Rectangle dest = new Rectangle((int)Position.X, (int)Position.Y, width, height);
             hitBox = dest;
-            spriteBatch.Draw(Texture, dest, source, Color.White);
+            spriteBatch.Draw(Texture, dest, source, Color.Azure);
         }
 
         private void CheckCollisions(Player player)

@@ -9,6 +9,7 @@ namespace Lolo
     {
         public string MainDirection; // Could be X or Y
         public string SecondaryDirection; // Could be X or Y
+        public string LastDirection;
         public float X;
         public float Y;
     }

@@ -17,7 +17,7 @@ namespace Lolo
         public string Action;
         public int Status = 0; // frame status
         public int ID;
-        private Vector2 Position;
+        public Vector2 Position;
         private Texture2D Texture;
         private int Columns;
         public Rectangle hitBox;
@@ -47,19 +47,27 @@ namespace Lolo
                 else if (this.ID == -200)
                 {
                     Texture = Content.Load<Texture2D>("2pflag");
-                }
+                }            
             }
-            else
+            else if (this.ID > 0)
             {
                 Texture = Content.Load<Texture2D>(this.ID.ToString());
-            }            
-            this.Columns = Texture.Width / 50;            
-            this.Position = position;            
-            this.Map = map;
+            }
+            if (this.ID != 0)
+            {                
+                this.Columns = Texture.Width / 50;
+                this.Map = map;
+            }        
+            this.Position = position;                        
         }
 
         public void Update()
         {
+            if(this.ID ==0)
+            {
+                return;
+            }
+
             if (ShakeCount > 0)
             {
                 if (ShakeCount % 2 == 0)
@@ -166,14 +174,17 @@ namespace Lolo
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            int width = Texture.Width / Columns;
-            int height = Texture.Height;
-            int row = (int)((float)Status / (float)Columns);
-            int column = Status % Columns;
-            Rectangle source = new Rectangle(width * column, height * row, width, height);
-            Rectangle dest = new Rectangle((int)Position.X + shakeX, (int)Position.Y + shakeY, width, height);
-            hitBox = dest;
-            spriteBatch.Draw(Texture, dest, source, Color.White);
+            if (this.ID != 0)
+            {
+                int width = Texture.Width / Columns;
+                int height = Texture.Height;
+                int row = (int)((float)Status / (float)Columns);
+                int column = Status % Columns;
+                Rectangle source = new Rectangle(width * column, height * row, width, height);
+                Rectangle dest = new Rectangle((int)Position.X + shakeX, (int)Position.Y + shakeY, width, height);
+                hitBox = dest;
+                spriteBatch.Draw(Texture, dest, source, Color.White);
+            }
         }
     }
 }
