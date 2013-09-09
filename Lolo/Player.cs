@@ -20,6 +20,7 @@ namespace Lolo
         private int relevantDiff = 0; // The minimum difference (between X and Y) for the player to change the current direction    
         private bool runningAway = false;
         private PlayerDirection Direction = new PlayerDirection();
+        private List<Vector2> path = new List<Vector2>();
         // </AI Variables>
         private Vector2 RespawnLoc; // Location the respawn will point to
         public int inmunityCounter = 0; // Frame duration of inmunity (after being hitted)
