@@ -17,6 +17,7 @@ namespace Lolo
         public string Action;
         public int Status = 0; // frame status
         public int ID;
+        private int Index;
         public Vector2 Position;
         private Texture2D Texture;
         private int Columns;
