@@ -20,3 +20,12 @@ C:\Users\mcerdeira\beel\Test\Lolo\Lolo\Lolo\bin\WindowsGL\Debug\Content\Backgrou
 C:\Users\mcerdeira\beel\Test\Lolo\Lolo\Lolo\bin\WindowsGL\Debug\Content\MainMenu.xnb
 C:\Users\mcerdeira\beel\Test\Lolo\Lolo\Lolo\bin\WindowsGL\Debug\Content\mainfont.xnb
 C:\Users\mcerdeira\beel\Test\Lolo\Lolo\Lolo\bin\WindowsGL\Debug\Content\btn1.xnb
+C:\Users\mcerdeira\beel\Test\Lolo\Lolo\Lolo\bin\WindowsGL\Debug\Lolo.exe.config
+C:\Users\mcerdeira\beel\Test\Lolo\Lolo\Lolo\bin\WindowsGL\Debug\Content\Enemy.xnb
+C:\Users\mcerdeira\beel\Test\Lolo\Lolo\Lolo\bin\WindowsGL\Debug\Content\item.xnb
+C:\Users\mcerdeira\beel\Test\Lolo\Lolo\Lolo\bin\WindowsGL\Debug\Content\pbar.xnb
+C:\Users\mcerdeira\beel\Test\Lolo\Lolo\Lolo\bin\WindowsGL\Debug\Content\chartsfont.xnb
+C:\Users\mcerdeira\beel\Test\Lolo\Lolo\Lolo\bin\WindowsGL\Debug\Content\Dark.mgfxo
+C:\Users\mcerdeira\beel\Test\Lolo\Lolo\Lolo\bin\WindowsGL\Debug\Content\Wavy.mgfxo
+C:\Users\mcerdeira\beel\Test\Lolo\Lolo\Lolo\bin\WindowsGL\Debug\Content\1pflag.xnb
+C:\Users\mcerdeira\beel\Test\Lolo\Lolo\Lolo\bin\WindowsGL\Debug\Content\2pflag.xnb

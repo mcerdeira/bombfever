@@ -20,7 +20,9 @@ namespace Lolo
         private int relevantDiff = 0; // The minimum difference (between X and Y) for the player to change the current direction    
         private bool runningAway = false;
         private PlayerDirection Direction = new PlayerDirection();
-        private List<int> path = new List<int>();
+        private List<int> path;
+        private bool PathFound = false;
+        private int PathFindDelay = 0;
         // </AI Variables>
         private Vector2 RespawnLoc; // Location the respawn will point to
         public int inmunityCounter = 0; // Frame duration of inmunity (after being hitted)
@@ -183,9 +185,23 @@ namespace Lolo
                             }
                             else
                             {
-                                AI_PathFind(pos);
-                                //AI_TryWalk(pos, elapsedTime);
-                                AI_Attack();
+                                if (PathFindDelay == 0)
+                                {
+                                    path = new List<int>();
+                                    PathFound = false;
+                                    PathFindDelay = 1000;
+                                    AI_PathFind(pos);
+                                }
+                                else
+                                {
+                                    if (Map.tiles[path[0]].Position == findMyCell())
+                                    {
+                                        path.Remove(path[0]);
+                                    }
+
+                                    AI_TryWalk(Map.tiles[path[0]].Position, elapsedTime);
+                                    PathFindDelay--;
+                                }
                             }
                         }
                     }
@@ -225,8 +241,12 @@ namespace Lolo
             }
         }
 
-        private void AI_PathFind(Vector2 target, int initNode = -1, int endNode = -1)
-        {            
+        private int AI_PathFind(Vector2 target, int initNode = -1, int endNode = -1)
+        {
+            if (this.PathFound)
+            {
+                return 0;
+            }
             if (initNode == -1)
             {
                 Vector2 myCell = findMyCell();
@@ -240,10 +260,16 @@ namespace Lolo
             int[] dirs = getNeighbor(initNode);
             foreach (int i in dirs)
             {
+                if(this.PathFound)
+                {
+                    return 0;
+                }
                 if (dirs.Contains(endNode))
                 {
                     // We find the final node!
-                    return;
+                    Console.WriteLine("found!");
+                    this.PathFound = true;
+                    return 0;
                 }
                 else
                 {
@@ -251,10 +277,13 @@ namespace Lolo
                     {
                         path.Add(i);
                         Console.WriteLine(i);
-                        AI_PathFind(target, i, endNode);
+                        int r = AI_PathFind(target, i, endNode);
+                        
                     }
                 }
             }
+            Console.WriteLine("dead end");
+            return 1;
         }
 
         public int IndexFromCell(Vector2 cell)
