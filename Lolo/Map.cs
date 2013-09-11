@@ -67,6 +67,8 @@ namespace Lolo
 
         public void RemoveTile(Tile tile)
         {
+            #warning Must replace the tiles.Remove(), the tile must be replaced for an empty tile (because indexes are important)
+
             if (tile.BreakAble && tile.ID != -100 && tile.ID != -200)
             {
                 // Decide, randomly if there is any item hidden inside
@@ -171,6 +173,12 @@ namespace Lolo
                             }
                         }
 
+                        //if (v != 2)
+                        //{
+                        //    #warning Remove this IF, debuging purposes
+                        //    v = 0;
+                        //}
+
                         if (v == 0)
                         {
                             // If 0, then is a walkable block, but lets put some random to decide if regular empty space or what
@@ -249,6 +257,12 @@ namespace Lolo
                                 v = 1; // and regular bricks has even more chances!
                             }
                         }
+
+                        //if (v != 2)
+                        //{
+                        //    #warning Remove this IF, debuging purposes
+                        //    v = 0;
+                        //}
 
                         if (v == 0)
                         {

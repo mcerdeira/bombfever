@@ -128,7 +128,7 @@ namespace Lolo
 
         private void resPawn()
         {
-            Console.WriteLine("################################################ D I E D ###################################################");
+            //Console.WriteLine("################################################ D I E D ###################################################");
             this.inmunityCounter = 170; // Lasts, more or less a bomb explosion time
             this.Status = "respawning";
             string dest = (InstanceName == "p1") ? "p2" : "p1";
@@ -189,7 +189,7 @@ namespace Lolo
                                 {
                                     path = new List<int>();
                                     PathFound = false;
-                                    PathFindDelay = 1000;
+                                    PathFindDelay = 100;
                                     AI_PathFind(pos);
                                 }
                                 else
@@ -198,8 +198,10 @@ namespace Lolo
                                     {
                                         path.Remove(path[0]);
                                     }
-
-                                    AI_TryWalk(Map.tiles[path[0]].Position, elapsedTime);
+                                    if (path.Count > 0)
+                                    {
+                                        AI_TryWalk(Map.tiles[path[0]].Position, elapsedTime);
+                                    }
                                     PathFindDelay--;
                                 }
                             }
@@ -221,24 +223,24 @@ namespace Lolo
         private Vector2 AI_Avoid()
         {
             this.runningAway = false;
-            Vector2 bomb = BombMan.getNearestBomb(this.Location);
-            if(bomb.X == 9999)
-            {
-                return bomb;
-            }
-            else
-            {   
-                float distance = Vector2.Distance(Location, bomb);
-                if (distance < 200)
-                {
-                    this.runningAway = true;                   
-                    return bomb;
-                }
-                else
-                {                                        
+            //Vector2 bomb = BombMan.getNearestBomb(this.Location);
+            //if(bomb.X == 9999)
+            //{
+            //    return bomb;
+            //}
+            //else
+            //{   
+            //    float distance = Vector2.Distance(Location, bomb);
+            //    if (distance < 200)
+            //    {
+            //        this.runningAway = true;                   
+            //        return bomb;
+            //    }
+            //    else
+            //    {                                        
                     return new Vector2(9999, 9999);
-                }
-            }
+            //    }
+            //}
         }
 
         private int AI_PathFind(Vector2 target, int initNode = -1, int endNode = -1)
@@ -254,7 +256,7 @@ namespace Lolo
             }
             if (endNode == -1)
             {
-                endNode = IndexFromCell(target);
+                endNode = IndexFromCell(new Vector2(normaLize(target.X), normaLize(target.Y)));
             }
 
             int[] dirs = getNeighbor(initNode);
@@ -267,7 +269,8 @@ namespace Lolo
                 if (dirs.Contains(endNode))
                 {
                     // We find the final node!
-                    Console.WriteLine("found!");
+                    Console.WriteLine("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<found!>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><");
+                    path.Add(endNode);
                     this.PathFound = true;
                     return 0;
                 }
@@ -808,7 +811,7 @@ namespace Lolo
 
         private void AI_TryWalk(Vector2 pos, float elapsedTime)
         {
-            Console.WriteLine("-----------------------------------------------------------");
+            //Console.WriteLine("-----------------------------------------------------------");
             string currentDir = "";
             List<string> tries = new List<string>();
             this.Status = "walking";
@@ -831,12 +834,12 @@ namespace Lolo
                     break;
             }
             AI_chekWalkable(desiredLoc, currentDir); // Check if I can go, to the main direction
-            tries.Add(currentDir);
-            Console.WriteLine("1° " + currentDir);
+            //tries.Add(currentDir);
+            //Console.WriteLine("1° " + currentDir);
 
             if (this.hasToCorrect)
             {
-                Console.WriteLine("can't");
+                //Console.WriteLine("can't");
                 desiredLoc.Y = Location.Y;
                 desiredLoc.X = Location.X;
                 currentDir = Direction.SecondaryDirection;
@@ -860,8 +863,8 @@ namespace Lolo
                         break;
                 }
                 AI_chekWalkable(desiredLoc, currentDir); // Check if I can go, to the 2nd...
-                tries.Add(currentDir);
-                Console.WriteLine("2° " + currentDir);            
+                //tries.Add(currentDir);
+                //Console.WriteLine("2° " + currentDir);            
             }
 
             if (this.hasToCorrect)
@@ -893,7 +896,7 @@ namespace Lolo
                         {
                             if (!runningAway)
                             {
-                                Console.WriteLine("$$$$$$$$$$$$$ BOMB $$$$$$$$$$$$$");
+                                //Console.WriteLine("$$$$$$$$$$$$$ BOMB $$$$$$$$$$$$$");
                                 placeBomb();
                             }
                             else
