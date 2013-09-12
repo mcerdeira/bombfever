@@ -185,12 +185,12 @@ namespace Lolo
                             }
                             else
                             {
-                                if (PathFindDelay == 0)
+                                if (PathFindDelay <= 0)
                                 {
                                     path = new List<int>();
                                     PathFound = false;
                                     PathFindDelay = 100;
-                                    AI_PathFind(pos);
+                                    AI_PathFind(pos, 0);
                                 }
                                 else
                                 {
@@ -243,8 +243,16 @@ namespace Lolo
             //}
         }
 
-        private int AI_PathFind(Vector2 target, int initNode = -1, int endNode = -1)
+        private int AI_PathFind(Vector2 target, int counter, int initNode = -1, int endNode = -1)
         {
+            counter++;
+            if (counter > 10)
+            {
+                Console.WriteLine("FAKE END");
+                this.PathFound = true; // Fake path found, is a recursion control
+                PathFindDelay = 30;
+            }
+
             if (this.PathFound)
             {
                 return 0;
@@ -255,11 +263,24 @@ namespace Lolo
                 initNode = IndexFromCell(myCell);
             }
             if (endNode == -1)
-            {
+            {                
                 endNode = IndexFromCell(new Vector2(normaLize(target.X), normaLize(target.Y)));
+                Console.WriteLine("Wanna Find " + endNode.ToString());
             }
 
             int[] dirs = getNeighbor(initNode);
+
+            List<Tile> tilelist = new List<Tile>();
+            for (int i = 0; i< dirs.Count(); i++)
+            {
+                tilelist.Add(Map.tiles[dirs[i]]);
+            }
+            tilelist.OrderBy(e => Vector2.Distance(e.Position, target));
+
+            // FIX THIS SHIT
+
+            //dirs.ToList<int>().Sort((a, b) => 
+
             foreach (int i in dirs)
             {
                 if(this.PathFound)
@@ -280,13 +301,17 @@ namespace Lolo
                     {
                         path.Add(i);
                         Console.WriteLine(i);
-                        int r = AI_PathFind(target, i, endNode);
-                        
+                        int r = AI_PathFind(target, counter, i, endNode);
                     }
                 }
             }
             Console.WriteLine("dead end");
             return 1;
+        }
+
+        private static int MinDistance(Vector2 a, Vector2 b)
+        {
+            return 0;
         }
 
         public int IndexFromCell(Vector2 cell)

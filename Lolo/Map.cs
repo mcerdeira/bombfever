@@ -90,8 +90,10 @@ namespace Lolo
                 }
             }
             //TODO, previous to remove the item, an animation must occur
-
-            tiles.Remove(tile);
+            tile.ID = 0;
+            tile.Walkable = true;
+            tile.BreakAble = true;
+            //tiles.Remove(tile); // Remove is replaced by turning the tile into an empty tile
         }
 
         public void GenerateLevel(ContentManager content, string LevelFile = "")
@@ -173,11 +175,11 @@ namespace Lolo
                             }
                         }
 
-                        //if (v != 2)
-                        //{
-                        //    #warning Remove this IF, debuging purposes
-                        //    v = 0;
-                        //}
+                        if (v != 2)
+                        {
+#warning Remove this IF, debuging purposes
+                            v = 0;
+                        }
 
                         if (v == 0)
                         {
@@ -258,11 +260,11 @@ namespace Lolo
                             }
                         }
 
-                        //if (v != 2)
-                        //{
-                        //    #warning Remove this IF, debuging purposes
-                        //    v = 0;
-                        //}
+                        if (v != 2)
+                        {
+#warning Remove this IF, debuging purposes
+                            v = 0;
+                        }
 
                         if (v == 0)
                         {

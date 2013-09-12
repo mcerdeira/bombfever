@@ -69,7 +69,7 @@ namespace Lolo
 
             for (int index = 0; index < map.tiles.Count; index++)
             {
-                if (this.hitBox.Intersects(map.tiles[index].hitBox))
+                if (map.tiles[index].ID != 0 &&  this.hitBox.Intersects(map.tiles[index].hitBox))
                 {
                     if (!disabled && map.tiles[index].BreakAble)
                     {
