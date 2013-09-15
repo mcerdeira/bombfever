@@ -20,7 +20,7 @@ namespace Lolo
         private int relevantDiff = 0; // The minimum difference (between X and Y) for the player to change the current direction    
         private bool runningAway = false;
         private PlayerDirection Direction = new PlayerDirection();
-        private List<int> path;
+        private List<int> path = new List<int>();
         private bool PathFound = false;
         private int PathFindDelay = 0;
         // </AI Variables>
@@ -187,22 +187,33 @@ namespace Lolo
                             {
                                 if (PathFindDelay <= 0)
                                 {
+                                    Console.WriteLine("################## START OVER ##########################");
                                     path = new List<int>();
                                     PathFound = false;
-                                    PathFindDelay = 100;
+                                    PathFindDelay = 1;
                                     AI_PathFind(pos, 0);
                                 }
                                 else
                                 {
-                                    if (Map.tiles[path[0]].Position == findMyCell())
-                                    {
-                                        path.Remove(path[0]);
-                                    }
                                     if (path.Count > 0)
                                     {
-                                        AI_TryWalk(Map.tiles[path[0]].Position, elapsedTime);
+                                        if (Map.tiles[path[0]].Position == findMyCell())
+                                        {
+                                            path.Remove(path[0]);
+                                        }
+                                        if (path.Count > 0)
+                                        {
+                                            AI_TryWalk(Map.tiles[path[0]].Position, elapsedTime);
+                                        }
+                                        else
+                                        {
+                                            PathFindDelay = 0;
+                                        }
                                     }
-                                    PathFindDelay--;
+                                    else
+                                    {
+                                        PathFindDelay = 0;
+                                    }                                    
                                 }
                             }
                         }
@@ -217,6 +228,10 @@ namespace Lolo
                 {
                     moveLoop--;
                 }
+            }
+            else
+            {
+                PathFindDelay = 0;
             }
         }
 
@@ -250,7 +265,6 @@ namespace Lolo
             {
                 Console.WriteLine("FAKE END");
                 this.PathFound = true; // Fake path found, is a recursion control
-                PathFindDelay = 30;
             }
 
             if (this.PathFound)
@@ -261,6 +275,7 @@ namespace Lolo
             {
                 Vector2 myCell = findMyCell();
                 initNode = IndexFromCell(myCell);
+                Console.WriteLine("I'm at " + initNode.ToString());
             }
             if (endNode == -1)
             {                
@@ -268,21 +283,19 @@ namespace Lolo
                 Console.WriteLine("Wanna Find " + endNode.ToString());
             }
 
+            // Sorts the neighbor list by the lowest Distance to the target
             int[] dirs = getNeighbor(initNode);
-
+            List<Tile> tmp = new List<Tile>();
             List<Tile> tilelist = new List<Tile>();
             for (int i = 0; i< dirs.Count(); i++)
             {
-                tilelist.Add(Map.tiles[dirs[i]]);
+                tmp.Add(Map.tiles[dirs[i]]);
             }
-            tilelist.OrderBy(e => Vector2.Distance(e.Position, target));
+            tilelist = tmp.OrderBy(e => Vector2.Distance(e.Position, target)).ToList();
 
-            // FIX THIS SHIT
-
-            //dirs.ToList<int>().Sort((a, b) => 
-
-            foreach (int i in dirs)
+            foreach (Tile t in tilelist)
             {
+                int i = IndexFromCell(t.Position);
                 if(this.PathFound)
                 {
                     return 0;
