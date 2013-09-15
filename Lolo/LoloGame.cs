@@ -108,7 +108,7 @@ namespace Lolo
 
         private void checkPauseKey(KeyboardState keyboardState)
         {
-            bool pauseKeyDownThisFrame = keyboardState.IsKeyDown(Keys.P);
+            bool pauseKeyDownThisFrame = (keyboardState.IsKeyDown(Keys.P) || keyboardState.IsKeyDown(Keys.Escape));
             // If key was not down before, but is down now, we toggle the
             // pause setting
             if (!pauseKeyDown && pauseKeyDownThisFrame)
@@ -130,21 +130,28 @@ namespace Lolo
                 if (previousMenuKey != Keys.Up)
                 {
                     previousMenuKey = Keys.Up;
-                    if (CurrentGameState == GameState.LoadFromFile)
+                    if (paused)
                     {
-                        lvlLoad.ButtonFocus(-1);
+                        pauseSprite.ButtonFocus(-1);
                     }
-                    else if (CurrentGameState == GameState.MainMenu)
+                    else
                     {
-                        menu.ButtonFocus(-1);
-                    }
-                    else if (CurrentGameState == GameState.RoundResults)
-                    {
-                        roundR.ButtonFocus(-1);
-                    }
-                    else if (CurrentGameState == GameState.Options)
-                    {
-                        options.ButtonFocus(-1);
+                        if (CurrentGameState == GameState.LoadFromFile)
+                        {
+                            lvlLoad.ButtonFocus(-1);
+                        }
+                        else if (CurrentGameState == GameState.MainMenu)
+                        {
+                            menu.ButtonFocus(-1);
+                        }
+                        else if (CurrentGameState == GameState.RoundResults)
+                        {
+                            roundR.ButtonFocus(-1);
+                        }
+                        else if (CurrentGameState == GameState.Options)
+                        {
+                            options.ButtonFocus(-1);
+                        }
                     }
                 }
             }
@@ -153,53 +160,72 @@ namespace Lolo
                 if (previousMenuKey != Keys.Down)
                 {
                     previousMenuKey = Keys.Down;
-                    if (CurrentGameState == GameState.LoadFromFile)
+                    if (paused)
                     {
-                        lvlLoad.ButtonFocus(1);
+                        pauseSprite.ButtonFocus(1);
                     }
-                    else if (CurrentGameState == GameState.MainMenu)
+                    else
                     {
-                        menu.ButtonFocus(1);
-                    }
-                    else if (CurrentGameState == GameState.RoundResults)
-                    {
-                        roundR.ButtonFocus(1);
-                    }
-                    else if (CurrentGameState == GameState.Options)
-                    {
-                        options.ButtonFocus(1);
+                        if (CurrentGameState == GameState.LoadFromFile)
+                        {
+                            lvlLoad.ButtonFocus(1);
+                        }
+                        else if (CurrentGameState == GameState.MainMenu)
+                        {
+                            menu.ButtonFocus(1);
+                        }
+                        else if (CurrentGameState == GameState.RoundResults)
+                        {
+                            roundR.ButtonFocus(1);
+                        }
+                        else if (CurrentGameState == GameState.Options)
+                        {
+                            options.ButtonFocus(1);
+                        }
                     }
                 }
             }
             else if (!EnterKeyDown && EnterKeyDownThisFrame)
             {
-                if (CurrentGameState == GameState.LoadFromFile)
+                if (paused)
                 {
-                    LevelName = lvlLoad.getCaption();
-                    if (LevelName == "Cancel")
-                    {
-                        LevelName = "";
-                    }
-                    CurrentGameState = lvlLoad.GetRetState();
-                }
-                else if (CurrentGameState == GameState.MainMenu)
-                {
-                    CurrentGameState = menu.GetRetState();
-                }
-                else if (CurrentGameState == GameState.RoundResults)
-                {
-                    CurrentGameState = roundR.GetRetState();
-                }
-                else if (CurrentGameState == GameState.Options)
-                {
-                    GameState tmp = options.GetRetState();
+                    GameState tmp = pauseSprite.GetRetState();
                     if (tmp != GameState.None)
                     {
-                        CurrentGameState = tmp;
+                        CurrentGameState = tmp;                    
                     }
-                    else
+                    paused = false;
+                }
+                else
+                {
+                    if (CurrentGameState == GameState.LoadFromFile)
                     {
-                        options.CheckBoxClicked();
+                        LevelName = lvlLoad.getCaption();
+                        if (LevelName == "Cancel")
+                        {
+                            LevelName = "";
+                        }
+                        CurrentGameState = lvlLoad.GetRetState();
+                    }
+                    else if (CurrentGameState == GameState.MainMenu)
+                    {
+                        CurrentGameState = menu.GetRetState();
+                    }
+                    else if (CurrentGameState == GameState.RoundResults)
+                    {
+                        CurrentGameState = roundR.GetRetState();
+                    }
+                    else if (CurrentGameState == GameState.Options)
+                    {
+                        GameState tmp = options.GetRetState();
+                        if (tmp != GameState.None)
+                        {
+                            CurrentGameState = tmp;
+                        }
+                        else
+                        {
+                            options.CheckBoxClicked();
+                        }
                     }
                 }
             }
@@ -233,7 +259,7 @@ namespace Lolo
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             background = Content.Load<Texture2D>("Background");
-            pauseSprite = new Pause(ScreenHeight, ScreenWidth, Content.Load<SpriteFont>("mainfont")); 
+            pauseSprite = new Pause(ScreenHeight, ScreenWidth, Content.Load<SpriteFont>("mainfont"), Content.Load<SpriteFont>("chartsfont")); 
             menues = Content.Load<Texture2D>("MainMenu");
             mainFont = Content.Load<SpriteFont>("mainfont");
             chartFont = Content.Load<SpriteFont>("chartsfont");
@@ -273,11 +299,7 @@ namespace Lolo
                 _elapsed_time = 0;
             }
             //</FPS>
-
-            #warning remove this
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
+            
             if (CurrentGameState == GameState.MainMenu || 
                 CurrentGameState == GameState.LoadFromFile || 
                 CurrentGameState == GameState.RoundResults ||
@@ -288,6 +310,7 @@ namespace Lolo
             if (CurrentGameState == GameState.Playing1P || CurrentGameState == GameState.Playing2P)
             {
                 checkPauseKey(Keyboard.GetState());
+                checkMenuKey(Keyboard.GetState());
             }
 
             if (!paused)
@@ -367,7 +390,11 @@ namespace Lolo
                         Exit();
                         break;
                 }
-                base.Update(gameTime);            
+                base.Update(gameTime);
+            }
+            else
+            {
+                pauseSprite.Update(gameTime);
             }
         }
 

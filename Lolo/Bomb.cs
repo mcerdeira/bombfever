@@ -81,6 +81,11 @@ namespace Lolo
             spriteBatch.Draw(Texture, dest, source, Color.White);
         }
 
+        public Vector2 getSafePlace()
+        {
+            return new Vector2(0, 0);
+        }
+
         private void CheckCollisions(Player player)
         {
             if (LifeLoop <= 50 && hitBox.Intersects(player.hitBox))

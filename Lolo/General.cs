@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 namespace Lolo
 {
     public enum GameState
-    {
+    {        
         None,
         MainMenu,      // Displaying main menu
         GotoMainMenu,  // (Command) Call the main menu display
