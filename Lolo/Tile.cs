@@ -115,60 +115,69 @@ namespace Lolo
 
         public void Shake()
         {
-            if (this.ShakeCount == 0)
+            if (this.ID != 0)
             {
-                this.ShakeCount = 50;
-                this.shakeY = 3;
-                this.shakeX = 3;
+                if (this.ShakeCount == 0)
+                {
+                    this.ShakeCount = 50;
+                    this.shakeY = 3;
+                    this.shakeX = 3;
+                }
             }
         }
 
         private void CheckCollisionsBomb()
         {
-            for (int index = 0; index < bombmanager.bombs.Count; index++)
+            if (this.ID != 0)
             {
-                if (this.hitBox.Intersects(bombmanager.bombs[index].hitBox))
+                for (int index = 0; index < bombmanager.bombs.Count; index++)
                 {
-                    bombmanager.bombs[index].wallHitted = true;
-                    break;
+                    if (this.hitBox.Intersects(bombmanager.bombs[index].hitBox))
+                    {
+                        bombmanager.bombs[index].wallHitted = true;
+                        break;
+                    }
                 }
             }
         }
 
         private void CheckCollisions(Player player)
         {
-            if (hitBox.Intersects(player.hitBox))
+            if (this.ID != 0)
             {
-                Vector2 v = General.IntersectDepthVector(player.hitBox, this.hitBox);
-                float absx = Math.Abs(v.X);
-                float absy = Math.Abs(v.Y);
-                //string loc ="";
-                //string axis ="";
-
-                // if a collision has happened		
-                if (!(v.X == 0 && v.Y == 0))
+                if (hitBox.Intersects(player.hitBox))
                 {
-                    if (absx > absy) // the shallower impact is the correct one- this is on the y axis
+                    Vector2 v = General.IntersectDepthVector(player.hitBox, this.hitBox);
+                    float absx = Math.Abs(v.X);
+                    float absy = Math.Abs(v.Y);
+                    //string loc ="";
+                    //string axis ="";
+
+                    // if a collision has happened		
+                    if (!(v.X == 0 && v.Y == 0))
                     {
-                        //axis = "y";
-                        //if (v.Y < 0)
-                        //    loc = "top";
-                        //else
-                        //    loc = "bottom";
-                        Vector2 newpos = new Vector2(player.hitBox.X, player.hitBox.Y + v.Y);
-                        player.newPosition = newpos;
+                        if (absx > absy) // the shallower impact is the correct one- this is on the y axis
+                        {
+                            //axis = "y";
+                            //if (v.Y < 0)
+                            //    loc = "top";
+                            //else
+                            //    loc = "bottom";
+                            Vector2 newpos = new Vector2(player.hitBox.X, player.hitBox.Y + v.Y);
+                            player.newPosition = newpos;
+                        }
+                        else // the x axis!
+                        {
+                            //axis = "x";
+                            //if (v.X < 0)
+                            //    loc = "left";
+                            //else
+                            //    loc = "right";
+                            Vector2 newpos = new Vector2(player.hitBox.X + v.X, player.hitBox.Y);
+                            player.newPosition = newpos;
+                        }
+                        player.wallHitted = true;
                     }
-                    else // the x axis!
-                    {
-                        //axis = "x";
-                        //if (v.X < 0)
-                        //    loc = "left";
-                        //else
-                        //    loc = "right";
-                        Vector2 newpos = new Vector2(player.hitBox.X + v.X, player.hitBox.Y);
-                        player.newPosition = newpos;
-                    }
-                    player.wallHitted = true;                    
                 }
             }
         }

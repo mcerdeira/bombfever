@@ -29,7 +29,6 @@ namespace Lolo
             float centerX = General.getScreenCenterTextX(Caption, screenwidth, font);
             float centerY = General.getScreenCenterTextY(Caption, screenheight, font);
             this.Position = new Vector2(centerX, centerY);
-
             Button btn = new Button("Continue", screenwidth, font2, Color.White, GameState.None);
             btns.Add(btn);
             btn = new Button("Quit", screenwidth, font2, Color.White, GameState.GotoMainMenu);

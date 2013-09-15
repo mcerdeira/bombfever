@@ -14,15 +14,15 @@ namespace Lolo
         // <AI Variables>
         private int moveLoop = 0; // Movement loop (the player does not move every frame)
         private Player Human; // A reference to the human player
-        private Map Map; // A reference to the current map
-        private int runAwayDelay = 0; // A little delay to keep running away after the bomb explodes
+        private Map Map; // A reference to the current map        
         private bool hasToCorrect = false; // A flag that indicates if the direction is imposible and a correction is needed        
         private int relevantDiff = 0; // The minimum difference (between X and Y) for the player to change the current direction    
         private bool runningAway = false;
         private PlayerDirection Direction = new PlayerDirection();
+        // Normal status
         private List<int> path = new List<int>();
         private bool PathFound = false;
-        private int PathFindDelay = 0;
+        private int PathFindDelay = 0;        
         // </AI Variables>
         private Vector2 RespawnLoc; // Location the respawn will point to
         public int inmunityCounter = 0; // Frame duration of inmunity (after being hitted)
@@ -168,60 +168,49 @@ namespace Lolo
                 if (moveLoop == 0)
                 {                    
                     moveLoop = 2;
-                    Vector2 pos = Human.getLocation();//getOpponentPosition();
-                    Vector2 avoidpos = AI_Avoid();
-                    if (avoidpos.X == 9999)
-                    {                        
-                        if (runAwayDelay > 0)
+                    Vector2 pos = Human.getLocation();
+                    Vector2 avoidpos = AI_Avoid();                    
+                    if (opponentReachable(pos))
+                    {
+                        AI_Attack();
+                    }
+                    else
+                    {                       
+                        if (avoidpos.X != 9999)
                         {
-                            // TODO: Evade
-                            runAwayDelay--;
+                            pos = new Vector2(700, 500);       
+                            PathFindDelay = 0;
+                        }
+                        if (PathFindDelay <= 0)
+                        {
+                            Console.WriteLine("################## START OVER ##########################");
+                            path = new List<int>();
+                            PathFound = false;
+                            PathFindDelay = 1;
+                            AI_PathFind(pos, 0);
                         }
                         else
                         {
-                            if (opponentReachable(pos))
+                            if (path.Count > 0)
                             {
-                                AI_Attack();
-                            }
-                            else
-                            {
-                                if (PathFindDelay <= 0)
+                                if (Map.tiles[path[0]].Position == findMyCell())
                                 {
-                                    Console.WriteLine("################## START OVER ##########################");
-                                    path = new List<int>();
-                                    PathFound = false;
-                                    PathFindDelay = 1;
-                                    AI_PathFind(pos, 0);
+                                    path.Remove(path[0]);
+                                }
+                                if (path.Count > 0)
+                                {
+                                    AI_TryWalk(Map.tiles[path[0]].Position, elapsedTime);
                                 }
                                 else
                                 {
-                                    if (path.Count > 0)
-                                    {
-                                        if (Map.tiles[path[0]].Position == findMyCell())
-                                        {
-                                            path.Remove(path[0]);
-                                        }
-                                        if (path.Count > 0)
-                                        {
-                                            AI_TryWalk(Map.tiles[path[0]].Position, elapsedTime);
-                                        }
-                                        else
-                                        {
-                                            PathFindDelay = 0;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        PathFindDelay = 0;
-                                    }                                    
+                                    PathFindDelay = 0;
                                 }
                             }
+                            else
+                            {
+                                PathFindDelay = 0;
+                            }                                    
                         }
-                    }
-                    else
-                    {                        
-                        //TODO: Evade
-                        runAwayDelay = 15;
                     }
                 }
                 else
@@ -238,24 +227,24 @@ namespace Lolo
         private Vector2 AI_Avoid()
         {
             this.runningAway = false;
-            //Vector2 bomb = BombMan.getNearestBomb(this.Location);
-            //if(bomb.X == 9999)
-            //{
-            //    return bomb;
-            //}
-            //else
-            //{   
-            //    float distance = Vector2.Distance(Location, bomb);
-            //    if (distance < 200)
-            //    {
-            //        this.runningAway = true;                   
-            //        return bomb;
-            //    }
-            //    else
-            //    {                                        
+            Vector2 bomb = BombMan.getNearestBomb(this.Location);
+            if(bomb.X == 9999)
+            {
+                return bomb;
+            }
+            else
+            {   
+                float distance = Vector2.Distance(Location, bomb);
+                if (distance < 200)
+                {
+                    this.runningAway = true;                   
+                    return bomb;
+                }
+                else
+                {                                        
                     return new Vector2(9999, 9999);
-            //    }
-            //}
+                }
+            }
         }
 
         private int AI_PathFind(Vector2 target, int counter, int initNode = -1, int endNode = -1)
@@ -901,14 +890,6 @@ namespace Lolo
                         break;
                 }
                 AI_chekWalkable(desiredLoc, currentDir); // Check if I can go, to the 2nd...
-                //tries.Add(currentDir);
-                //Console.WriteLine("2° " + currentDir);            
-            }
-
-            if (this.hasToCorrect)
-            {
-                // Can´t go straight       
-                //AI_PathFind(pos, elapsedTime);
             }
 
             if (!this.hasToCorrect) // If you get here, and couldn't go, you are f*****!
@@ -919,7 +900,7 @@ namespace Lolo
         }
 
         private void AI_chekWalkable(Vector2 desiredLoc, string direction)
-        {            
+        {
             int width = Texture.Width / Columns;
             int height = Texture.Height;
             Rectangle future_pos = new Rectangle((int)desiredLoc.X, (int)desiredLoc.Y, width, height);
@@ -927,26 +908,34 @@ namespace Lolo
             for (int index = 0; index < Map.tiles.Count; index++)
             {
                 if (Map.tiles[index].hitBox.Intersects(future_pos))
-                {                    
+                {
                     if (Map.tiles[index].BreakAble)
                     {
-                        if (this.BombCount < this.BombMax)
+                        if (Map.tiles[index].Walkable)
                         {
-                            if (!runningAway)
+                            this.hasToCorrect = false;
+                            return;
+                        }
+                        else
+                        {
+                            if (this.BombCount < this.BombMax)
                             {
-                                //Console.WriteLine("$$$$$$$$$$$$$ BOMB $$$$$$$$$$$$$");
-                                placeBomb();
-                            }
-                            else
-                            {
-                                this.hasToCorrect = true; // I set this to true, so the player thinks it cannot go anywhere 
+                                if (!runningAway)
+                                {
+                                    Console.WriteLine("$$$$$$$$$$$$$ BOMB $$$$$$$$$$$$$");
+                                    placeBomb();
+                                }
+                                else
+                                {
+                                    this.hasToCorrect = true; // I set this to true, so the player thinks it cannot go anywhere 
+                                }
                             }
                         }
                     }
                     else
                     {
                         this.hasToCorrect = true;
-                    }                    
+                    }
                     return;
                 }
             }
