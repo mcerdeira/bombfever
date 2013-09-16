@@ -18,9 +18,8 @@ namespace Lolo
         private bool hasToCorrect = false; // A flag that indicates if the direction is imposible and a correction is needed        
         private int relevantDiff = 0; // The minimum difference (between X and Y) for the player to change the current direction    
         private bool runningAway = false;
-        private PlayerDirection Direction = new PlayerDirection();
-        // Normal status
-        private List<int> path = new List<int>();
+        private PlayerDirection Direction = new PlayerDirection();        
+        private List<int> path = new List<int>();        
         private bool PathFound = false;
         private int PathFindDelay = 0;        
         // </AI Variables>
@@ -178,13 +177,13 @@ namespace Lolo
                     {                       
                         if (avoidpos.X != 9999)
                         {
-                            pos = new Vector2(700, 500);       
-                            PathFindDelay = 0;
+                            pos = avoidpos;
+                            PathFindDelay = 0;                                                        
                         }
                         if (PathFindDelay <= 0)
                         {
                             Console.WriteLine("################## START OVER ##########################");
-                            path = new List<int>();
+                            path = new List<int>();                            
                             PathFound = false;
                             PathFindDelay = 1;
                             AI_PathFind(pos, 0);
@@ -194,8 +193,8 @@ namespace Lolo
                             if (path.Count > 0)
                             {
                                 if (Map.tiles[path[0]].Position == findMyCell())
-                                {
-                                    path.Remove(path[0]);
+                                {                                    
+                                    path.Remove(path[0]);                                    
                                 }
                                 if (path.Count > 0)
                                 {
@@ -237,7 +236,10 @@ namespace Lolo
                 float distance = Vector2.Distance(Location, bomb);
                 if (distance < 200)
                 {
-                    this.runningAway = true;                   
+                    this.runningAway = true;
+
+
+
                     return bomb;
                 }
                 else
@@ -247,7 +249,7 @@ namespace Lolo
             }
         }
 
-        private int AI_PathFind(Vector2 target, int counter, int initNode = -1, int endNode = -1)
+        private int AI_PathFind(Vector2 target, int counter, int initNode = -1, int endNode = -1, bool scaping= false)
         {
             counter++;
             if (counter > 10)
@@ -293,7 +295,7 @@ namespace Lolo
                 {
                     // We find the final node!
                     Console.WriteLine("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<found!>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><");
-                    path.Add(endNode);
+                    path.Add(endNode);                    
                     this.PathFound = true;
                     return 0;
                 }
@@ -301,9 +303,12 @@ namespace Lolo
                 {
                     if (!path.Contains(i) && (Map.tiles[i].Walkable || Map.tiles[i].BreakAble))
                     {
-                        path.Add(i);
-                        Console.WriteLine(i);
-                        int r = AI_PathFind(target, counter, i, endNode);
+                        if (!scaping || Map.tiles[i].Walkable) // If scaping, only search open tiles
+                        {
+                            path.Add(i);                            
+                            Console.WriteLine(i);
+                            int r = AI_PathFind(target, counter, i, endNode);
+                        }
                     }
                 }
             }
