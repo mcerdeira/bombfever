@@ -127,8 +127,8 @@ namespace Lolo
 
         private void resPawn()
         {
-            //Console.WriteLine("################################################ D I E D ###################################################");
-            this.inmunityCounter = 170; // Lasts, more or less a bomb explosion time
+            Console.WriteLine("################################################ D I E D ###################################################");
+            this.inmunityCounter = 170; // Lasts, more or less a bomb explosion time =)
             this.Status = "respawning";
             string dest = (InstanceName == "p1") ? "p2" : "p1";
             Score.setScore(dest);            
@@ -186,7 +186,7 @@ namespace Lolo
                             path = new List<int>();                            
                             PathFound = false;
                             PathFindDelay = 1;
-                            AI_PathFind(pos, 0);
+                            AI_PathFind(pos, 0); // TODO: endNode:-2 when its escaping
                         }
                         else
                         {
@@ -237,9 +237,6 @@ namespace Lolo
                 if (distance < 200)
                 {
                     this.runningAway = true;
-
-
-
                     return bomb;
                 }
                 else
@@ -249,8 +246,10 @@ namespace Lolo
             }
         }
 
-        private int AI_PathFind(Vector2 target, int counter, int initNode = -1, int endNode = -1, bool scaping= false)
+        private int AI_PathFind(Vector2 target, int counter, int initNode = -1, int endNode = -1)
         {
+            // If endNode == -2, means that we are scaping, so, there is not a REAL end node
+
             counter++;
             if (counter > 10)
             {
@@ -282,7 +281,14 @@ namespace Lolo
             {
                 tmp.Add(Map.tiles[dirs[i]]);
             }
-            tilelist = tmp.OrderBy(e => Vector2.Distance(e.Position, target)).ToList();
+            if (endNode == -2)
+            {                
+                tilelist = tmp.OrderByDescending(e => Vector2.Distance(e.Position, target)).ToList();
+            }
+            else
+            {
+                tilelist = tmp.OrderBy(e => Vector2.Distance(e.Position, target)).ToList();
+            }
 
             foreach (Tile t in tilelist)
             {
@@ -303,7 +309,7 @@ namespace Lolo
                 {
                     if (!path.Contains(i) && (Map.tiles[i].Walkable || Map.tiles[i].BreakAble))
                     {
-                        if (!scaping || Map.tiles[i].Walkable) // If scaping, only search open tiles
+                        if (!(endNode == -2) || Map.tiles[i].Walkable) // If scaping, only search open tiles
                         {
                             path.Add(i);                            
                             Console.WriteLine(i);
