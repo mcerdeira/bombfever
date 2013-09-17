@@ -16,12 +16,12 @@ namespace Lolo
         private Player Human; // A reference to the human player
         private Map Map; // A reference to the current map        
         private bool hasToCorrect = false; // A flag that indicates if the direction is imposible and a correction is needed        
-        private int relevantDiff = 0; // The minimum difference (between X and Y) for the player to change the current direction    
-        private bool runningAway = false;
+        private int relevantDiff = 0; // The minimum difference (between X and Y) for the player to change the current direction          
         private PlayerDirection Direction = new PlayerDirection();        
         private List<int> path = new List<int>();        
         private bool PathFound = false;
-        private int PathFindDelay = 0;        
+        private int PathFindDelay = 0;
+        private bool runningAway = false;
         // </AI Variables>
         private Vector2 RespawnLoc; // Location the respawn will point to
         public int inmunityCounter = 0; // Frame duration of inmunity (after being hitted)
@@ -174,11 +174,23 @@ namespace Lolo
                         AI_Attack();
                     }
                     else
-                    {                       
+                    {
                         if (avoidpos.X != 9999)
                         {
-                            pos = avoidpos;
-                            PathFindDelay = 0;                                                        
+                            if (!runningAway)
+                            {
+                                pos = avoidpos;
+                                PathFindDelay = 0;
+                                runningAway = true;
+                            }
+                        }
+                        else
+                        {
+                            if (runningAway)
+                            {
+                                PathFindDelay = 0;
+                                runningAway = false;
+                            }
                         }
                         if (PathFindDelay <= 0)
                         {
@@ -186,7 +198,15 @@ namespace Lolo
                             path = new List<int>();                            
                             PathFound = false;
                             PathFindDelay = 1;
-                            AI_PathFind(pos, 0); // TODO: endNode:-2 when its escaping
+                            if (runningAway)
+                            {
+                                Console.WriteLine("Bomb!!!!!!!!!!!!!!!!!!!!");
+                                AI_PathFind(pos, 0, endNode:-2); 
+                            }
+                            else
+                            {
+                                AI_PathFind(pos, 0);
+                            }
                         }
                         else
                         {
@@ -224,8 +244,7 @@ namespace Lolo
         }
 
         private Vector2 AI_Avoid()
-        {
-            this.runningAway = false;
+        {            
             Vector2 bomb = BombMan.getNearestBomb(this.Location);
             if(bomb.X == 9999)
             {
@@ -236,8 +255,7 @@ namespace Lolo
                 float distance = Vector2.Distance(Location, bomb);
                 if (distance < 200)
                 {
-                    this.runningAway = true;
-                    return bomb;
+                    return new Vector2(normaLize(bomb.X), normaLize(bomb.Y));
                 }
                 else
                 {                                        
@@ -311,7 +329,7 @@ namespace Lolo
                     {
                         if (!(endNode == -2) || Map.tiles[i].Walkable) // If scaping, only search open tiles
                         {
-                            path.Add(i);                            
+                            path.Add(i);
                             Console.WriteLine(i);
                             int r = AI_PathFind(target, counter, i, endNode);
                         }
@@ -918,7 +936,7 @@ namespace Lolo
             this.hasToCorrect = false;
             for (int index = 0; index < Map.tiles.Count; index++)
             {
-                if (Map.tiles[index].hitBox.Intersects(future_pos))
+                if (!(Map.tiles[index].ID == 0) && Map.tiles[index].hitBox.Intersects(future_pos))
                 {
                     if (Map.tiles[index].BreakAble)
                     {
