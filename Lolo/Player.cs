@@ -205,6 +205,7 @@ namespace Lolo
                             }
                             else
                             {
+                                Console.WriteLine("Gonna get you...");
                                 AI_PathFind(pos, 0);
                             }
                         }
@@ -222,12 +223,28 @@ namespace Lolo
                                 }
                                 else
                                 {
-                                    PathFindDelay = 0;
+                                    if (!runningAway)
+                                    {
+                                        PathFindDelay = 0;
+                                    }
+                                    else
+                                    {
+                                        // Walk inside the tile until hit a wall
+                                        AI_WalkTillWall(elapsedTime);
+                                    }
                                 }
                             }
                             else
                             {
-                                PathFindDelay = 0;
+                                if (!runningAway)
+                                {
+                                    PathFindDelay = 0;
+                                }
+                                else
+                                {
+                                    // Walk inside the tile until hit a wall
+                                    AI_WalkTillWall(elapsedTime);
+                                }
                             }                                    
                         }
                     }
@@ -239,13 +256,19 @@ namespace Lolo
             }
             else
             {
+                runningAway = false;
                 PathFindDelay = 0;
             }
         }
 
         private Vector2 AI_Avoid()
-        {            
-            Vector2 bomb = BombMan.getNearestBomb(this.Location);
+        {
+            Vector2 bomb;
+            if (this.inmunityCounter > 10)
+            {
+                return new Vector2(9999, 9999);
+            }
+            bomb = BombMan.getNearestBomb(this.Location);
             if(bomb.X == 9999)
             {
                 return bomb;
@@ -330,19 +353,15 @@ namespace Lolo
                         if (!(endNode == -2) || Map.tiles[i].Walkable) // If scaping, only search open tiles
                         {
                             path.Add(i);
-                            Console.WriteLine(i);
+                            Console.WriteLine(i + " --> " + endNode.ToString());
                             int r = AI_PathFind(target, counter, i, endNode);
                         }
                     }
                 }
             }
+            #warning Analize the dead ends to remove dead nodes from the path
             Console.WriteLine("dead end");
             return 1;
-        }
-
-        private static int MinDistance(Vector2 a, Vector2 b)
-        {
-            return 0;
         }
 
         public int IndexFromCell(Vector2 cell)
@@ -865,6 +884,49 @@ namespace Lolo
             return n;
         }
 
+        private void AI_WalkTillWall(float elapsedTime)
+        {
+            Vector2 desiredLoc = new Vector2();
+            string currentDir = "";
+            Console.WriteLine("Walking " + Direction.SecondaryDirection + " till wall...");
+            desiredLoc.Y = Location.Y;
+            desiredLoc.X = Location.X;
+            currentDir = Direction.SecondaryDirection;
+            switch (currentDir)
+            {
+                case "R":
+                    desiredLoc.X += (Speed.X * elapsedTime) * 1;
+                    desiredLoc.Y = Location.Y;
+                    break;
+                case "L":
+                    desiredLoc.X += (Speed.X * elapsedTime) * -1;
+                    desiredLoc.Y = Location.Y;
+                    break;
+                case "D":
+                    desiredLoc.X = Location.X;
+                    desiredLoc.Y += (Speed.Y * elapsedTime) * 1;
+                    break;
+                case "U":
+                    desiredLoc.X = Location.X;
+                    desiredLoc.Y += (Speed.Y * elapsedTime) * -1;
+                    break;
+            }
+            AI_chekWalkable(desiredLoc, currentDir); // Check if I can go, to the 2nd...
+
+            if (!this.hasToCorrect) // If you get here, and couldn't go, you are f*****!
+            {
+                Location = desiredLoc;
+                Direction.LastDirection = currentDir;
+            }
+
+            if (!this.hasToCorrect) // If you get here, and couldn't go, you are f*****!
+            {
+                Location = desiredLoc;
+                Direction.LastDirection = currentDir;
+            }
+        }
+
+
         private void AI_TryWalk(Vector2 pos, float elapsedTime)
         {
             //Console.WriteLine("-----------------------------------------------------------");
@@ -975,15 +1037,6 @@ namespace Lolo
             placeBomb(true);
         }
 
-        Vector2 FindInterceptingPoint()
-        {
-            Vector2 v, d, t; 
-            v = this.Speed;
-            d = Human.getLocation() - this.Location; // range to close            
-            t = Vector2.Divide(d, v.X);
-            return Human.getLocation() + (Speed * t); // target point
-        }
-
         private void setDirection(Vector2 pos, float elapsedTime)
         {            
             Direction.X = Location.X;
@@ -1048,25 +1101,18 @@ namespace Lolo
             }            
         }
 
-        private Vector2 getOpponentPosition()
-        {
-            return FindInterceptingPoint();//;Human.getLocation();
-        }
-
         private void UpdateInput(float elapsedTime)
         {
             if (PStlye == PlayerStyle.Human)
             {                
                 if (this.Status != "dead")
                 {
-                    this.Status = "idle";
-                    //if (!st.IsKeyDown(PCtrls.Bomb))
+                    this.Status = "idle";                    
                     if(!cwrap.IsKeyDown(PlayerActions.Bomb))
                     {
                         KeyControl = "";
                     }
-
-                    //if (st.IsKeyDown(PCtrls.Bomb) && KeyControl != "bomb" && this.BombCount < this.BombMax)
+                    
                     if (cwrap.IsKeyDown(PlayerActions.Bomb) && KeyControl != "bomb")
                     {
                         if (this.BombMan.KickingBomb(this))
@@ -1082,46 +1128,37 @@ namespace Lolo
                             }
                         }
                     }
-
-                    //if (st.IsKeyDown(PCtrls.Right))
+                    
                     if(cwrap.IsKeyDown(PlayerActions.Right))
                     {
                         this.Status = "walking";
                         directionX = 1;
                     }
-
-                    //if (st.IsKeyDown(PCtrls.Left))
+                    
                     if(cwrap.IsKeyDown(PlayerActions.Left))
                     {
                         this.Status = "walking";
                         directionX = -1;
                     }
-
-                    //if (st.IsKeyDown(PCtrls.Down))
+                    
                     if(cwrap.IsKeyDown(PlayerActions.Down))
                     {
                         this.Status = "walking";
                         directionY = 1;
                     }
-
-                    //if (st.IsKeyDown(PCtrls.Up))
+                    
                     if(cwrap.IsKeyDown(PlayerActions.Up))
                     {
                         this.Status = "walking";
                         directionY = -1;
                     }
 
-                    //if (!st.IsKeyDown(PCtrls.Right) &&
-                    //    !st.IsKeyDown(PCtrls.Left))
                     if(!cwrap.IsKeyDown(PlayerActions.Right) &&
                         !cwrap.IsKeyDown(PlayerActions.Left))
-                    {
-                        //Speed.X = 0;
+                    {                        
                         directionX = 0;
                     }
 
-                    //if (!st.IsKeyDown(PCtrls.Up) &&
-                    //    !st.IsKeyDown(PCtrls.Down))
                     if (!cwrap.IsKeyDown(PlayerActions.Up) &&
                         !cwrap.IsKeyDown(PlayerActions.Down))
                     {
@@ -1153,10 +1190,12 @@ namespace Lolo
         }
 
         private void placeBomb(bool attacking = false)
-        {                                   
-            // TODO, if attacking try to kick it
-            BombMan.SpawnBomb(Location, InstanceName);            
-            this.BombCount++; 
+        {
+            if (this.BombCount < this.BombMax)
+            {
+                BombMan.SpawnBomb(Location, InstanceName);
+                this.BombCount++;
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)

@@ -55,6 +55,12 @@ namespace Lolo
             }
         }
 
+        public void Reset()
+        {
+            currButton = btns.Count;
+            ButtonFocus(1);
+        }
+
         public void ButtonFocus(int direction)
         {
             currButton += direction;

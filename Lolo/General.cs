@@ -116,5 +116,14 @@ namespace Lolo
         {
             return (screenheight / 2) - (Font.MeasureString(text.Trim()).Y / 2);
         }
+
+        Vector2 FindInterceptingPoint(Vector2 Loc1, Vector2 Loc2, Vector2 Speed)
+        {
+            Vector2 v, d, t;
+            v = Speed;
+            d = Loc1 - Loc2; // range to close            
+            t = Vector2.Divide(d, v.X);
+            return Loc1 + (Speed * t); // target point
+        }
     }
 }

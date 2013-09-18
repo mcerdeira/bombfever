@@ -195,6 +195,7 @@ namespace Lolo
                         CurrentGameState = tmp;                    
                     }
                     paused = false;
+                    pauseSprite.Reset();
                 }
                 else
                 {
@@ -226,6 +227,7 @@ namespace Lolo
                         {
                             options.CheckBoxClicked();
                         }
+                        options.Reset();
                     }
                 }
             }
