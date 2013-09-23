@@ -16,6 +16,7 @@ namespace Lolo
         public bool Walkable;
         public string Action;
         public int Status = 0; // frame status
+        public int deadCounter = 0;
         public int ID;
         private int Index;
         public Vector2 Position;
@@ -64,7 +65,7 @@ namespace Lolo
 
         public void Update()
         {
-            if(this.ID ==0)
+            if(this.ID == 0)
             {
                 return;
             }
@@ -92,12 +93,6 @@ namespace Lolo
                 case 0:
                     // Space
                     break;
-                case 1:
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    break;
                 default:
                     break;
             }
@@ -109,7 +104,12 @@ namespace Lolo
             }
             if(Action == "dead")
             {
-                Map.RemoveTile(this);
+                //Status = 1;
+                deadCounter++;
+                if (deadCounter == 5)
+                {
+                    Map.RemoveTile(this);
+                }
             }
         }
 

@@ -13,6 +13,7 @@ namespace Lolo
     public class Bomb
     {
         public int Status = 0; // frame status
+        public int frCounter = 0; // Frame counter (it keeps the animation rate)
         public Vector2 Position;
         private Texture2D Texture;
         private int Columns;
@@ -33,8 +34,8 @@ namespace Lolo
             this.player = player;
             this.player2 = player2;
             Texture = Content.Load<Texture2D>("bomb");
-            Vector2 pos = new Vector2(position.X - ((Texture.Width - player.hitBox.Width) / 2), position.Y - ((Texture.Height - player.hitBox.Height) / 2));
-            this.Position = pos;
+            //Vector2 pos = new Vector2(position.X - ((Texture.Width - player.hitBox.Width) / 2), position.Y - ((Texture.Height - player.hitBox.Height) / 2));
+            this.Position = position;
             this.Columns = Texture.Width / 30;
         }
 
@@ -136,6 +137,16 @@ namespace Lolo
                     BombMan.RemoveBomb(this, pos);
                 }
             }
+            frCounter++;
+            if (frCounter == 10)
+            {
+                frCounter = 0;
+                Status++;
+            }
+            if (Status > 2)
+            {
+                Status = 0;
+            }            
         }
     }
 }

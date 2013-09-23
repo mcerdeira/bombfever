@@ -47,7 +47,7 @@ namespace Lolo
         BombManager BombMan;
         Score Score;
         public int BombCount = 0;
-        public int BombMax = 3;
+        public int BombMax = 2;
         int minVel = 200;
         int maxVel = 280;
         int directionX = 0;
