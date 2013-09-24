@@ -432,9 +432,10 @@ namespace Lolo
                 case GameState.Playing1P:
                 case GameState.Playing2P:
                     spriteBatch.Draw(background, new Rectangle(0, 0, ScreenWidth, ScreenHeight), Color.White); 
-                    map.Draw(spriteBatch);
+                    
                     p1.Draw(spriteBatch);
-                    p2.Draw(spriteBatch);                    
+                    p2.Draw(spriteBatch);
+                    map.Draw(spriteBatch);
                     bombmanager.Draw(spriteBatch);
                     score.Draw(spriteBatch);
                     break;

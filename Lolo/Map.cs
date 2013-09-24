@@ -14,13 +14,13 @@ using System.IO;
  * 0 Empty space
  * 1 Brick (breakable 1 hit)  
  * 2 Iron (unbreakable)
- * 3 Stone (breakable 1 hits)
- * 4 Mud (breakable 1 hit, regenerates)
- * 5 Wood breakable 1 hit, catches fire and propagates to other wood bricks next to it)
+ * 3 Stone (breakable 2 hits)
+ * 4 Grass (walkable)
+ * 5 Wood breakable 1 hit
  * 6 Empty space
  * 7 Empty space
  * 8 Empty space
- * 9 Brick (breakable 1 hit) 
+ * 9 Brick (breakable 1 hit)
  * P Main player
  * E Enemy
  * A Pit
@@ -181,9 +181,8 @@ namespace Lolo
                         //    v = 0;
                         //}
 
-                        if (v == 0)
-                        {
-                            // If 0, then is a walkable block, but lets put some random to decide if regular empty space or what
+                        if (v == 0 || v == 4)
+                        {                            
                             walkable = true;
                         }
                         Vector2 pos = new Vector2(col, row);
@@ -266,9 +265,8 @@ namespace Lolo
                         //    v = 0;
                         //}
 
-                        if (v == 0)
-                        {
-                            // If 0, then is a walkable block, but lets put some random to decide if regular empty space or what
+                        if (v == 0 || v == 4)
+                        {                            
                             walkable = true;
                         }
                         Vector2 pos = new Vector2(col, row);
