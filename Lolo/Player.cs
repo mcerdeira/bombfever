@@ -64,7 +64,7 @@ namespace Lolo
             PrevStatus = "";
             Texture = texture;
             currentFrame = 0;
-            Columns = texture.Width / 30;
+            Columns = texture.Width / 50; //30
             this.PStlye = pstlye;
             this.InstanceName = instancename;
             this.BombMan = BombMan;
@@ -1215,8 +1215,13 @@ namespace Lolo
                 int column = currentFrame % Columns;
                 Rectangle sourceRectangle = new Rectangle(width * column, height * row, width, height);
                 Rectangle destinationRectangle = new Rectangle((int)Location.X, (int)Location.Y, width, height);
-                hitBox = destinationRectangle;
+
+                int hitX = (int)Location.X + 5;
+                int hitY = (int)Location.Y + 10;
+                hitBox = new Rectangle(hitX, hitY, 40, 40);//destinationRectangle;
                 spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White);
+
+                spriteBatch.Draw(Texture, hitBox, hitBox, Color.Red);
             }
         }
     }

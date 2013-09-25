@@ -163,7 +163,10 @@ namespace Lolo
                             //    loc = "top";
                             //else
                             //    loc = "bottom";
+                            /*
                             Vector2 newpos = new Vector2(player.hitBox.X, player.hitBox.Y + v.Y);
+                            */
+                            Vector2 newpos = new Vector2(player.getLocation().X, player.getLocation().Y + v.Y);
                             player.newPosition = newpos;
                         }
                         else // the x axis!
@@ -173,7 +176,10 @@ namespace Lolo
                             //    loc = "left";
                             //else
                             //    loc = "right";
+                            /*
                             Vector2 newpos = new Vector2(player.hitBox.X + v.X, player.hitBox.Y);
+                            */
+                            Vector2 newpos = new Vector2(player.getLocation().X + v.X, player.getLocation().Y);
                             player.newPosition = newpos;
                         }
                         player.wallHitted = true;

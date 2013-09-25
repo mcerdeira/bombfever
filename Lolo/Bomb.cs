@@ -36,7 +36,7 @@ namespace Lolo
             Texture = Content.Load<Texture2D>("bomb");
             //Vector2 pos = new Vector2(position.X - ((Texture.Width - player.hitBox.Width) / 2), position.Y - ((Texture.Height - player.hitBox.Height) / 2));
             this.Position = position;
-            this.Columns = Texture.Width / 30;
+            this.Columns = Texture.Width / 50; //30
         }
 
         public void Kicked(string direction)

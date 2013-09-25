@@ -271,7 +271,7 @@ namespace Lolo
                         }
                         Vector2 pos = new Vector2(col, row);
                         Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v, bombmanager);
-                        tiles.Add(t);                        
+                        tiles.Add(t);
                         col += 50;
                     }
                     row += 50;
