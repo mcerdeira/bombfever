@@ -78,8 +78,15 @@ namespace Lolo
             }           
             Rectangle source = new Rectangle(width * column, height * row, width, height);
             Rectangle dest = new Rectangle((int)Position.X, (int)Position.Y, width, height);
-            hitBox = dest;
+            //hitBox = dest;
+
+            int hitX = (int)Position.X + 10;
+            int hitY = (int)Position.Y + 10;
+            hitBox = new Rectangle(hitX, hitY, 30, 30);
+
             spriteBatch.Draw(Texture, dest, source, Color.White);
+
+            spriteBatch.Draw(Texture, hitBox, hitBox, Color.Red);
         }
 
         private void CheckCollisions(Player player)
