@@ -187,7 +187,7 @@ namespace Lolo
                         }
                         Vector2 pos = new Vector2(col, row);
                         Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v, bombmanager);
-                        tiles.Add(t);                             
+                        tiles.Add(t);
                         col += 50;
                     }
                     row += 50;
@@ -335,7 +335,10 @@ namespace Lolo
         {
             for (int index = 0; index < tiles.Count; index++)
             {
-                tiles[index].Draw(spriteBatch);
+                if (tiles[index].ID != 0)
+                {
+                    tiles[index].Draw(spriteBatch);
+                }
             }
             for (int index = 0; index < items.Count; index++)
             {

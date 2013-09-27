@@ -86,7 +86,8 @@ namespace Lolo
 
             spriteBatch.Draw(Texture, dest, source, Color.White);
 
-            spriteBatch.Draw(Texture, hitBox, hitBox, Color.Red);
+            //This was for debugging
+            //spriteBatch.Draw(Texture, hitBox, hitBox, Color.Red);
         }
 
         private void CheckCollisions(Player player)
@@ -96,7 +97,7 @@ namespace Lolo
                 Vector2 v = General.IntersectDepthVector(player.hitBox, this.hitBox);
                 float absx = Math.Abs(v.X);
                 float absy = Math.Abs(v.Y);
-                // if a collision has happened		
+                // if a collision has happened
                 if (!(v.X == 0 && v.Y == 0))
                 {
                     if (absx > absy) // the shallower impact is the correct one- this is on the y axis

@@ -23,6 +23,7 @@ namespace Lolo
         private int PathFindDelay = 0;
         private bool runningAway = false;
         // </AI Variables>
+        private string lastDirection = "";
         private Vector2 RespawnLoc; // Location the respawn will point to
         public int inmunityCounter = 0; // Frame duration of inmunity (after being hitted)
         public bool wallHitted; // Player hitted a wall Flag        
@@ -37,7 +38,7 @@ namespace Lolo
         private int[] idleFrames = new int[] { 0, 1, 2, 3 };
         private int[] walkFrames = new int[] { 4, 5, 6, 7 };
         private int[] deadFrames = new int[] { 8, 9, 10, 11 };
-        public string Status; // walking, idle, dead
+        public string Status; // walking, idle, dead        
         public string PrevStatus;
         public Rectangle hitBox;
         public Vector2 newPosition;
@@ -1103,10 +1104,15 @@ namespace Lolo
 
         private void UpdateInput(float elapsedTime)
         {
+            string KeyH = "";
+            string KeyV = "";
+
             if (PStlye == PlayerStyle.Human)
             {                
                 if (this.Status != "dead")
                 {
+                    directionX = 0;
+                    directionY = 0;
                     this.Status = "idle";                    
                     if(!cwrap.IsKeyDown(PlayerActions.Bomb))
                     {
@@ -1132,37 +1138,78 @@ namespace Lolo
                     if(cwrap.IsKeyDown(PlayerActions.Right))
                     {
                         this.Status = "walking";
-                        directionX = 1;
+                        KeyH = "R";
                     }
                     
                     if(cwrap.IsKeyDown(PlayerActions.Left))
                     {
                         this.Status = "walking";
-                        directionX = -1;
+                        KeyH = "L";
                     }
                     
                     if(cwrap.IsKeyDown(PlayerActions.Down))
                     {
                         this.Status = "walking";
-                        directionY = 1;
+                        KeyV = "D";
                     }
-                    
-                    if(cwrap.IsKeyDown(PlayerActions.Up))
+
+                    if (cwrap.IsKeyDown(PlayerActions.Up))
                     {
                         this.Status = "walking";
-                        directionY = -1;
+                        KeyV = "U";
                     }
 
-                    if(!cwrap.IsKeyDown(PlayerActions.Right) &&
-                        !cwrap.IsKeyDown(PlayerActions.Left))
-                    {                        
-                        directionX = 0;
-                    }
-
-                    if (!cwrap.IsKeyDown(PlayerActions.Up) &&
-                        !cwrap.IsKeyDown(PlayerActions.Down))
+                    // If one of the key sets is empty
+                    if (KeyH == "" || KeyV == "")
                     {
-                        directionY = 0;
+                        if (KeyH == "R")
+                        {
+                            lastDirection = "R";
+                            directionX = 1;
+                        }
+                        else if(KeyH == "L")
+                        {
+                            lastDirection = "L";
+                            directionX = -1;
+                        }
+
+                        if (KeyV == "U")
+                        {
+                            lastDirection = "U";
+                            directionY = -1;
+                        }
+                        else if (KeyV == "D")
+                        {
+                            lastDirection = "D";
+                            directionY = 1;
+                        }                        
+                    }
+
+                    // If both are useds
+                    if (KeyH != "" && KeyV != "")
+                    {
+                        if (KeyH != lastDirection)
+                        {
+                            if (KeyH == "R")
+                            {                                
+                                directionX = 1;
+                            }
+                            else if (KeyH == "L")
+                            {                                
+                                directionX = -1;
+                            }
+                        }
+                        else
+                        {
+                            if (KeyV == "U")
+                            {                                
+                                directionY = -1;
+                            }
+                            else if (KeyV == "D")
+                            {                                
+                                directionY = 1;
+                            }           
+                        }
                     }
                     Location.X += (Speed.X * elapsedTime) * directionX;
                     Location.Y += (Speed.Y * elapsedTime) * directionY;

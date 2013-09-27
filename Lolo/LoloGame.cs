@@ -435,7 +435,7 @@ namespace Lolo
 
                     map.Draw(spriteBatch);
                     p1.Draw(spriteBatch);
-                    p2.Draw(spriteBatch);                 
+                    p2.Draw(spriteBatch);                    
                     bombmanager.Draw(spriteBatch);
                     score.Draw(spriteBatch);
                     break;
