@@ -1252,7 +1252,6 @@ namespace Lolo
                 Location = newPosition;
                 wallHitted = false;
             }
-
             if (inmunityCounter % 2 == 0)
             {
                 // Draw the player in the new location(x,y)

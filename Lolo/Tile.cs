@@ -148,8 +148,10 @@ namespace Lolo
                 if (hitBox.Intersects(player.hitBox))
                 {
                     Vector2 v = General.IntersectDepthVector(player.hitBox, this.hitBox);
+                    int xSign = Math.Sign(v.X);
+                    int ySign = Math.Sign(v.Y);
                     float absx = Math.Abs(v.X);
-                    float absy = Math.Abs(v.Y);
+                    float absy = Math.Abs(v.Y);                    
                     //string loc ="";
                     //string axis ="";
 
@@ -166,7 +168,12 @@ namespace Lolo
                             /*
                             Vector2 newpos = new Vector2(player.hitBox.X, player.hitBox.Y + v.Y);
                             */
-                            Vector2 newpos = new Vector2(player.getLocation().X, player.getLocation().Y + v.Y);
+                            int autoAd = 0;
+                            if (absx < 25)
+                            {
+                                autoAd = 5 * xSign;
+                            }
+                            Vector2 newpos = new Vector2(player.getLocation().X + autoAd, player.getLocation().Y + v.Y);
                             player.newPosition = newpos;
                         }
                         else // the x axis!
@@ -179,7 +186,12 @@ namespace Lolo
                             /*
                             Vector2 newpos = new Vector2(player.hitBox.X + v.X, player.hitBox.Y);
                             */
-                            Vector2 newpos = new Vector2(player.getLocation().X + v.X, player.getLocation().Y);
+                            int autoAd = 0;
+                            if (absy < 25)
+                            {
+                                autoAd = 5 * ySign;
+                            }
+                            Vector2 newpos = new Vector2(player.getLocation().X + v.X, player.getLocation().Y + autoAd);
                             player.newPosition = newpos;
                         }
                         player.wallHitted = true;

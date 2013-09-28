@@ -62,6 +62,7 @@ namespace Lolo
             bool change = false;
             if (this.Status == 1)
             {
+                #warning This must use the p1 configuration or fixed keyboard (like main menu)
                 KeyboardState keyboardState = Keyboard.GetState();
                 if (keyboardState.IsKeyDown(Keys.Left))
                 {

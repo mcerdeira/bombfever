@@ -21,6 +21,8 @@ namespace Lolo
         float _elapsed_time = 0.0f;
         int _fps = 0;
         // </Fps stuff>
+        ControlWrapper cwrap1;
+        ControlWrapper cwrap2;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         float roundTime;
@@ -48,7 +50,7 @@ namespace Lolo
         private Texture2D menues;
         private bool paused = false;
         private bool pauseKeyDown = false;
-        private Keys previousMenuKey = Keys.None;
+        private PlayerActions previousMenuKey = PlayerActions.None;
         private bool EnterKeyDown = false;
 
         GameState CurrentGameState = GameState.MainMenu;
@@ -92,6 +94,9 @@ namespace Lolo
                 ctype1 = ControlType.JoyStick1;
                 ctype2 = ControlType.KeyBoard1;
             }
+
+            cwrap1 = new ControlWrapper(ctype1);
+            cwrap2 = new ControlWrapper(ControlType.KeyBoard1); // Fixed keyboard for menues
         }
 
         private void BeginPause(bool UserInitiated)
@@ -121,15 +126,15 @@ namespace Lolo
             pauseKeyDown = pauseKeyDownThisFrame;
         }
 
-        private void checkMenuKey(KeyboardState keyboardState)
+        private void checkMenuKey()
         {
-            bool EnterKeyDownThisFrame = keyboardState.IsKeyDown(Keys.Enter);
+            bool EnterKeyDownThisFrame = (cwrap1.IsKeyDown(PlayerActions.Select) || cwrap2.IsKeyDown(PlayerActions.Select));
 
-            if (keyboardState.IsKeyDown(Keys.Up))
+            if (cwrap1.IsKeyDown(PlayerActions.Up) || cwrap2.IsKeyDown(PlayerActions.Up))
             {
-                if (previousMenuKey != Keys.Up)
+                if (previousMenuKey != PlayerActions.Up)
                 {
-                    previousMenuKey = Keys.Up;
+                    previousMenuKey = PlayerActions.Up;
                     if (paused)
                     {
                         pauseSprite.ButtonFocus(-1);
@@ -155,11 +160,11 @@ namespace Lolo
                     }
                 }
             }
-            else if (keyboardState.IsKeyDown(Keys.Down))
+            else if (cwrap1.IsKeyDown(PlayerActions.Down) || cwrap2.IsKeyDown(PlayerActions.Down))
             {
-                if (previousMenuKey != Keys.Down)
+                if (previousMenuKey != PlayerActions.Down)
                 {
-                    previousMenuKey = Keys.Down;
+                    previousMenuKey = PlayerActions.Down;
                     if (paused)
                     {
                         pauseSprite.ButtonFocus(1);
@@ -233,7 +238,7 @@ namespace Lolo
             }
             else
             {
-                previousMenuKey = Keys.None;
+                previousMenuKey = PlayerActions.None;
             }
 
             EnterKeyDown = EnterKeyDownThisFrame;
@@ -307,12 +312,12 @@ namespace Lolo
                 CurrentGameState == GameState.RoundResults ||
                 CurrentGameState == GameState.Options)
             {
-                checkMenuKey(Keyboard.GetState());
+                checkMenuKey();
             }
             if (CurrentGameState == GameState.Playing1P || CurrentGameState == GameState.Playing2P)
             {
                 checkPauseKey(Keyboard.GetState());
-                checkMenuKey(Keyboard.GetState());
+                checkMenuKey();
             }
 
             if (!paused)
@@ -332,12 +337,12 @@ namespace Lolo
                         p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human);
                         if (CurrentGameState == GameState.Start1P)
                         {
-                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(720, 520), ctype2, bombmanager, score, "p2", PlayerStyle.Machine);
+                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Machine);
                             CurrentGameState = GameState.Playing1P;
                         }
                         else
                         {
-                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(720, 520), ctype2, bombmanager, score, "p2", PlayerStyle.Human);
+                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Human);
                             CurrentGameState = GameState.Playing2P;
                         }
                         map = new Map(p1, p2, bombmanager);

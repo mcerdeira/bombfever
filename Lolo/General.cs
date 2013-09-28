@@ -47,7 +47,9 @@ namespace Lolo
         Down,
         Right,
         Left,
-        Bomb
+        Bomb,
+        Select,
+        None
     }
 
     public enum ItemTypes

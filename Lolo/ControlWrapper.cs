@@ -33,6 +33,8 @@ namespace Lolo
                         return st.IsKeyDown(Keys.Left);                        
                     case PlayerActions.Bomb:
                         return st.IsKeyDown(Keys.RightShift);
+                    case PlayerActions.Select:
+                        return st.IsKeyDown(Keys.Enter);
                     default:
                         return false;
                 }
@@ -52,6 +54,8 @@ namespace Lolo
                         return st.IsKeyDown(Keys.A);
                     case PlayerActions.Bomb:
                         return st.IsKeyDown(Keys.Space);
+                    case PlayerActions.Select:
+                        return st.IsKeyDown(Keys.Enter);
                     default:
                         return false;
                 }
@@ -80,6 +84,8 @@ namespace Lolo
                         return direction.X < 0;
                     case PlayerActions.Bomb:
                         return (st.Buttons.A == ButtonState.Pressed);
+                    case PlayerActions.Select:
+                        return (st.Buttons.B == ButtonState.Pressed); 
                     default:
                         return false;
                 }
