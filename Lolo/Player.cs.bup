@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Threading;
 
 namespace Lolo
 {
@@ -22,9 +21,7 @@ namespace Lolo
         private List<int> path = new List<int>();        
         private bool PathFound = false;
         private int PathFindDelay = 0;
-        private bool runningAway = false;
-        private Thread PathF_T;
-        private AI_States AI_State = AI_States.None;
+        private bool runningAway = false;        
         // </AI Variables>
         private string lastDirection = "";
         private Vector2 RespawnLoc; // Location the respawn will point to
@@ -167,64 +164,102 @@ namespace Lolo
         {
             if (this.Status != "dead")
             {
-                Vector2 pos = Human.getLocation();
-                Vector2 avoidpos = AI_Avoid();                    
-                if (opponentReachable(pos))
-                {
-                    AI_Attack();
-                }
-                AI_HandleState(elapsedTime, pos);
-                //if (avoidpos.X != 9999) // TODO: Handle run Away from bombs
-                //{
-                //    pos = avoidpos;                    
-                //}                
+                this.Status = "idle";
+                if (moveLoop == 0)
+                {                    
+                    moveLoop = 2;
+                    Vector2 pos = Human.getLocation();
+                    Vector2 avoidpos = AI_Avoid();                    
+                    if (opponentReachable(pos))
+                    {
+                        AI_Attack();
+                    }
+                    else
+                    {
+                        if (avoidpos.X != 9999)
+                        {
+                            if (!runningAway)
+                            {
+                                pos = avoidpos;
+                                PathFindDelay = 0;
+                                runningAway = true;
+                            }
+                        }
+                        else
+                        {
+                            if (runningAway)
+                            {
+                                PathFindDelay = 0;
+                                runningAway = false;
+                            }
+                        }
 
-            }
-        }
-
-        private void AI_DoPath(float elapsedTime)
-        {
-            if (path.Count > 0)
-            {
-                if (Map.tiles[path[0]].Position == findMyCell())
-                {
-                    path.Remove(path[0]);
-                }
-                if (path.Count > 0)
-                {
-                    AI_TryWalk(Map.tiles[path[0]].Position, elapsedTime);
+                        if (PathFindDelay <= 0)
+                        {
+                            Console.WriteLine("################## START OVER ##########################");
+                            path = new List<int>();                            
+                            PathFound = false;
+                            PathFindDelay = 1;
+                            if (runningAway)
+                            {
+                                Console.WriteLine("Bomb!!!!!!!!!!!!!!!!!!!!");
+                                AI_PathFind(pos, 0, endNode:-2); 
+                            }
+                            else
+                            {
+                                Console.WriteLine("Gonna get you...");
+                                AI_PathFind(pos, 0);
+                            }
+                        }
+                        else
+                        {
+                            if (path.Count > 0)
+                            {
+                                if (Map.tiles[path[0]].Position == findMyCell())
+                                {                                    
+                                    path.Remove(path[0]);                                    
+                                }
+                                if (path.Count > 0)
+                                {
+                                    AI_TryWalk(Map.tiles[path[0]].Position, elapsedTime);
+                                }
+                                else
+                                {
+                                    if (!runningAway)
+                                    {
+                                        PathFindDelay = 0;
+                                    }
+                                    else
+                                    {
+                                        // Walk inside the tile until hit a wall
+                                        AI_WalkTillWall(elapsedTime);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (!runningAway)
+                                {
+                                    PathFindDelay = 0;
+                                }
+                                else
+                                {
+                                    // Walk inside the tile until hit a wall
+                                    AI_WalkTillWall(elapsedTime);
+                                }
+                            }                                    
+                        }
+                    }
                 }
                 else
                 {
-                    AI_State = AI_States.None;
+                    moveLoop--;
                 }
             }
             else
             {
-                AI_State = AI_States.None;
-            }
-        }
-
-        private void AI_HandleState(float elapsedTime, Vector2 pos)
-        {
-            Console.WriteLine(AI_State);
-            switch(AI_State)
-            {
-                case AI_States.None:
-                    PathF_T = new Thread(() => AI_PathFind(pos, 0));
-                    PathF_T.Start();
-                    AI_State = AI_States.Finding_Path;
-                    break;
-                case AI_States.Walking_Path:
-                    AI_DoPath(elapsedTime);
-                    break;
-                case AI_States.Finding_Path:
-                    if (!PathF_T.IsAlive)
-                    {
-                        PathF_T.Abort();
-                        AI_State = AI_States.Walking_Path;
-                    }
-                    break;          
+                runningAway = false;
+                PathFindDelay = 0;
             }
         }
 
@@ -258,12 +293,12 @@ namespace Lolo
         {
             // If endNode == -2, means that we are scaping, so, there is not a REAL end node
 
-            //counter++;
-            //if (counter > 10)
-            //{
-            //    Console.WriteLine("FAKE END");
-            //    this.PathFound = true; // Fake path found, is a recursion control
-            //}
+            counter++;
+            if (counter > 10)
+            {
+                Console.WriteLine("FAKE END");
+                this.PathFound = true; // Fake path found, is a recursion control
+            }
 
             if (this.PathFound)
             {
@@ -920,7 +955,7 @@ namespace Lolo
             }
             AI_chekWalkable(desiredLoc, currentDir); // Check if I can go, to the main direction
             //tries.Add(currentDir);
-            //Console.WriteLine("1° " + currentDir);
+            //Console.WriteLine("1� " + currentDir);
 
             if (this.hasToCorrect)
             {
@@ -959,8 +994,8 @@ namespace Lolo
 
         private void AI_chekWalkable(Vector2 desiredLoc, string direction)
         {
-            int width = this.hitBox.Width;
-            int height = this.hitBox.Height;
+            int width = Texture.Width / Columns;
+            int height = Texture.Height;
             Rectangle future_pos = new Rectangle((int)desiredLoc.X, (int)desiredLoc.Y, width, height);
             this.hasToCorrect = false;
             for (int index = 0; index < Map.tiles.Count; index++)

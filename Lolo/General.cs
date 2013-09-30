@@ -34,6 +34,13 @@ namespace Lolo
         JoyStick1,
         JoyStick2
     }
+
+    public enum AI_States
+    {
+        None,
+        Finding_Path,
+        Walking_Path
+    }
     
     public enum PlayerStyle
     {

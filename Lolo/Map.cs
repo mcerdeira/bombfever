@@ -67,8 +67,6 @@ namespace Lolo
 
         public void RemoveTile(Tile tile)
         {
-            #warning Must replace the tiles.Remove(), the tile must be replaced for an empty tile (because indexes are important)
-
             if (tile.BreakAble && tile.ID != -100 && tile.ID != -200)
             {
                 // Decide, randomly if there is any item hidden inside
@@ -175,11 +173,11 @@ namespace Lolo
                             }
                         }
 
-                        //if (v != 2)
-                        //{
-                        //#warning Remove this IF, debuging purposes
-                        //    v = 0;
-                        //}
+                        if (v != 2)
+                        {
+#warning Remove this IF, debuging purposes
+                            v = 0;
+                        }
 
                         if (v == 0 || v == 4)
                         {                            
@@ -259,11 +257,11 @@ namespace Lolo
                             }
                         }
 
-                        //if (v != 2)
-                        //{
-                        //#warning Remove this IF, debuging purposes
-                        //    v = 0;
-                        //}
+                        if (v != 2)
+                        {
+#warning Remove this IF, debuging purposes
+                            v = 0;
+                        }
 
                         if (v == 0 || v == 4)
                         {                            
