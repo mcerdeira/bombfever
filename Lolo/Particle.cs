@@ -57,11 +57,11 @@ namespace Lolo
             }
             if (!disabled)
             {
-                if (hitBox.Intersects(player.hitBox) && player.Status != "respawning" && player.inmunityCounter == 0)
+                if (player.Status != "respawning" && player.inmunityCounter == 0 && hitBox.Intersects(player.hitBox))
                 {
                     player.Status = "dead";
                 }
-                if (hitBox.Intersects(player2.hitBox) && player2.Status != "respawning" && player2.inmunityCounter == 0)
+                if (player2.Status != "respawning" && player2.inmunityCounter == 0 && hitBox.Intersects(player2.hitBox))
                 {
                     player2.Status = "dead";
                 }
