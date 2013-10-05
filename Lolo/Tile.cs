@@ -108,6 +108,17 @@ namespace Lolo
                 deadCounter++;
                 if (deadCounter == 5)
                 {
+                    if (this.ID == 4)
+                    {
+                        // Top left
+                        bombmanager.addExplossion(this.Position, 10);
+                        // Top right
+                        bombmanager.addExplossion(new Vector2(this.Position.X + this.hitBox.Width, this.Position.Y), 10);
+                        // Bottom left
+                        bombmanager.addExplossion(new Vector2(this.Position.X, this.Position.Y + this.hitBox.Height), 10);
+                        // Bottom right
+                        bombmanager.addExplossion(new Vector2(this.Position.X + this.hitBox.Width, this.Position.Y + this.hitBox.Height), 10);
+                    }
                     Map.RemoveTile(this);
                 }
             }

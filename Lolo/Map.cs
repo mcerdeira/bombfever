@@ -173,13 +173,13 @@ namespace Lolo
                             }
                         }
 
-                        if (v != 2)
-                        {
-#warning Remove this IF, debuging purposes
-                            v = 0;
-                        }
+//                        if (v != 2)
+//                        {
+//#warning Remove this IF, debuging purposes
+//                            v = 0;
+//                        }
 
-                        if (v == 0 || v == 4)
+                        if (v == 0)
                         {                            
                             walkable = true;
                         }
@@ -257,13 +257,13 @@ namespace Lolo
                             }
                         }
 
-                        if (v != 2)
-                        {
-#warning Remove this IF, debuging purposes
-                            v = 0;
-                        }
+//                        if (v != 2)
+//                        {
+//#warning Remove this IF, debuging purposes
+//                            v = 0;
+//                        }
 
-                        if (v == 0 || v == 4)
+                        if (v == 0)
                         {                            
                             walkable = true;
                         }

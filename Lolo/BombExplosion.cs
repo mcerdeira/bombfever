@@ -22,9 +22,11 @@ namespace Lolo
         private Player player2;
         private BombManager bombman;
         private Map map;
+        private int totalParticles;
 
-        public BombExplosion(int TTL, Map map, BombManager bombman, Player player, Player player2, Texture2D texture, Vector2 location)
+        public BombExplosion(int TTL, Map map, BombManager bombman, Player player, Player player2, Texture2D texture, Vector2 location, int totalParticles = 20)
         {
+            this.totalParticles = totalParticles;
             this.map = map;
             this.bombman = bombman;
             this.player = player;
@@ -37,13 +39,12 @@ namespace Lolo
         }
 
         public void Update()
-        {
-            int total = 20;
+        {            
             if (TTL > 0)
             {
                 //if (!tmp)
                 //{
-                for (int i = 0; i < total; i++)
+                for (int i = 0; i < totalParticles; i++)
                 {
                     particles.Add(GenerateNewParticle());
                 }
@@ -94,7 +95,7 @@ namespace Lolo
             float angularVelocity = 0.1f * (float)(random.NextDouble() * 2 - 1);
             Color color = cololist[random.Next(cololist.Count)];
             float size = (float)random.NextDouble();
-            int ttl = 20 + random.Next(100);
+            int ttl = totalParticles + random.Next(100);
 
             return new Particle(map, player, player2, texture, position, velocity, angle, angularVelocity, color, size, ttl, EmitterLocation);
         }

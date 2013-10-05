@@ -19,9 +19,15 @@ namespace Lolo
         private Player Player;
         private Player Player2;        
 
-        public BombManager(ContentManager content) // Add enemy
+        public BombManager(ContentManager content)
         {            
             this.content = content;
+        }
+
+        public void addExplossion(Vector2 position, int particles = 20)
+        {
+            BombExplosion ex = new BombExplosion(10, map, this, Player, Player2, content.Load<Texture2D>("particle"), position, particles);
+            bombex.Add(ex);
         }
 
         public bool KickingBomb(Player player)
