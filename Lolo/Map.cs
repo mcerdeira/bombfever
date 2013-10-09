@@ -105,6 +105,7 @@ namespace Lolo
             int[,] arrtiles = new int[16, 12];
             int[] colsMap = new int[] { 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
             int[] rowsMap = new int[] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
+            int tntCounter = 0;
 
             if (LevelFile == "")
             {
@@ -169,7 +170,15 @@ namespace Lolo
                         {
                             if (v != -200 && v != -100)
                             {
-                                v = 1; // and regular bricks has even more chances!
+                                if (tntCounter > 0)
+                                {
+                                    v = 4;
+                                    arrtiles[c, r] = v; // Save the random, for mirroring                                    
+                                }
+                                else
+                                {
+                                    v = 1; // and regular bricks has even more chances!
+                                }                                
                             }
                         }
 
@@ -182,6 +191,17 @@ namespace Lolo
                         if (v == 0)
                         {                            
                             walkable = true;
+                        }
+                        if (v == 4)
+                        {
+                            if(tntCounter == 0)
+                            {
+                                tntCounter = 6;
+                            }
+                            else
+                            {
+                                tntCounter--;
+                            }
                         }
                         Vector2 pos = new Vector2(col, row);
                         Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v, bombmanager);

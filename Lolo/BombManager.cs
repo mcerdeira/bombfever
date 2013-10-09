@@ -26,7 +26,7 @@ namespace Lolo
 
         public void addExplossion(Vector2 position, int particles = 20)
         {
-            BombExplosion ex = new BombExplosion(10, map, this, Player, Player2, content.Load<Texture2D>("particle"), position, particles);
+            BombExplosion ex = new BombExplosion(7, map, this, Player, Player2, content.Load<Texture2D>("particle"), position, particles);
             bombex.Add(ex);
         }
 
