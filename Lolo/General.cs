@@ -9,11 +9,18 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Lolo
 {
-    public enum PlayerSndFXs
+    public enum PlayerSndFXs // This is used by a list of Sound Effects to point to indexes
     {
         PlaceBomb = 0,
         Die = 1,
         KickBomb = 2
+    }
+
+    public enum PlayerTex // This is used by a list of textures to point to indexes
+    {
+        // Mummy
+        // Indy
+        PlaceHolder = 0
     }
 
     public enum GameState

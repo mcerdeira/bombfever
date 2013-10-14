@@ -49,6 +49,12 @@ namespace Lolo
         int ScreenHeight = 600;
         private Texture2D background;
         private Texture2D menues;
+        private Texture2D bombTex;
+        private Texture2D particleTex;
+        private Texture2D pbarTex;
+        private SoundEffect sfxExplosion;
+        private SoundEffect sfxMiniExplosion;
+        private List<Texture2D> PlayerTextures = new List<Texture2D>();
         private bool paused = false;
         private bool pauseKeyDown = false;
         private PlayerActions previousMenuKey = PlayerActions.None;
@@ -278,8 +284,14 @@ namespace Lolo
             lvlLoad = new LevelLoader(menues, mainFont, ScreenHeight, ScreenWidth);
             options = new OptionMenu(menues, mainFont, ScreenHeight, ScreenWidth);
             gameOPT = options.loadOptions();
+            PlayerTextures.Add(Content.Load<Texture2D>("Player"));
             LoadControls();
             LoadMusicFX();
+            bombTex = Content.Load<Texture2D>("bomb");
+            particleTex = Content.Load<Texture2D>("particle");
+            pbarTex = Content.Load<Texture2D>("pbar");
+            sfxExplosion = Content.Load<SoundEffect>("explosion");
+            sfxMiniExplosion = Content.Load<SoundEffect>("miniexplosion");
             cMatch = new Match();
         }
 
@@ -347,17 +359,17 @@ namespace Lolo
                         roundTime = float.Parse(General.getRoundTimes()[gameOPT.timelimit]);
 
                         // In Game objects                                    
-                        score = new Score(ScreenHeight, ScreenWidth, Content.Load<SpriteFont>("mainfont"), roundTime, General.getGameTypes()[gameOPT.gametype]);
-                        bombmanager = new BombManager(Content.Load<SoundEffect>("explosion"), Content.Load<SoundEffect>("miniexplosion"), Content.Load<Texture2D>("bomb"), Content.Load<Texture2D>("particle"));
-                        p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human, PlayersndFXList);
+                        score = new Score(ScreenHeight, ScreenWidth, mainFont, roundTime, General.getGameTypes()[gameOPT.gametype]);
+                        bombmanager = new BombManager(sfxExplosion, sfxMiniExplosion, bombTex, particleTex);
+                        p1 = new Player(PlayerTextures[(int)PlayerTex.PlaceHolder], new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human, PlayersndFXList);
                         if (CurrentGameState == GameState.Start1P)
                         {
-                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Machine, PlayersndFXList);
+                            p2 = new Player(PlayerTextures[(int)PlayerTex.PlaceHolder], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Machine, PlayersndFXList);
                             CurrentGameState = GameState.Playing1P;
                         }
                         else
                         {
-                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Human, PlayersndFXList);
+                            p2 = new Player(PlayerTextures[(int)PlayerTex.PlaceHolder], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Human, PlayersndFXList);
                             CurrentGameState = GameState.Playing2P;
                         }
                         map = new Map(p1, p2, bombmanager);
@@ -409,7 +421,7 @@ namespace Lolo
                             // Time is up!                            
                             GameState st;
                             st = (CurrentGameState == GameState.Playing1P) ? GameState.Start1P : GameState.Start2P;
-                            roundR = new RoundResults(Content.Load<Texture2D>("MainMenu"), mainFont, chartFont, score, st, cMatch, ScreenHeight, ScreenWidth, Content.Load<Texture2D>("pbar"));
+                            roundR = new RoundResults(menues, mainFont, chartFont, score, st, cMatch, ScreenHeight, ScreenWidth, pbarTex);
                             CurrentGameState = GameState.RoundResults;
                             bkMusicInstance.Pitch = 0;
                         }
