@@ -42,13 +42,10 @@ namespace Lolo
         {            
             if (TTL > 0)
             {
-                //if (!tmp)
-                //{
                 for (int i = 0; i < totalParticles; i++)
                 {
                     particles.Add(GenerateNewParticle());
                 }
-                //}
                 TTL--;
             }
 
@@ -66,10 +63,6 @@ namespace Lolo
                 bombman.RemoveBombExplosion(this);
                 killme = true;
             }
-            //if (!tmp)
-            //{
-            //    tmp = true;
-            //}
         }
 
         private Particle GenerateNewParticle()

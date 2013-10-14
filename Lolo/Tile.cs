@@ -111,13 +111,13 @@ namespace Lolo
                     if (this.ID == 4)
                     {
                         // Top left
-                        bombmanager.addExplossion(this.Position, 6);
+                        bombmanager.addExplossion(this.Position, 8);
                         // Top right
-                        bombmanager.addExplossion(new Vector2(this.Position.X + this.hitBox.Width, this.Position.Y), 6);
+                        bombmanager.addExplossion(new Vector2(this.Position.X + this.hitBox.Width, this.Position.Y), 8);
                         // Bottom left
-                        bombmanager.addExplossion(new Vector2(this.Position.X, this.Position.Y + this.hitBox.Height), 6);
+                        bombmanager.addExplossion(new Vector2(this.Position.X, this.Position.Y + this.hitBox.Height), 8);
                         // Bottom right
-                        bombmanager.addExplossion(new Vector2(this.Position.X + this.hitBox.Width, this.Position.Y + this.hitBox.Height), 6);
+                        bombmanager.addExplossion(new Vector2(this.Position.X + this.hitBox.Width, this.Position.Y + this.hitBox.Height), 8);
                     }
                     Map.RemoveTile(this);
                 }
