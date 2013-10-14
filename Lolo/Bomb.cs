@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Storage;
 
 namespace Lolo
 {
@@ -25,18 +24,17 @@ namespace Lolo
         private int yMove = 0;
         private int LifeLoop = 100;
         public bool wallHitted = false;        
-        BombManager BombMan;
+        BombManager BombMan;                
 
-        public Bomb(Vector2 position, string owner, BombManager BombMan, ContentManager Content, Player player, Player player2)
+        public Bomb(Vector2 position, string owner, BombManager BombMan, Texture2D texture, Player player, Player player2)
         {
             this.Owner = owner;
             this.BombMan = BombMan;
             this.player = player;
             this.player2 = player2;
-            Texture = Content.Load<Texture2D>("bomb");
-            //Vector2 pos = new Vector2(position.X - ((Texture.Width - player.hitBox.Width) / 2), position.Y - ((Texture.Height - player.hitBox.Height) / 2));
+            Texture = texture;           
             this.Position = position;
-            this.Columns = Texture.Width / 50; //30
+            this.Columns = Texture.Width / 50; //30            
         }
 
         public void Kicked(string direction)

@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Threading;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Lolo
 {
@@ -31,7 +32,7 @@ namespace Lolo
         public int inmunityCounter = 0; // Frame duration of inmunity (after being hitted)
         public bool wallHitted; // Player hitted a wall Flag        
         public Texture2D Texture { get; set; }
-        public int Columns { get; set; }        
+        public int Columns { get; set; }
         private int currentFrame;
         private string KeyControl;
         private string InstanceName;
@@ -55,9 +56,10 @@ namespace Lolo
         int minVel = 200;
         int maxVel = 280;
         int directionX = 0;
-        int directionY = 0;
+        int directionY = 0;        
+        private List<SoundEffect> sndFXList;
 
-        public Player(Texture2D texture, Vector2 location, ControlType ctype, BombManager BombMan, Score score, string instancename, PlayerStyle pstlye)
+        public Player(Texture2D texture, Vector2 location, ControlType ctype, BombManager BombMan, Score score, string instancename, PlayerStyle pstlye, List<SoundEffect> sndfxlist)
         {            
             this.Score = score;
             this.RespawnLoc = location;
@@ -76,6 +78,7 @@ namespace Lolo
             {
                 cwrap = new ControlWrapper(ctype);
             }
+            this.sndFXList = sndfxlist;
         }
 
         public void setItem(int itemstyle)
@@ -137,6 +140,7 @@ namespace Lolo
             string dest = (InstanceName == "p1") ? "p2" : "p1";
             Score.setScore(dest);            
             this.Location = this.RespawnLoc;
+            sndFXList[(int)PlayerSndFXs.Die].Play();
         }
 
         // AI Stuff
@@ -655,6 +659,7 @@ namespace Lolo
                     {
                         if (this.BombMan.KickingBomb(this))
                         {
+                            sndFXList[(int)PlayerSndFXs.KickBomb].Play();
                             KeyControl = "bomb";
                         }
                         else
@@ -774,6 +779,7 @@ namespace Lolo
             {
                 BombMan.SpawnBomb(Location, InstanceName);
                 this.BombCount++;
+                this.sndFXList[(int)PlayerSndFXs.PlaceBomb].Play();
             }
         }
 

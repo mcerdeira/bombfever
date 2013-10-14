@@ -6,27 +6,35 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Lolo
 {
     public class BombManager
     {
         public List<Bomb> bombs = new List<Bomb>();
-        private List<BombExplosion> bombex = new List<BombExplosion>();
-        private ContentManager content;
+        private List<BombExplosion> bombex = new List<BombExplosion>();        
         private Map map;
         private Player Player;
         private Player Player2;        
+        private Texture2D bombTexture;
+        private Texture2D particleTexture;
+        private SoundEffect sndFXExplode;
+        private SoundEffect sndFXMiniExplode;
 
-        public BombManager(ContentManager content)
-        {            
-            this.content = content;
+        public BombManager(SoundEffect sndfxexplode, SoundEffect sndxminiexplode, Texture2D bombtexture, Texture2D particletexture)
+        {
+            this.sndFXExplode = sndfxexplode;
+            this.sndFXMiniExplode = sndxminiexplode;
+            this.bombTexture = bombtexture;
+            this.particleTexture = particletexture;
         }
 
         public void addExplossion(Vector2 position, int particles = 20)
         {
-            BombExplosion ex = new BombExplosion(7, map, this, Player, Player2, content.Load<Texture2D>("particle"), position, particles);
+            BombExplosion ex = new BombExplosion(7, map, this, Player, Player2, particleTexture, position, particles);
             bombex.Add(ex);
+            sndFXMiniExplode.Play();
         }
 
         public bool KickingBomb(Player player)
@@ -128,13 +136,14 @@ namespace Lolo
         {
             bombs.Remove(bomb);
             bomb = null;
-            BombExplosion ex = new BombExplosion(60, map, this, Player, Player2, content.Load<Texture2D>("particle"), position);
+            BombExplosion ex = new BombExplosion(60, map, this, Player, Player2, particleTexture, position);
             bombex.Add(ex);
+            sndFXExplode.Play();
         }
 
         public void SpawnBomb(Vector2 position, string owner)
         {
-            Bomb b = new Bomb(position, owner, this, content, Player, Player2);
+            Bomb b = new Bomb(position, owner, this, bombTexture, Player, Player2);
             bombs.Add(b);
         }
 

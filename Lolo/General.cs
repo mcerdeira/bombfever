@@ -9,6 +9,13 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Lolo
 {
+    public enum PlayerSndFXs
+    {
+        PlaceBomb = 0,
+        Die = 1,
+        KickBomb = 2
+    }
+
     public enum GameState
     {        
         None,

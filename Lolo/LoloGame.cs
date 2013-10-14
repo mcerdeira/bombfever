@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
+using Microsoft.Xna.Framework.Audio;
 #endregion
 
 namespace Lolo
@@ -43,7 +44,7 @@ namespace Lolo
         RoundResults roundR;
         Match cMatch;
         GameOptions gameOPT;
-        Effect PauseFX;        
+        Effect PauseFX;
         int ScreenWidth = 800;
         int ScreenHeight = 600;
         private Texture2D background;
@@ -51,8 +52,9 @@ namespace Lolo
         private bool paused = false;
         private bool pauseKeyDown = false;
         private PlayerActions previousMenuKey = PlayerActions.None;
-        private bool EnterKeyDown = false;
-
+        private bool EnterKeyDown = false;        
+        private SoundEffectInstance bkMusicInstance;
+        private List<SoundEffect> PlayersndFXList = new List<SoundEffect>();
         GameState CurrentGameState = GameState.MainMenu;
 
         public LoloGame()
@@ -102,12 +104,12 @@ namespace Lolo
         private void BeginPause(bool UserInitiated)
         {
             paused = true;
-            //TODO: Volume down
+            bkMusicInstance.Volume = 0.1f;
         }
 
         private void EndPause()
         {
-            //TODO: Resume audio
+            bkMusicInstance.Volume = 0.5f;
             paused = false;
         }
 
@@ -277,7 +279,20 @@ namespace Lolo
             options = new OptionMenu(menues, mainFont, ScreenHeight, ScreenWidth);
             gameOPT = options.loadOptions();
             LoadControls();
-            cMatch = new Match();            
+            LoadMusicFX();
+            cMatch = new Match();
+        }
+
+        private void LoadMusicFX()
+        {            
+            bkMusicInstance = Content.Load<SoundEffect>("backmusic").CreateInstance();
+            bkMusicInstance.IsLooped = true;
+            bkMusicInstance.Volume = 0.5f;
+            bkMusicInstance.Play();
+            // List with all the player soundFXs
+            PlayersndFXList.Add(Content.Load<SoundEffect>("placebomb"));
+            PlayersndFXList.Add(Content.Load<SoundEffect>("die"));
+            PlayersndFXList.Add(Content.Load<SoundEffect>("kick"));
         }
 
         /// <summary>
@@ -333,16 +348,16 @@ namespace Lolo
 
                         // In Game objects                                    
                         score = new Score(ScreenHeight, ScreenWidth, Content.Load<SpriteFont>("mainfont"), roundTime, General.getGameTypes()[gameOPT.gametype]);
-                        bombmanager = new BombManager(Content);
-                        p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human);
+                        bombmanager = new BombManager(Content.Load<SoundEffect>("explosion"), Content.Load<SoundEffect>("miniexplosion"), Content.Load<Texture2D>("bomb"), Content.Load<Texture2D>("particle"));
+                        p1 = new Player(Content.Load<Texture2D>("Player"), new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human, PlayersndFXList);
                         if (CurrentGameState == GameState.Start1P)
                         {
-                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Machine);
+                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Machine, PlayersndFXList);
                             CurrentGameState = GameState.Playing1P;
                         }
                         else
                         {
-                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Human);
+                            p2 = new Player(Content.Load<Texture2D>("Player"), new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Human, PlayersndFXList);
                             CurrentGameState = GameState.Playing2P;
                         }
                         map = new Map(p1, p2, bombmanager);
@@ -356,6 +371,7 @@ namespace Lolo
                     case GameState.GotoMainMenu:
                         cMatch.reset();
                         CurrentGameState = GameState.MainMenu;
+                        bkMusicInstance.Volume = 0.5f;
                         break;
                     case GameState.MainMenu:                        
                         menu.Update(gameTime);
@@ -372,7 +388,16 @@ namespace Lolo
                         break;
                     case GameState.Playing1P:
                     case GameState.Playing2P:
-                        if (score.Update(gameTime) >= 0)
+                        float currTime = score.Update(gameTime);
+                        if (currTime < 15)
+                        {                            
+                            bkMusicInstance.Pitch = 0.1f;
+                        }
+                        if (currTime < 5)
+                        {
+                            bkMusicInstance.Pitch = 0.2f;
+                        }
+                        if (currTime >= 0)
                         {
                             p1.Update(gameTime);
                             p2.Update(gameTime);
@@ -381,11 +406,12 @@ namespace Lolo
                         }
                         else
                         {
-                            // Time is up!
+                            // Time is up!                            
                             GameState st;
                             st = (CurrentGameState == GameState.Playing1P) ? GameState.Start1P : GameState.Start2P;
                             roundR = new RoundResults(Content.Load<Texture2D>("MainMenu"), mainFont, chartFont, score, st, cMatch, ScreenHeight, ScreenWidth, Content.Load<Texture2D>("pbar"));
                             CurrentGameState = GameState.RoundResults;
+                            bkMusicInstance.Pitch = 0;
                         }
                         break;
                     case GameState.Credits:
@@ -400,7 +426,7 @@ namespace Lolo
                 base.Update(gameTime);
             }
             else
-            {
+            {                
                 pauseSprite.Update(gameTime);
             }
         }
