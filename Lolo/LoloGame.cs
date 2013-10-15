@@ -384,6 +384,7 @@ namespace Lolo
                         cMatch.reset();
                         CurrentGameState = GameState.MainMenu;
                         bkMusicInstance.Volume = 0.5f;
+                        bkMusicInstance.Pitch = 0;
                         break;
                     case GameState.MainMenu:                        
                         menu.Update(gameTime);
@@ -458,7 +459,7 @@ namespace Lolo
             GraphicsDevice.Clear(Color.Transparent);
             if (paused)
             {
-                spriteBatch.Begin(0, BlendState.Opaque, null, null, null, PauseFX);                                
+                spriteBatch.Begin(0, BlendState.AlphaBlend, null, null, null, PauseFX);                                
             }
             else
             {                
