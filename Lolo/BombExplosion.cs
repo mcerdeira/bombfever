@@ -23,9 +23,11 @@ namespace Lolo
         private BombManager bombman;
         private Map map;
         private int totalParticles;
+        private bool miniExplosion = false;
 
-        public BombExplosion(int TTL, Map map, BombManager bombman, Player player, Player player2, Texture2D texture, Vector2 location, int totalParticles = 20)
+        public BombExplosion(int TTL, Map map, BombManager bombman, Player player, Player player2, Texture2D texture, Vector2 location, int totalParticles = 20, bool miniexplosion = false)
         {
+            this.miniExplosion = miniexplosion;
             this.totalParticles = totalParticles;
             this.map = map;
             this.bombman = bombman;
@@ -90,7 +92,7 @@ namespace Lolo
             float size = (float)random.NextDouble();
             int ttl = totalParticles + random.Next(100);
 
-            return new Particle(map, player, player2, texture, position, velocity, angle, angularVelocity, color, size, ttl, EmitterLocation);
+            return new Particle(map, player, player2, texture, position, velocity, angle, angularVelocity, color, size, ttl, EmitterLocation, this.miniExplosion);
         }
 
         public void Draw(SpriteBatch spriteBatch)

@@ -32,7 +32,7 @@ namespace Lolo
 
         public void addExplossion(Vector2 position, int particles = 20)
         {
-            BombExplosion ex = new BombExplosion(7, map, this, Player, Player2, particleTexture, position, particles);
+            BombExplosion ex = new BombExplosion(7, map, this, Player, Player2, particleTexture, position, particles, true);
             bombex.Add(ex);
             sndFXMiniExplode.Play();
         }

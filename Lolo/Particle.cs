@@ -25,17 +25,19 @@ namespace Lolo
         public float Size { get; set; }
         public int TTL { get; set; }
         private Vector2 EmitterLocation;
+        private bool miniExplosion = false;
         //private Effect ExplodeFX;
 
         public Particle(Map map, Player player, Player player2, Texture2D texture, Vector2 position, Vector2 velocity,
-            float angle, float angularVelocity, Color color, float size, int ttl, Vector2 emitterlocation)//, Effect explodefx)
+            float angle, float angularVelocity, Color color, float size, int ttl, Vector2 emitterlocation, bool miniexplosion = false)
         {
             //this.ExplodeFX = explodefx;
             this.EmitterLocation = emitterlocation;
             this.disabled = false;
             this.map = map;
             this.player = player;
-            this.player2 = player2;            
+            this.player2 = player2;
+            this.miniExplosion = miniexplosion;
             Texture = texture;
             Position = position;
             Velocity = velocity;
@@ -95,6 +97,15 @@ namespace Lolo
                     //Velocity.X *= -1;
                     Velocity.Y *= -1;
 
+                    if (!miniExplosion)
+                    {
+                        // Decide if the disabled dissapears
+                        //int i = rnd.Next(0, 5);
+                        //if (i < 2)
+                        //{
+                        TTL = -1;
+                        //}
+                    }
                     break;
                 }
             }
@@ -120,12 +131,16 @@ namespace Lolo
             Vector2 origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
 
             if (disabled)
-            {                
+            {
+                spriteBatch.End();
+                spriteBatch.Begin();
                 spriteBatch.Draw(Texture, Position, sourceRectangle, Color.Gray, 0, origin, Size, SpriteEffects.None, 0f);
             }
             else
-            {                                
-                spriteBatch.Draw(Texture, Position, sourceRectangle, Color, 0, origin, Size, SpriteEffects.None, 0f);                
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(0, BlendState.Additive, null, null, null);
+                spriteBatch.Draw(Texture, Position, sourceRectangle, Color.OrangeRed, 0, origin, Size, SpriteEffects.None, 0f);                
             }
         }
     }

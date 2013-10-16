@@ -74,7 +74,7 @@ namespace Lolo
             graphics.PreferredBackBufferHeight = ScreenHeight;
             //graphics.IsFullScreen = true;
             graphics.ApplyChanges();
-            Content.RootDirectory = "Content";
+            Content.RootDirectory = "Content";     
         }
 
         private void LoadControls()
