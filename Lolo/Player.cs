@@ -33,6 +33,7 @@ namespace Lolo
         public bool wallHitted; // Player hitted a wall Flag        
         public Texture2D Texture { get; set; }
         public int Columns { get; set; }
+        private int FrameRate = 0;
         private int currentFrame;
         private string KeyControl;
         private string InstanceName;
@@ -94,13 +95,13 @@ namespace Lolo
             UpdateInput((float)gametime.ElapsedGameTime.TotalSeconds);
             if (this.Status == "walking")
             {
-                resetFrame = 4;
-                totalFrames = 7;
+                resetFrame = 3;
+                totalFrames = 6;
             }
             else if(this.Status == "idle")
             {
                 resetFrame = 0;
-                totalFrames = 3;
+                totalFrames = 1;
             }
             else if(this.Status == "dead")
             {
@@ -113,7 +114,12 @@ namespace Lolo
                 currentFrame = resetFrame;
                 this.PrevStatus = this.Status;
             }
-            currentFrame++;
+            FrameRate++;
+            if (FrameRate == 20)
+            {
+                FrameRate = 0;
+                currentFrame++;
+            }
             if (currentFrame == totalFrames)
             {
                 if (this.Status == "dead")
@@ -805,7 +811,7 @@ namespace Lolo
                 hitBox = new Rectangle(hitX, hitY, 40, 40);//destinationRectangle;
                 spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White);
 
-                spriteBatch.Draw(Texture, hitBox, hitBox, Color.Red);
+                //spriteBatch.Draw(Texture, hitBox, hitBox, Color.Red);
             }
         }
     }
