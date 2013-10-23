@@ -66,7 +66,7 @@ namespace Lolo
             }
             else
             {
-                col = Color.LightSkyBlue;
+                col = Color.Yellow;
             }
             spriteBatch.DrawString(Font, Caption, new Vector2(centerX, Position.Y), col);
         }

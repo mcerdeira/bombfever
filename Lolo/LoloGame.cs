@@ -60,6 +60,7 @@ namespace Lolo
         private PlayerActions previousMenuKey = PlayerActions.None;
         private bool EnterKeyDown = false;        
         private SoundEffectInstance bkMusicInstance;
+        private SoundEffectInstance menuMusicInstance;
         private List<SoundEffect> PlayersndFXList = new List<SoundEffect>();
         GameState CurrentGameState = GameState.MainMenu;
 
@@ -296,11 +297,14 @@ namespace Lolo
         }
 
         private void LoadMusicFX()
-        {            
+        {
+            menuMusicInstance = Content.Load<SoundEffect>("menumusic").CreateInstance();
+            menuMusicInstance.IsLooped = true;
+            menuMusicInstance.Volume = 0.5f;
+            menuMusicInstance.Play();
             bkMusicInstance = Content.Load<SoundEffect>("backmusic").CreateInstance();
             bkMusicInstance.IsLooped = true;
-            bkMusicInstance.Volume = 0.5f;
-            bkMusicInstance.Play();
+            bkMusicInstance.Volume = 0.5f;            
             // List with all the player soundFXs
             PlayersndFXList.Add(Content.Load<SoundEffect>("placebomb"));
             PlayersndFXList.Add(Content.Load<SoundEffect>("die"));
@@ -353,6 +357,8 @@ namespace Lolo
                 {
                     case GameState.Start1P:
                     case GameState.Start2P:
+                        menuMusicInstance.Stop();
+                        bkMusicInstance.Play();
                         // Load game options
                         gameOPT = options.loadOptions();
                         LoadControls();
@@ -383,8 +389,8 @@ namespace Lolo
                     case GameState.GotoMainMenu:
                         cMatch.reset();
                         CurrentGameState = GameState.MainMenu;
-                        bkMusicInstance.Volume = 0.5f;
-                        bkMusicInstance.Pitch = 0;
+                        bkMusicInstance.Stop();
+                        menuMusicInstance.Play();
                         break;
                     case GameState.MainMenu:                        
                         menu.Update(gameTime);
@@ -404,11 +410,11 @@ namespace Lolo
                         float currTime = score.Update(gameTime);
                         if (currTime < 15)
                         {                            
-                            bkMusicInstance.Pitch = 0.1f;
+                            bkMusicInstance.Pitch = 0.2f;
                         }
                         if (currTime < 5)
                         {
-                            bkMusicInstance.Pitch = 0.2f;
+                            bkMusicInstance.Pitch = 0.3f;
                         }
                         if (currTime >= 0)
                         {
