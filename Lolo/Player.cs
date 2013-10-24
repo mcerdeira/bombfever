@@ -106,6 +106,7 @@ namespace Lolo
             UpdateInput((float)gametime.ElapsedGameTime.TotalSeconds);
             if (this.Status == "walking")
             {
+<<<<<<< HEAD
                 switch (this.WalkingDirection)
                 {
                     case "R":
@@ -125,6 +126,14 @@ namespace Lolo
             }
             else if(this.Status == "idle")
             {
+=======
+                resetFrame = 3;
+                totalFrames = 6;
+            }
+            else if(this.Status == "idle")
+            {
+                resetFrame = 0;
+>>>>>>> db0231f4cde0fad8de43c24f4477b8e6480902a6
                 totalFrames = 1;
             }
             else if(this.Status == "dead")
@@ -146,7 +155,17 @@ namespace Lolo
                 currentFrame++;
                 frameCount++;
             }
+<<<<<<< HEAD
             if (frameCount >= totalFrames)
+=======
+            FrameRate++;
+            if (FrameRate == 20)
+            {
+                FrameRate = 0;
+                currentFrame++;
+            }
+            if (currentFrame == totalFrames)
+>>>>>>> db0231f4cde0fad8de43c24f4477b8e6480902a6
             {
                 if (this.Status == "dead")
                 {
