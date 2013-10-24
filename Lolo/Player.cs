@@ -43,10 +43,14 @@ namespace Lolo
         private int[] idleFrames = new int[] { 0, 1, 2, 3 };
         private int[] walkFrames = new int[] { 4, 5, 6, 7 };
         private int[] deadFrames = new int[] { 8, 9, 10, 11 };
-        public string Status; // walking, idle, dead        
+        public string Status; // walking, idle, dead
+        public string WalkingDirection;
+        public string prevWalkingDirection;
         public string PrevStatus;
         public Rectangle hitBox;
         public Vector2 newPosition;
+        private int resetFrame = -1;
+        private int frameCount = 0;
         Vector2 Location;        
         Vector2 Speed = new Vector2();
         //Vector2 Acceleration = new Vector2(40, 40);
@@ -61,7 +65,15 @@ namespace Lolo
         private List<SoundEffect> sndFXList;
 
         public Player(Texture2D texture, Vector2 location, ControlType ctype, BombManager BombMan, Score score, string instancename, PlayerStyle pstlye, List<SoundEffect> sndfxlist)
-        {            
+        {
+            if (instancename == "p1")
+            {
+                this.resetFrame = 2;
+            }
+            else
+            {
+                this.resetFrame = 0;
+            }
             this.Score = score;
             this.RespawnLoc = location;
             this.Location = location;
@@ -90,37 +102,51 @@ namespace Lolo
         public void Update(GameTime gametime)
         {
             int totalFrames = -1;
-            int resetFrame = -1;
          
             UpdateInput((float)gametime.ElapsedGameTime.TotalSeconds);
             if (this.Status == "walking")
             {
-                resetFrame = 3;
-                totalFrames = 6;
+                switch (this.WalkingDirection)
+                {
+                    case "R":
+                        resetFrame = 6;
+                        break;
+                    case "L":
+                        resetFrame = 4;
+                        break;
+                    case "U":
+                        resetFrame = 0;
+                        break;
+                    case "D":
+                        resetFrame = 2;
+                        break;
+                }
+                totalFrames = 2;
             }
             else if(this.Status == "idle")
             {
-                resetFrame = 0;
                 totalFrames = 1;
             }
             else if(this.Status == "dead")
             {
-                resetFrame = 8;
-                totalFrames = 11;
+                
+                totalFrames = 1;
             }
 
-            if (this.Status != this.PrevStatus)
+            if (this.Status != this.PrevStatus || (this.Status == "walking" && this.WalkingDirection != this.prevWalkingDirection))
             {
                 currentFrame = resetFrame;
                 this.PrevStatus = this.Status;
+                this.prevWalkingDirection = this.WalkingDirection;
             }
             FrameRate++;
             if (FrameRate == 20)
             {
                 FrameRate = 0;
                 currentFrame++;
+                frameCount++;
             }
-            if (currentFrame == totalFrames)
+            if (frameCount >= totalFrames)
             {
                 if (this.Status == "dead")
                 {
@@ -131,6 +157,7 @@ namespace Lolo
                 {
                     currentFrame = resetFrame;
                 }
+                frameCount = 0;
             }
             if (this.inmunityCounter != 0)
             {
@@ -681,24 +708,28 @@ namespace Lolo
                     if(cwrap.IsKeyDown(PlayerActions.Right))
                     {
                         this.Status = "walking";
+                        this.WalkingDirection = "R";
                         KeyH = "R";
                     }
                     
                     if(cwrap.IsKeyDown(PlayerActions.Left))
                     {
                         this.Status = "walking";
+                        this.WalkingDirection = "L";
                         KeyH = "L";
                     }
                     
                     if(cwrap.IsKeyDown(PlayerActions.Down))
                     {
                         this.Status = "walking";
+                        this.WalkingDirection = "D";
                         KeyV = "D";
                     }
 
                     if (cwrap.IsKeyDown(PlayerActions.Up))
                     {
                         this.Status = "walking";
+                        this.WalkingDirection = "U";
                         KeyV = "U";
                     }
 
