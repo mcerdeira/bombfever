@@ -44,8 +44,8 @@ namespace Lolo
         private int[] walkFrames = new int[] { 4, 5, 6, 7 };
         private int[] deadFrames = new int[] { 8, 9, 10, 11 };
         public string Status; // walking, idle, dead
-        public string WalkingDirection;
-        public string prevWalkingDirection;
+        public string WalkingDirection = "";
+        public string prevWalkingDirection = "";
         public string PrevStatus;
         public Rectangle hitBox;
         public Vector2 newPosition;
@@ -106,8 +106,6 @@ namespace Lolo
             UpdateInput((float)gametime.ElapsedGameTime.TotalSeconds);
             if (this.Status == "walking")
             {
-<<<<<<< HEAD
-<<<<<<< HEAD
                 switch (this.WalkingDirection)
                 {
                     case "R":
@@ -126,20 +124,7 @@ namespace Lolo
                 totalFrames = 2;
             }
             else if(this.Status == "idle")
-            {
-=======
-=======
->>>>>>> origin/master
-                resetFrame = 3;
-                totalFrames = 6;
-            }
-            else if(this.Status == "idle")
-            {
-                resetFrame = 0;
-<<<<<<< HEAD
->>>>>>> db0231f4cde0fad8de43c24f4477b8e6480902a6
-=======
->>>>>>> origin/master
+            {                
                 totalFrames = 1;
             }
             else if(this.Status == "dead")
@@ -151,36 +136,21 @@ namespace Lolo
             if (this.Status != this.PrevStatus || (this.Status == "walking" && this.WalkingDirection != this.prevWalkingDirection))
             {
                 currentFrame = resetFrame;
+                if (this.Status != this.PrevStatus)
+                {
+                    FrameRate = 10;
+                }
                 this.PrevStatus = this.Status;
                 this.prevWalkingDirection = this.WalkingDirection;
             }
             FrameRate++;
-            if (FrameRate == 20)
+            if (FrameRate >= 10)
             {
                 FrameRate = 0;
                 currentFrame++;
                 frameCount++;
             }
-<<<<<<< HEAD
             if (frameCount >= totalFrames)
-=======
-            FrameRate++;
-            if (FrameRate == 20)
-            {
-                FrameRate = 0;
-                currentFrame++;
-            }
-<<<<<<< HEAD
-=======
-            FrameRate++;
-            if (FrameRate == 20)
-            {
-                FrameRate = 0;
-                currentFrame++;
-            }
->>>>>>> origin/master
-            if (currentFrame == totalFrames)
->>>>>>> db0231f4cde0fad8de43c24f4477b8e6480902a6
             {
                 if (this.Status == "dead")
                 {
