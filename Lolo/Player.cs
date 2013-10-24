@@ -107,6 +107,7 @@ namespace Lolo
             if (this.Status == "walking")
             {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 switch (this.WalkingDirection)
                 {
                     case "R":
@@ -127,13 +128,18 @@ namespace Lolo
             else if(this.Status == "idle")
             {
 =======
+=======
+>>>>>>> origin/master
                 resetFrame = 3;
                 totalFrames = 6;
             }
             else if(this.Status == "idle")
             {
                 resetFrame = 0;
+<<<<<<< HEAD
 >>>>>>> db0231f4cde0fad8de43c24f4477b8e6480902a6
+=======
+>>>>>>> origin/master
                 totalFrames = 1;
             }
             else if(this.Status == "dead")
@@ -164,6 +170,15 @@ namespace Lolo
                 FrameRate = 0;
                 currentFrame++;
             }
+<<<<<<< HEAD
+=======
+            FrameRate++;
+            if (FrameRate == 20)
+            {
+                FrameRate = 0;
+                currentFrame++;
+            }
+>>>>>>> origin/master
             if (currentFrame == totalFrames)
 >>>>>>> db0231f4cde0fad8de43c24f4477b8e6480902a6
             {
