@@ -22,7 +22,7 @@ namespace Lolo
         public Vector2 Position;
         private Texture2D Texture;
         private int Columns;
-        public Rectangle hitBox;
+        public Rectangle hitBox;        
         private Player player;        
         private Player player2;
         private Map Map;

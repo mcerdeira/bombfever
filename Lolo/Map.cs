@@ -82,8 +82,8 @@ namespace Lolo
                 }                
                 if (v == 1)
                 {                    
-                    // An item is hidden inside, yay!!                    
-                    Item itm = new Item(Content, new Vector2(tile.hitBox.X, tile.hitBox.Y), player, player2, this);
+                    // An item is hidden inside, yay!!
+                    Item itm = new Item(Content, tile.Position, player, player2, this);
                     items.Add(itm);
                 }
             }

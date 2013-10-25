@@ -70,12 +70,13 @@ namespace Lolo
             graphics = new GraphicsDeviceManager(this);
             #warning Put fullscreen back
             //ScreenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            //ScreenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            //ScreenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;            
+            this.IsMouseVisible = false;
             graphics.PreferredBackBufferWidth = ScreenWidth;
             graphics.PreferredBackBufferHeight = ScreenHeight;
             //graphics.IsFullScreen = true;
             graphics.ApplyChanges();
-            Content.RootDirectory = "Content";  
+            Content.RootDirectory = "Content";
         }
 
         private void LoadControls()
@@ -112,11 +113,13 @@ namespace Lolo
         {
             paused = true;
             bkMusicInstance.Volume = 0.1f;
+            menuMusicInstance.Volume = 0.1f;
         }
 
         private void EndPause()
         {
             bkMusicInstance.Volume = 0.5f;
+            menuMusicInstance.Volume = 0.5f;
             paused = false;
         }
 
@@ -208,7 +211,7 @@ namespace Lolo
                     {
                         CurrentGameState = tmp;                    
                     }
-                    paused = false;
+                    EndPause();
                     pauseSprite.Reset();
                 }
                 else
@@ -389,6 +392,8 @@ namespace Lolo
                     case GameState.GotoMainMenu:
                         cMatch.reset();
                         CurrentGameState = GameState.MainMenu;
+                        menuMusicInstance.Volume = 0.5f;
+                        bkMusicInstance.Volume = 0.5f;
                         bkMusicInstance.Stop();
                         menuMusicInstance.Play();
                         break;
@@ -482,7 +487,6 @@ namespace Lolo
                 case GameState.Playing1P:
                 case GameState.Playing2P:
                     spriteBatch.Draw(background, new Rectangle(0, 0, ScreenWidth, ScreenHeight), Color.White);
-
                     map.Draw(spriteBatch);
                     p1.Draw(spriteBatch);
                     p2.Draw(spriteBatch);                    
