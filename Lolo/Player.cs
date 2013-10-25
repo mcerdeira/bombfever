@@ -743,22 +743,26 @@ namespace Lolo
                         if (KeyH == "R")
                         {
                             lastDirection = "R";
+                            this.WalkingDirection = "R";
                             directionX = 1;
                         }
                         else if(KeyH == "L")
                         {
                             lastDirection = "L";
+                            this.WalkingDirection = "L";
                             directionX = -1;
                         }
 
                         if (KeyV == "U")
                         {
                             lastDirection = "U";
+                            this.WalkingDirection = "U";
                             directionY = -1;
                         }
                         else if (KeyV == "D")
                         {
                             lastDirection = "D";
+                            this.WalkingDirection = "D";
                             directionY = 1;
                         }                        
                     }
@@ -771,10 +775,12 @@ namespace Lolo
                             if (KeyH == "R")
                             {                                
                                 directionX = 1;
+                                this.WalkingDirection = "R";
                             }
                             else if (KeyH == "L")
                             {                                
                                 directionX = -1;
+                                this.WalkingDirection = "L";
                             }
                         }
                         else
@@ -782,10 +788,12 @@ namespace Lolo
                             if (KeyV == "U")
                             {                                
                                 directionY = -1;
+                                this.WalkingDirection = "U";
                             }
                             else if (KeyV == "D")
                             {                                
                                 directionY = 1;
+                                this.WalkingDirection = "D";
                             }           
                         }
                     }
