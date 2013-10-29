@@ -38,6 +38,7 @@ namespace Lolo
         Map map;        
         MainMenu menu;
         OptionMenu options;
+        Credits credits;
         BombManager bombmanager;
         SpriteFont mainFont;
         SpriteFont chartFont;
@@ -62,6 +63,7 @@ namespace Lolo
         private SoundEffectInstance bkMusicInstance;
         private SoundEffectInstance menuMusicInstance;
         private List<SoundEffect> PlayersndFXList = new List<SoundEffect>();
+        private SpriteFont titleFont;
         GameState CurrentGameState = GameState.MainMenu;
 
         public LoloGame()
@@ -141,7 +143,6 @@ namespace Lolo
         private void checkMenuKey()
         {
             bool EnterKeyDownThisFrame = (cwrap1.IsKeyDown(PlayerActions.Select) || cwrap2.IsKeyDown(PlayerActions.Select));
-
             if (cwrap1.IsKeyDown(PlayerActions.Up) || cwrap2.IsKeyDown(PlayerActions.Up))
             {
                 if (previousMenuKey != PlayerActions.Up)
@@ -246,6 +247,10 @@ namespace Lolo
                         }
                         options.Reset();
                     }
+                    else if (CurrentGameState == GameState.Credits)
+                    {
+                        CurrentGameState = GameState.MainMenu;
+                    }
                 }
             }
             else
@@ -282,9 +287,24 @@ namespace Lolo
             menues = Content.Load<Texture2D>("MainMenu");
             mainFont = Content.Load<SpriteFont>("mainfont");
             chartFont = Content.Load<SpriteFont>("chartsfont");
+            titleFont = Content.Load<SpriteFont>("titlefont");
             PauseFX = Content.Load<Effect>("Dark.mgfxo");
-            PauseFX.Parameters["Percentage"].SetValue(0.30f);            
-            menu = new MainMenu(menues, mainFont, ScreenHeight, ScreenWidth);
+            PauseFX.Parameters["Percentage"].SetValue(0.30f);
+            List<string> cr = new List<string>();
+            cr.Add("[Concept Idea]");
+            cr.Add("Flor Gigy & Martin Cerdeira");
+            cr.Add(" ");
+            cr.Add("[Art & Design]");
+            cr.Add("Flor Gigy");
+            cr.Add(" ");
+            cr.Add("[Coding]");
+            cr.Add("Martin Cerdeira");
+            cr.Add(" ");
+            cr.Add("[Music & SFX]");
+            cr.Add("http://opengameart.org/");
+            cr.Add(" ");
+            credits = new Credits(menues, mainFont, cr, ScreenHeight, ScreenWidth);
+            menu = new MainMenu(menues, mainFont,titleFont, ScreenHeight, ScreenWidth, "Boom Hunters");
             lvlLoad = new LevelLoader(menues, mainFont, ScreenHeight, ScreenWidth);
             options = new OptionMenu(menues, mainFont, ScreenHeight, ScreenWidth);
             gameOPT = options.loadOptions();
@@ -344,7 +364,8 @@ namespace Lolo
             if (CurrentGameState == GameState.MainMenu || 
                 CurrentGameState == GameState.LoadFromFile || 
                 CurrentGameState == GameState.RoundResults ||
-                CurrentGameState == GameState.Options)
+                CurrentGameState == GameState.Options      ||
+                CurrentGameState == GameState.Credits)
             {
                 checkMenuKey();
             }
@@ -500,6 +521,7 @@ namespace Lolo
                     // Don't draw anything
                     break;
                 case GameState.Credits:
+                    credits.Draw(spriteBatch);
                     break;
                 case GameState.LoadFromFile:
                     lvlLoad.Draw(spriteBatch);
@@ -513,6 +535,6 @@ namespace Lolo
             }
             spriteBatch.End();
             base.Draw(gameTime);
-        }
+        }        
     }
 }

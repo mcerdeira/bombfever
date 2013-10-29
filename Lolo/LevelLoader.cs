@@ -29,10 +29,10 @@ namespace Lolo
             string[] filePaths = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Levels", "*.lvl");
             foreach (string f in filePaths)
             {
-                btn = new Button(Path.GetFileName(f), screenwidth, font, Color.White, GameState.MainMenu);
+                btn = new Button(Path.GetFileName(f), screenwidth, font, Color.Yellow, Color.White, GameState.MainMenu);
                 btns.Add(btn);
             }
-            btn = new Button("Cancel", screenwidth, font, Color.White, GameState.MainMenu);
+            btn = new Button("Cancel", screenwidth, font, Color.Yellow, Color.White, GameState.MainMenu);
             btns.Add(btn);
             PositionButtons();
             ButtonFocus(1);

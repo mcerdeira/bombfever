@@ -36,9 +36,9 @@ namespace Lolo
             this.score = score;
             this.Texture = texture;
             Button btn;
-            btn = new Button("Rematch", screenwidth, font, Color.White, prevGameState);
+            btn = new Button("Rematch", screenwidth, font, Color.Yellow, Color.White, prevGameState);
             btns.Add(btn);
-            btn = new Button("Quit", screenwidth, font, Color.White, GameState.GotoMainMenu);
+            btn = new Button("Quit", screenwidth, font, Color.Yellow, Color.White, GameState.GotoMainMenu);
             btns.Add(btn);
             PositionButtons();
             ButtonFocus(1);

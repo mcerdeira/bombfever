@@ -15,14 +15,18 @@ namespace Lolo
         SpriteFont Font;               
         Vector2 Position;
         Color Color;
+        Color MainColor;
         private int ScreenWidth;
         public int Status;
+        public bool Enabled;
 
-        public Button(string caption, int screenwidth, SpriteFont font, Color color, GameState retstate)
+        public Button(string caption, int screenwidth, SpriteFont font, Color maincolor, Color color, GameState retstate, bool enabled = true)
         {
+            this.Enabled = enabled;
             this.ScreenWidth = screenwidth;
             this.Font = font;
-            this.Color = color;                        
+            this.Color = color;
+            this.MainColor = maincolor;
             this.RetState = retstate;
             this.Caption = caption;
         }
@@ -66,7 +70,7 @@ namespace Lolo
             }
             else
             {
-                col = Color.Yellow;
+                col = MainColor;
             }
             spriteBatch.DrawString(Font, Caption, new Vector2(centerX, Position.Y), col);
         }

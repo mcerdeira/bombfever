@@ -36,9 +36,9 @@ namespace Lolo
             btns.Add(cbotype);
 
             #warning Add checkboxes with item availability
-            Button btn = new Button("Acept", screenwidth, font, Color.White, GameState.GotoMainMenu);
+            Button btn = new Button("Acept", screenwidth, font, Color.Yellow, Color.White, GameState.GotoMainMenu);
             btns.Add(btn);
-            btn = new Button("Cancel", screenwidth, font, Color.White, GameState.GotoMainMenu);
+            btn = new Button("Cancel", screenwidth, font, Color.Yellow, Color.White, GameState.GotoMainMenu);
             btns.Add(btn);
             PositionButtons();
             ButtonFocus(1);            
