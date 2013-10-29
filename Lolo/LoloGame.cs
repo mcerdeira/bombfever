@@ -56,6 +56,7 @@ namespace Lolo
         private SoundEffect sfxExplosion;
         private SoundEffect sfxMiniExplosion;
         private List<Texture2D> PlayerTextures = new List<Texture2D>();
+        private List<Texture2D> PlayerSelectionTextures = new List<Texture2D>();
         private bool paused = false;
         private bool pauseKeyDown = false;
         private PlayerActions previousMenuKey = PlayerActions.None;
@@ -64,18 +65,22 @@ namespace Lolo
         private SoundEffectInstance menuMusicInstance;
         private List<SoundEffect> PlayersndFXList = new List<SoundEffect>();
         private SpriteFont titleFont;
-        GameState CurrentGameState = GameState.MainMenu;
+        private CharacterSelection charselect;
+        private bool PlayerSelected = false;
+        GameState CurrentGameState = GameState.MainMenu;        
 
         public LoloGame()
             : base()
         {
             graphics = new GraphicsDeviceManager(this);
-            #warning Put fullscreen back
+            
             //ScreenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             //ScreenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;            
-            this.IsMouseVisible = false;
+            #warning Make mouse invisible
+            this.IsMouseVisible = true;
             graphics.PreferredBackBufferWidth = ScreenWidth;
             graphics.PreferredBackBufferHeight = ScreenHeight;
+            #warning Put fullscreen back
             //graphics.IsFullScreen = true;
             graphics.ApplyChanges();
             Content.RootDirectory = "Content";
@@ -308,7 +313,16 @@ namespace Lolo
             lvlLoad = new LevelLoader(menues, mainFont, ScreenHeight, ScreenWidth);
             options = new OptionMenu(menues, mainFont, ScreenHeight, ScreenWidth);
             gameOPT = options.loadOptions();
-            PlayerTextures.Add(Content.Load<Texture2D>("Player"));
+            PlayerTextures.Add(Content.Load<Texture2D>("Knight"));
+
+            PlayerSelectionTextures.Add(Content.Load<Texture2D>("Knight_S"));
+            PlayerSelectionTextures.Add(Content.Load<Texture2D>("Girl_S"));
+            PlayerSelectionTextures.Add(Content.Load<Texture2D>("King_S"));
+            PlayerSelectionTextures.Add(Content.Load<Texture2D>("Man_S"));
+            PlayerSelectionTextures.Add(Content.Load<Texture2D>("Skelet_S"));
+            PlayerSelectionTextures.Add(Content.Load<Texture2D>("Sorce_S"));
+
+            charselect = new CharacterSelection(menues, mainFont, PlayerSelectionTextures, ScreenHeight, ScreenWidth);
             LoadControls();
             LoadMusicFX();
             bombTex = Content.Load<Texture2D>("bomb");
@@ -381,36 +395,44 @@ namespace Lolo
                 {
                     case GameState.Start1P:
                     case GameState.Start2P:
-                        menuMusicInstance.Stop();
-                        bkMusicInstance.Play();
-                        // Load game options
-                        gameOPT = options.loadOptions();
-                        LoadControls();
-                        roundTime = float.Parse(General.getRoundTimes()[gameOPT.timelimit]);
-
-                        // In Game objects                                    
-                        score = new Score(ScreenHeight, ScreenWidth, mainFont, roundTime, General.getGameTypes()[gameOPT.gametype]);
-                        bombmanager = new BombManager(sfxExplosion, sfxMiniExplosion, bombTex, particleTex);
-                        p1 = new Player(PlayerTextures[(int)PlayerTex.PlaceHolder], new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human, PlayersndFXList);
-                        if (CurrentGameState == GameState.Start1P)
+                        if (PlayerSelected)
                         {
-                            p2 = new Player(PlayerTextures[(int)PlayerTex.PlaceHolder], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Machine, PlayersndFXList);
-                            CurrentGameState = GameState.Playing1P;
+                            menuMusicInstance.Stop();
+                            bkMusicInstance.Play();
+                            // Load game options
+                            gameOPT = options.loadOptions();
+                            LoadControls();
+                            roundTime = float.Parse(General.getRoundTimes()[gameOPT.timelimit]);
+
+                            // In Game objects                                    
+                            score = new Score(ScreenHeight, ScreenWidth, mainFont, roundTime, General.getGameTypes()[gameOPT.gametype]);
+                            bombmanager = new BombManager(sfxExplosion, sfxMiniExplosion, bombTex, particleTex);
+                            p1 = new Player(PlayerTextures[(int)PlayerTex.PlaceHolder], new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human, PlayersndFXList);
+                            if (CurrentGameState == GameState.Start1P)
+                            {
+                                p2 = new Player(PlayerTextures[(int)PlayerTex.PlaceHolder], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Machine, PlayersndFXList);
+                                CurrentGameState = GameState.Playing1P;
+                            }
+                            else
+                            {
+                                p2 = new Player(PlayerTextures[(int)PlayerTex.PlaceHolder], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Human, PlayersndFXList);
+                                CurrentGameState = GameState.Playing2P;
+                            }
+                            map = new Map(p1, p2, bombmanager);
+                            map.GenerateLevel(Content, LevelName);
+                            bombmanager.UpdateMap(map, p1, p2);
+                            if (CurrentGameState == GameState.Playing1P)
+                            {
+                                p2.InitAI(p1, map);
+                            }
                         }
                         else
                         {
-                            p2 = new Player(PlayerTextures[(int)PlayerTex.PlaceHolder], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Human, PlayersndFXList);
-                            CurrentGameState = GameState.Playing2P;
-                        }
-                        map = new Map(p1, p2, bombmanager);
-                        map.GenerateLevel(Content, LevelName);
-                        bombmanager.UpdateMap(map, p1, p2);
-                        if (CurrentGameState == GameState.Playing1P)
-                        {
-                            p2.InitAI(p1, map);
+                            charselect.Update(gameTime);
                         }
                         break;
                     case GameState.GotoMainMenu:
+                        PlayerSelected = false;
                         cMatch.reset();
                         CurrentGameState = GameState.MainMenu;
                         menuMusicInstance.Volume = 0.5f;
@@ -466,7 +488,7 @@ namespace Lolo
                         break;
                     case GameState.Quit:
                         Exit();
-                        break;
+                        break;                        
                 }
                 base.Update(gameTime);
             }
@@ -510,9 +532,13 @@ namespace Lolo
                     spriteBatch.Draw(background, new Rectangle(0, 0, ScreenWidth, ScreenHeight), Color.White);
                     map.Draw(spriteBatch);
                     p1.Draw(spriteBatch);
-                    p2.Draw(spriteBatch);                    
+                    p2.Draw(spriteBatch);
                     bombmanager.Draw(spriteBatch);
                     score.Draw(spriteBatch);
+                    break;
+                case GameState.Start1P:
+                case GameState.Start2P:
+                    charselect.Draw(spriteBatch);                    
                     break;
                 case GameState.RoundResults:
                     roundR.Draw(spriteBatch);
