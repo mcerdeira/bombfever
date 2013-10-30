@@ -45,6 +45,8 @@ namespace Lolo
             x = ScreenHeight / 3;
             y = ScreenWidth  / 4;
 
+            spriteBatch.DrawString(Font, "Choose your hunter!", new Vector2(General.getScreenCenterTextX("Choose your hunter!", ScreenWidth, Font), 0), Color.White);
+
             for (int index = 0; index < PlayerSelectionTextures.Count; index++)
             {
                 width = PlayerSelectionTextures[index].Width;
@@ -66,16 +68,35 @@ namespace Lolo
 
         private Vector2 PosfromState(int state)
         {
-            Vector2 pos = new Vector2();
-
+            float x = 0, y = 0;
             switch (state)
             {
                 case (int)PlayerTex.Knight:
-
+                    x = 200;
+                    y = 200;
+                    break;
+                case (int)PlayerTex.Girl:
+                    x = 360;
+                    y = 200;
+                    break;
+                case (int)PlayerTex.King:
+                    x = 520;
+                    y = 200;
+                    break;
+                case (int)PlayerTex.Man:
+                    x = 200;
+                    y = 360;
+                    break;
+                case (int)PlayerTex.Skelet:
+                    x = 360;
+                    y = 360;
+                    break;
+                case (int)PlayerTex.Sorce:
+                    x = 520;
+                    y = 360;
                     break;
             }
-
-            return pos;
+            return new Vector2(x, y);
         }
     }
 }
