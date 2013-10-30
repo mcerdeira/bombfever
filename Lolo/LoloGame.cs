@@ -314,6 +314,11 @@ namespace Lolo
             options = new OptionMenu(menues, mainFont, ScreenHeight, ScreenWidth);
             gameOPT = options.loadOptions();
             PlayerTextures.Add(Content.Load<Texture2D>("Knight"));
+            PlayerTextures.Add(Content.Load<Texture2D>("Girl"));
+            PlayerTextures.Add(Content.Load<Texture2D>("King"));
+            PlayerTextures.Add(Content.Load<Texture2D>("Man"));            
+            PlayerTextures.Add(Content.Load<Texture2D>("Skelet"));
+            PlayerTextures.Add(Content.Load<Texture2D>("Sorce"));
 
             PlayerSelectionTextures.Add(Content.Load<Texture2D>("Knight_S"));
             PlayerSelectionTextures.Add(Content.Load<Texture2D>("Girl_S"));
@@ -516,7 +521,7 @@ namespace Lolo
                 spriteBatch.Begin(0, BlendState.AlphaBlend, null, null, null, PauseFX);                                
             }
             else
-            {                
+            {
                 spriteBatch.Begin();
             }
             switch (CurrentGameState)

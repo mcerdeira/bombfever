@@ -15,8 +15,8 @@ namespace Lolo
         private List<Texture2D> PlayerSelectionTextures = new List<Texture2D>();
         SpriteFont Font;
         Texture2D Texture;
-        int State1;
-        int State2;
+        int State1 = 0;
+        int State2 = 1;
         int ScreenWidth;
         int ScreenHeight;
 
@@ -60,8 +60,22 @@ namespace Lolo
                     y += PlayerSelectionTextures[index].Height + 60;
                 }
             }
-            //spriteBatch.DrawString(Font, "P1", new Vector2(0, 0), Color.Yellow);
-            //spriteBatch.DrawString(Font, "P2", new Vector2(0, 0), Color.Yellow);
+            spriteBatch.DrawString(Font, "P1", PosfromState(this.State1), Color.White);
+            spriteBatch.DrawString(Font, "P2", PosfromState(this.State2), Color.White);
+        }
+
+        private Vector2 PosfromState(int state)
+        {
+            Vector2 pos = new Vector2();
+
+            switch (state)
+            {
+                case (int)PlayerTex.Knight:
+
+                    break;
+            }
+
+            return pos;
         }
     }
 }

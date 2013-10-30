@@ -18,9 +18,13 @@ namespace Lolo
 
     public enum PlayerTex // This is used by a list of textures to point to indexes
     {
-        // Mummy
-        // Indy
-        PlaceHolder = 0
+        PlaceHolder = 0,
+        Knight = 0,
+        Girl = 1,
+        King = 2,
+        Man = 3,
+        Skelet = 4,
+        Sorce = 5
     }
 
     public enum GameState
