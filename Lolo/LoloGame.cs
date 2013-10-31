@@ -24,6 +24,7 @@ namespace Lolo
         // </Fps stuff>
         ControlWrapper cwrap1;
         ControlWrapper cwrap2;
+        ControlWrapper cwrapReal2;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         float roundTime;
@@ -60,14 +61,18 @@ namespace Lolo
         private bool paused = false;
         private bool pauseKeyDown = false;
         private PlayerActions previousMenuKey = PlayerActions.None;
-        private bool EnterKeyDown = false;        
+        private PlayerActions prevKey1 = PlayerActions.None;
+        private PlayerActions prevKey2 = PlayerActions.None;
+        private bool EnterKeyDown = false;
         private SoundEffectInstance bkMusicInstance;
         private SoundEffectInstance menuMusicInstance;
         private List<SoundEffect> PlayersndFXList = new List<SoundEffect>();
         private SpriteFont titleFont;
         private CharacterSelection charselect;
         private bool PlayerSelected = false;
-        GameState CurrentGameState = GameState.MainMenu;        
+        private PlayerTex p1Sel;
+        private PlayerTex p2Sel;
+        GameState CurrentGameState = GameState.MainMenu;
 
         public LoloGame()
             : base()
@@ -113,7 +118,8 @@ namespace Lolo
             }
 
             cwrap1 = new ControlWrapper(ctype1);
-            cwrap2 = new ControlWrapper(ControlType.KeyBoard1); // Fixed keyboard for menues
+            cwrap2 = new ControlWrapper(ControlType.KeyBoard1); // Fixed keyboard p2 for menues
+            cwrapReal2 = new ControlWrapper(ctype2); // Real p2 controls
         }
 
         private void BeginPause(bool UserInitiated)
@@ -143,6 +149,63 @@ namespace Lolo
                     EndPause();
             }
             pauseKeyDown = pauseKeyDownThisFrame;
+        }
+
+        private PlayerActions charSelectKey(ControlWrapper cwrap, PlayerActions preKey, string player)
+        {
+            if (cwrap.IsKeyDown(PlayerActions.Up))
+            {                
+                if (preKey != PlayerActions.Up)
+                {
+                    charselect.ButtonFocus(-1, player);
+                }
+                return PlayerActions.Up;
+            }
+            else if (cwrap.IsKeyDown(PlayerActions.Down))
+            {
+                if (preKey != PlayerActions.Down)
+                {
+                    charselect.ButtonFocus(1, player);                    
+                }
+                return PlayerActions.Down;
+            }
+            else if (cwrap.IsKeyDown(PlayerActions.Left))
+            {
+                if (preKey != PlayerActions.Left)
+                {
+                    charselect.ButtonFocus(-2, player);
+                    
+                }
+                return PlayerActions.Left;
+            }
+            else if (cwrap.IsKeyDown(PlayerActions.Right))
+            {
+                if (preKey != PlayerActions.Right)
+                {
+                    charselect.ButtonFocus(2, player);
+                }
+                return PlayerActions.Right;
+            }
+            else if (cwrap.IsKeyDown(PlayerActions.Bomb))
+            {
+                if (preKey != PlayerActions.Bomb)
+                {
+                    charselect.ButtonFocus(3, player);
+                    if (player == "p1")
+                    {
+                        p1Sel = charselect.State1;
+                    }
+                    else
+                    {
+                        p2Sel = charselect.State2;
+                    }
+                }
+                return PlayerActions.Bomb;
+            }
+            else
+            {
+                return PlayerActions.None;
+            }
         }
 
         private void checkMenuKey()
@@ -264,7 +327,7 @@ namespace Lolo
             }
 
             EnterKeyDown = EnterKeyDownThisFrame;
-        } 
+        }
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -343,14 +406,18 @@ namespace Lolo
             menuMusicInstance = Content.Load<SoundEffect>("menumusic").CreateInstance();
             menuMusicInstance.IsLooped = true;
             menuMusicInstance.Volume = 0.5f;
-            menuMusicInstance.Play();
+            if (gameOPT.music == 1)
+            {
+                menuMusicInstance.Play();
+            }
             bkMusicInstance = Content.Load<SoundEffect>("backmusic").CreateInstance();
             bkMusicInstance.IsLooped = true;
-            bkMusicInstance.Volume = 0.5f;            
+            bkMusicInstance.Volume = 0.5f;
+
             // List with all the player soundFXs
             PlayersndFXList.Add(Content.Load<SoundEffect>("placebomb"));
             PlayersndFXList.Add(Content.Load<SoundEffect>("die"));
-            PlayersndFXList.Add(Content.Load<SoundEffect>("kick"));
+            PlayersndFXList.Add(Content.Load<SoundEffect>("kick"));  
         }
 
         /// <summary>
@@ -388,6 +455,14 @@ namespace Lolo
             {
                 checkMenuKey();
             }
+
+            // This is the character selection screen
+            if((CurrentGameState == GameState.Start1P || CurrentGameState == GameState.Start2P && !PlayerSelected))
+            {
+                prevKey1 = charSelectKey(cwrap1, prevKey1, "p1");
+                prevKey2 = charSelectKey(cwrapReal2, prevKey2, "p2");
+            }
+
             if (CurrentGameState == GameState.Playing1P || CurrentGameState == GameState.Playing2P)
             {
                 checkPauseKey(Keyboard.GetState());
@@ -412,15 +487,15 @@ namespace Lolo
                             // In Game objects                                    
                             score = new Score(ScreenHeight, ScreenWidth, mainFont, roundTime, General.getGameTypes()[gameOPT.gametype]);
                             bombmanager = new BombManager(sfxExplosion, sfxMiniExplosion, bombTex, particleTex);
-                            p1 = new Player(PlayerTextures[(int)PlayerTex.PlaceHolder], new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human, PlayersndFXList);
+                            p1 = new Player(PlayerTextures[(int)p1Sel], new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human, PlayersndFXList);
                             if (CurrentGameState == GameState.Start1P)
                             {
-                                p2 = new Player(PlayerTextures[(int)PlayerTex.PlaceHolder], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Machine, PlayersndFXList);
+                                p2 = new Player(PlayerTextures[(int)p2Sel], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Machine, PlayersndFXList);
                                 CurrentGameState = GameState.Playing1P;
                             }
                             else
                             {
-                                p2 = new Player(PlayerTextures[(int)PlayerTex.PlaceHolder], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Human, PlayersndFXList);
+                                p2 = new Player(PlayerTextures[(int)p2Sel], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Human, PlayersndFXList);
                                 CurrentGameState = GameState.Playing2P;
                             }
                             map = new Map(p1, p2, bombmanager);
@@ -433,7 +508,7 @@ namespace Lolo
                         }
                         else
                         {
-                            charselect.Update(gameTime);
+                            PlayerSelected = charselect.Update(gameTime);
                         }
                         break;
                     case GameState.GotoMainMenu:

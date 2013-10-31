@@ -34,6 +34,10 @@ namespace Lolo
             btns.Add(cboTime);
             ComboList cbotype = new ComboList("Game type", screenwidth, font, Color.White, General.getGameTypes());
             btns.Add(cbotype);
+            ComboList cbomusic = new ComboList("Music", screenwidth, font, Color.White, General.getOnOff());
+            btns.Add(cbomusic);
+            ComboList cboFx = new ComboList("FX", screenwidth, font, Color.White, General.getOnOff());
+            btns.Add(cboFx);
 
             #warning Add checkboxes with item availability
             Button btn = new Button("Acept", screenwidth, font, Color.Yellow, Color.White, GameState.GotoMainMenu);
@@ -50,6 +54,8 @@ namespace Lolo
             this.gameOpt.p2control = ((ComboList)btns[1]).Val;
             this.gameOpt.timelimit = ((ComboList)btns[2]).Val;
             this.gameOpt.gametype = ((ComboList)btns[3]).Val;
+            this.gameOpt.music = ((ComboList)btns[4]).Val;
+            this.gameOpt.fx = ((ComboList)btns[5]).Val;
 
             // Write to XML
             XmlSerializer writer = new XmlSerializer(typeof(GameOptions));
@@ -82,11 +88,15 @@ namespace Lolo
                 this.gameOpt.p2control = 0;
                 this.gameOpt.timelimit = 0;
                 this.gameOpt.gametype = 0;
+                this.gameOpt.music = 0;
+                this.gameOpt.fx = 0;
             }
             ((ComboList)btns[0]).Val = this.gameOpt.p1control;
             ((ComboList)btns[1]).Val = this.gameOpt.p2control;
             ((ComboList)btns[2]).Val = this.gameOpt.timelimit;
             ((ComboList)btns[3]).Val = this.gameOpt.gametype;
+            ((ComboList)btns[4]).Val = this.gameOpt.music;
+            ((ComboList)btns[5]).Val = this.gameOpt.fx;
 
             return this.gameOpt;
         }

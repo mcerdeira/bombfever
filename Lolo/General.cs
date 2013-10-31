@@ -18,7 +18,7 @@ namespace Lolo
 
     public enum PlayerTex // This is used by a list of textures to point to indexes
     {
-        PlaceHolder = 0,
+        PlaceHolder = -1,
         Knight = 0,
         Girl = 1,
         King = 2,
@@ -93,6 +93,11 @@ namespace Lolo
 
     class General
     {
+        public static List<string> getOnOff()
+        {
+            return new List<String>(new String[] { "Off", "On" });
+        }
+
         public static List<string> getControlTypes()
         {
             return new List<String>(new String[] { "Keyboard", "Joystick" });

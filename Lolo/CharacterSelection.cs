@@ -15,10 +15,13 @@ namespace Lolo
         private List<Texture2D> PlayerSelectionTextures = new List<Texture2D>();
         SpriteFont Font;
         Texture2D Texture;
-        int State1 = 0;
-        int State2 = 1;
+        public PlayerTex State1;
+        public PlayerTex State2;
+        bool Select1 = false;
+        bool Select2 = false;
         int ScreenWidth;
         int ScreenHeight;
+        int frameCounter = 0;
 
         public CharacterSelection(Texture2D texture, SpriteFont font, List<Texture2D> playerselectiontextures, int screenheight, int screenwidth)
         {        
@@ -27,11 +30,131 @@ namespace Lolo
             this.PlayerSelectionTextures = playerselectiontextures;
             this.ScreenHeight = screenheight;
             this.ScreenWidth = screenwidth;
+            State1 = PlayerTex.Knight;
+            State2 = PlayerTex.Girl;
         }
 
-        public void Update(GameTime gametime)
+        public bool Update(GameTime gametime)
         {
+            return (Select1 && Select2);
+        }
 
+        public void ButtonFocus(int direction, string player)
+        {
+            if (direction != 3)
+            {
+                if (player == "p1")
+                {
+                    if (!this.Select1)
+                    {
+                        this.State1 = CalcPosition(direction, this.State1, this.State2);
+                    }
+                }
+                else
+                {
+                    if (!this.Select2)
+                    {
+                        this.State2 = CalcPosition(direction, this.State2, this.State1);
+                    }
+                }
+            }
+            else
+            {
+                if (player == "p1")
+                {
+                    this.Select1 = !this.Select1;
+                }
+                else
+                {
+                    this.Select2 = !this.Select2;
+                }
+            }
+        }
+
+        private PlayerTex CalcPosition(int direction, PlayerTex cur, PlayerTex forbid)
+        {
+            PlayerTex future = PlayerTex.PlaceHolder;
+            switch (direction)
+            {
+                case 1: // Down
+                case -1: // Up
+                    switch(cur)
+                    {
+                        case PlayerTex.Knight:
+                            future = PlayerTex.Man;
+                            break;
+                        case PlayerTex.Girl:
+                            future = PlayerTex.Skelet;
+                            break;
+                        case PlayerTex.King:
+                            future = PlayerTex.Sorce;
+                            break;
+                        case PlayerTex.Man:
+                            future = PlayerTex.Knight;
+                            break;
+                        case PlayerTex.Skelet:
+                            future = PlayerTex.Girl;
+                            break;
+                        case PlayerTex.Sorce:
+                            future = PlayerTex.King;
+                            break;
+                    }
+                    break;
+                case 2: // Right
+                    switch(cur)
+                    {
+                        case PlayerTex.Knight:
+                            future = PlayerTex.Girl;
+                            break;
+                        case PlayerTex.Girl:
+                            future = PlayerTex.King;
+                            break;
+                        case PlayerTex.King:
+                            future = PlayerTex.Knight;
+                            break;
+                        case PlayerTex.Man:
+                            future = PlayerTex.Skelet;
+                            break;
+                        case PlayerTex.Skelet:
+                            future = PlayerTex.Sorce;
+                            break;
+                        case PlayerTex.Sorce:
+                            future = PlayerTex.Man;
+                            break;
+                    }
+                    break;
+                case -2: // Left
+                    switch(cur)
+                    {
+                        case PlayerTex.Knight:
+                            future = PlayerTex.King;
+                            break;
+                        case PlayerTex.Girl:
+                            future = PlayerTex.Knight;
+                            break;
+                        case PlayerTex.King:
+                            future = PlayerTex.Girl;
+                            break;
+                        case PlayerTex.Man:
+                            future = PlayerTex.Sorce;
+                            break;
+                        case PlayerTex.Skelet:
+                            future = PlayerTex.Man;
+                            break;
+                        case PlayerTex.Sorce:
+                            future = PlayerTex.Skelet;
+                            break;
+                    }
+                    break;
+            }
+            if (future != forbid)
+            {
+                return future;
+            }
+            else
+            {
+                return cur;
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -62,41 +185,66 @@ namespace Lolo
                     y += PlayerSelectionTextures[index].Height + 60;
                 }
             }
-            spriteBatch.DrawString(Font, "P1", PosfromState(this.State1), Color.White);
-            spriteBatch.DrawString(Font, "P2", PosfromState(this.State2), Color.White);
+            string p1 = "";
+            string p2 = "";
+            if (frameCounter > 25)
+            {
+                frameCounter = 0;
+            }
+            else if (frameCounter > 20)
+            {
+                p1 = "";
+                p2 = "";
+            }
+            else if (frameCounter >= 0)
+            {
+                p1 = "[P1]";
+                p2 = "[P2]";
+            }
+            frameCounter++;
+            if (this.Select1)
+            {
+                p1 = "[P1]";                
+            }
+            if (this.Select2)
+            {                
+                p2 = "[P2]";
+            }
+            spriteBatch.DrawString(Font, p1, PosfromState(this.State1), this.Select1 ? Color.Yellow : Color.White);
+            spriteBatch.DrawString(Font, p2, PosfromState(this.State2), this.Select2 ? Color.Yellow : Color.White);
         }
 
-        private Vector2 PosfromState(int state)
+        private Vector2 PosfromState(PlayerTex state)
         {
             float x = 0, y = 0;
             switch (state)
             {
-                case (int)PlayerTex.Knight:
+                case PlayerTex.Knight:
                     x = 200;
                     y = 200;
                     break;
-                case (int)PlayerTex.Girl:
+                case PlayerTex.Girl:
                     x = 360;
                     y = 200;
                     break;
-                case (int)PlayerTex.King:
+                case PlayerTex.King:
                     x = 520;
                     y = 200;
                     break;
-                case (int)PlayerTex.Man:
+                case PlayerTex.Man:
                     x = 200;
                     y = 360;
                     break;
-                case (int)PlayerTex.Skelet:
+                case PlayerTex.Skelet:
                     x = 360;
                     y = 360;
                     break;
-                case (int)PlayerTex.Sorce:
+                case PlayerTex.Sorce:
                     x = 520;
                     y = 360;
                     break;
             }
-            return new Vector2(x, y);
+            return new Vector2(x, y-50);
         }
     }
 }
