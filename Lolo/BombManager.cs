@@ -136,7 +136,7 @@ namespace Lolo
         {
             bombs.Remove(bomb);
             bomb = null;
-            BombExplosion ex = new BombExplosion(60, map, this, Player, Player2, particleTexture, position);
+            BombExplosion ex = new BombExplosion(50, map, this, Player, Player2, particleTexture, position);
             bombex.Add(ex);
             sndFXExplode.Play();
         }

@@ -7,12 +7,16 @@ using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Lolo
 {
     class CharacterSelection
     {
         private List<Texture2D> PlayerSelectionTextures = new List<Texture2D>();
+        private SoundEffect fxSelect;
+        private SoundEffect fxSelected;
+        private SoundEffect fxUnSelected;
         SpriteFont Font;
         Texture2D Texture;
         public PlayerTex State1;
@@ -23,15 +27,26 @@ namespace Lolo
         int ScreenHeight;
         int frameCounter = 0;
 
-        public CharacterSelection(Texture2D texture, SpriteFont font, List<Texture2D> playerselectiontextures, int screenheight, int screenwidth)
+        public CharacterSelection(Texture2D texture, SpriteFont font, List<Texture2D> playerselectiontextures, int screenheight, int screenwidth, SoundEffect fxselection, SoundEffect fxselected, SoundEffect fxunselected)
         {        
             this.Texture = texture;
             this.Font = font;
             this.PlayerSelectionTextures = playerselectiontextures;
             this.ScreenHeight = screenheight;
             this.ScreenWidth = screenwidth;
-            State1 = PlayerTex.Knight;
-            State2 = PlayerTex.Girl;
+            this.fxSelected = fxselected;
+            this.fxSelect = fxselection;
+            this.fxUnSelected = fxunselected;
+            Reset();
+        }
+
+        public void Reset()
+        {
+            this.Select1 = false;
+            this.Select2 = false;
+            this.frameCounter = 0;
+            this.State1 = PlayerTex.Knight;
+            this.State2 = PlayerTex.Girl;
         }
 
         public bool Update(GameTime gametime)
@@ -63,10 +78,26 @@ namespace Lolo
                 if (player == "p1")
                 {
                     this.Select1 = !this.Select1;
+                    if (this.Select1)
+                    {
+                        this.fxSelected.Play();
+                    }
+                    else
+                    {
+                        this.fxUnSelected.Play();
+                    }
                 }
                 else
                 {
                     this.Select2 = !this.Select2;
+                    if (this.Select2)
+                    {
+                        this.fxSelected.Play();
+                    }
+                    else
+                    {
+                        this.fxUnSelected.Play();
+                    }
                 }
             }
         }
@@ -149,6 +180,7 @@ namespace Lolo
             }
             if (future != forbid)
             {
+                this.fxSelect.Play();
                 return future;
             }
             else

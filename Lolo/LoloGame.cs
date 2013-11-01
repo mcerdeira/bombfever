@@ -70,8 +70,9 @@ namespace Lolo
         private SpriteFont titleFont;
         private CharacterSelection charselect;
         private bool PlayerSelected = false;
+        private int PlayerSelectedDelay = 0;
         private PlayerTex p1Sel;
-        private PlayerTex p2Sel;
+        private PlayerTex p2Sel;        
         GameState CurrentGameState = GameState.MainMenu;
 
         public LoloGame()
@@ -389,10 +390,12 @@ namespace Lolo
             PlayerSelectionTextures.Add(Content.Load<Texture2D>("Man_S"));
             PlayerSelectionTextures.Add(Content.Load<Texture2D>("Skelet_S"));
             PlayerSelectionTextures.Add(Content.Load<Texture2D>("Sorce_S"));
-
-            charselect = new CharacterSelection(menues, mainFont, PlayerSelectionTextures, ScreenHeight, ScreenWidth);
+            
             LoadControls();
             LoadMusicFX();
+
+            charselect = new CharacterSelection(menues, mainFont, PlayerSelectionTextures, ScreenHeight, ScreenWidth, PlayersndFXList[(int)PlayerSndFXs.CharSelect], PlayersndFXList[(int)PlayerSndFXs.CharSelected], PlayersndFXList[(int)PlayerSndFXs.CharUnSelected]);
+
             bombTex = Content.Load<Texture2D>("bomb");
             particleTex = Content.Load<Texture2D>("particle");
             pbarTex = Content.Load<Texture2D>("pbar");
@@ -417,7 +420,11 @@ namespace Lolo
             // List with all the player soundFXs
             PlayersndFXList.Add(Content.Load<SoundEffect>("placebomb"));
             PlayersndFXList.Add(Content.Load<SoundEffect>("die"));
-            PlayersndFXList.Add(Content.Load<SoundEffect>("kick"));  
+            PlayersndFXList.Add(Content.Load<SoundEffect>("kick"));
+            PlayersndFXList.Add(Content.Load<SoundEffect>("char_select"));
+            PlayersndFXList.Add(Content.Load<SoundEffect>("char_selected"));
+            PlayersndFXList.Add(Content.Load<SoundEffect>("char_unselected"));
+            PlayersndFXList.Add(Content.Load<SoundEffect>("yay"));
         }
 
         /// <summary>
@@ -477,38 +484,51 @@ namespace Lolo
                     case GameState.Start2P:
                         if (PlayerSelected)
                         {
-                            menuMusicInstance.Stop();
-                            bkMusicInstance.Play();
-                            // Load game options
-                            gameOPT = options.loadOptions();
-                            LoadControls();
-                            roundTime = float.Parse(General.getRoundTimes()[gameOPT.timelimit]);
-
-                            // In Game objects                                    
-                            score = new Score(ScreenHeight, ScreenWidth, mainFont, roundTime, General.getGameTypes()[gameOPT.gametype]);
-                            bombmanager = new BombManager(sfxExplosion, sfxMiniExplosion, bombTex, particleTex);
-                            p1 = new Player(PlayerTextures[(int)p1Sel], new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human, PlayersndFXList);
-                            if (CurrentGameState == GameState.Start1P)
+                            if (PlayerSelectedDelay == 0)
                             {
-                                p2 = new Player(PlayerTextures[(int)p2Sel], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Machine, PlayersndFXList);
-                                CurrentGameState = GameState.Playing1P;
+                                charselect.Reset();
+                                menuMusicInstance.Stop();
+                                bkMusicInstance.Play();
+                                // Load game options
+                                gameOPT = options.loadOptions();
+                                LoadControls();
+                                roundTime = float.Parse(General.getRoundTimes()[gameOPT.timelimit]);
+
+                                // In Game objects                                    
+                                score = new Score(ScreenHeight, ScreenWidth, mainFont, roundTime, General.getGameTypes()[gameOPT.gametype]);
+                                bombmanager = new BombManager(sfxExplosion, sfxMiniExplosion, bombTex, particleTex);
+                                p1 = new Player(PlayerTextures[(int)p1Sel], new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human, PlayersndFXList);
+                                if (CurrentGameState == GameState.Start1P)
+                                {
+                                    p2 = new Player(PlayerTextures[(int)p2Sel], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Machine, PlayersndFXList);
+                                    CurrentGameState = GameState.Playing1P;
+                                }
+                                else
+                                {
+                                    p2 = new Player(PlayerTextures[(int)p2Sel], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Human, PlayersndFXList);
+                                    CurrentGameState = GameState.Playing2P;
+                                }
+                                map = new Map(p1, p2, bombmanager);
+                                map.GenerateLevel(Content, LevelName);
+                                bombmanager.UpdateMap(map, p1, p2);
+                                if (CurrentGameState == GameState.Playing1P)
+                                {
+                                    p2.InitAI(p1, map);
+                                }
                             }
                             else
                             {
-                                p2 = new Player(PlayerTextures[(int)p2Sel], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Human, PlayersndFXList);
-                                CurrentGameState = GameState.Playing2P;
-                            }
-                            map = new Map(p1, p2, bombmanager);
-                            map.GenerateLevel(Content, LevelName);
-                            bombmanager.UpdateMap(map, p1, p2);
-                            if (CurrentGameState == GameState.Playing1P)
-                            {
-                                p2.InitAI(p1, map);
+                                PlayerSelectedDelay--;
                             }
                         }
                         else
                         {
                             PlayerSelected = charselect.Update(gameTime);
+                            if (PlayerSelected)
+                            {                               
+                                menuMusicInstance.Volume = 0.1f;
+                                PlayerSelectedDelay = 50;
+                            }
                         }
                         break;
                     case GameState.GotoMainMenu:
@@ -559,6 +579,7 @@ namespace Lolo
                             roundR = new RoundResults(menues, mainFont, chartFont, score, st, cMatch, ScreenHeight, ScreenWidth, pbarTex);
                             CurrentGameState = GameState.RoundResults;
                             bkMusicInstance.Pitch = 0;
+                            PlayersndFXList[(int)PlayerSndFXs.Yay].Play();                            
                         }
                         break;
                     case GameState.Credits:
