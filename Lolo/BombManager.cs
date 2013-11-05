@@ -16,7 +16,7 @@ namespace Lolo
         private List<BombExplosion> bombex = new List<BombExplosion>();        
         private Map map;
         private Player Player;
-        private Player Player2;        
+        private Player Player2;
         private Texture2D bombTexture;
         private Texture2D particleTexture;
         private SoundEffect sndFXExplode;

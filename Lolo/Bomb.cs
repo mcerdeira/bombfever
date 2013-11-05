@@ -80,7 +80,7 @@ namespace Lolo
 
             int hitX = (int)Position.X + 10;
             int hitY = (int)Position.Y + 10;
-            hitBox = new Rectangle(hitX, hitY, 30, 30);
+            hitBox = new Rectangle(hitX, hitY, 40, 40);
 
             spriteBatch.Draw(Texture, dest, source, Color.White);
 
