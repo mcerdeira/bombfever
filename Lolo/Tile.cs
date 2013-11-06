@@ -105,6 +105,15 @@ namespace Lolo
             if(Action == "dead")
             {
                 //Status = 1;
+                if (this.ID == -100)
+                {
+                    Map.MakeWin("p2");    
+                }
+                if (this.ID == -200)
+                {
+                    Map.MakeWin("p1");
+                }
+
                 deadCounter++;
                 if (deadCounter == 5)
                 {

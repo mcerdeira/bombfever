@@ -39,12 +39,21 @@ namespace Lolo
         private Player player;
         private Player player2;
         private BombManager bombmanager;
+        private Score Score;
+        private List<Texture2D> ItemTextures = new List<Texture2D>();
 
-        public Map(Player player, Player player2, BombManager bombmanager)
+        public Map(Player player, Player player2, BombManager bombmanager, List<Texture2D> itemtextures, Score score)
         {
+            this.Score = score;
+            this.ItemTextures = itemtextures;
             this.bombmanager = bombmanager;
             this.player = player;
             this.player2 = player2;
+        }
+
+        public void MakeWin(string player)
+        {
+            this.Score.MakeWin(player);
         }
 
         public void Update()

@@ -84,15 +84,19 @@ namespace Lolo
 
     public enum ItemTypes
     {        
-        Inmortal,
-        Shield,
-        Speed_Shoe,
-        Freeze,
-        Sudden_Death,
-        Extra_Time,
-        Extra_Bomb,
-        Triggered_Bombs,
-        Bouncing_Bombs,
+        None = -1,
+        Shield = 0,
+        Death = 1,
+        Ghost = 2,
+        Freeze = 3,
+        Plus1 = 4,
+        SwitchScore = 6,
+        ExtraTime = 7,
+        Roundx2 = 8,
+        BouncingBombs = 9,        
+        EternalFire = 10,
+        Contructor = 11,
+        Portal = 12
     }
 
     class General

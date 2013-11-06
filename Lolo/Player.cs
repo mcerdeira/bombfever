@@ -36,10 +36,9 @@ namespace Lolo
         private int FrameRate = 0;
         private int currentFrame;
         private string KeyControl;
-        private string InstanceName;
+        public string InstanceName;
         private PlayerStyle PStlye;
-        private ControlWrapper cwrap;
-        private int ItemCollected = -1;
+        private ControlWrapper cwrap;        
         private int[] idleFrames = new int[] { 0, 1, 2, 3 };
         private int[] walkFrames = new int[] { 4, 5, 6, 7 };
         private int[] deadFrames = new int[] { 8, 9, 10, 11 };
@@ -63,8 +62,16 @@ namespace Lolo
         int directionX = 0;
         int directionY = 0;        
         private List<SoundEffect> sndFXList;
+        SpriteFont Font;
+        private int ScreenHeight;
+        private int ScreenWidth;
+        // Items apply related vars
+        private ItemTypes Item = ItemTypes.None;
+        private int ItemTime = 0;
+        private string ItemDisplay = "";
+        private int PausedLoop = 0;
 
-        public Player(Texture2D texture, Vector2 location, ControlType ctype, BombManager BombMan, Score score, string instancename, PlayerStyle pstlye, List<SoundEffect> sndfxlist)
+        public Player(Texture2D texture, Vector2 location, ControlType ctype, BombManager BombMan, Score score, string instancename, PlayerStyle pstlye, List<SoundEffect> sndfxlist, SpriteFont font, int screenheight, int screenwidth)
         {
             if (instancename == "p1")
             {
@@ -87,23 +94,31 @@ namespace Lolo
             this.PStlye = pstlye;
             this.InstanceName = instancename;
             this.BombMan = BombMan;
+            this.Font = font;
             if(this.PStlye == PlayerStyle.Human)
             {
                 cwrap = new ControlWrapper(ctype);
             }
             this.sndFXList = sndfxlist;
+            this.ScreenHeight = screenheight;
+            this.ScreenWidth = screenwidth;
         }
 
-        public void setItem(int itemstyle)
+        public void Kill()
         {
-            this.ItemCollected = itemstyle;            
+            this.Status = "dead";
+        }
+
+        public void Pause()
+        {
+            this.Status = "idle";
+            PausedLoop = 200;
         }
 
         public void Update(GameTime gametime)
         {
             int totalFrames = -1;
-         
-            UpdateInput((float)gametime.ElapsedGameTime.TotalSeconds);
+            UpdateInput((float)gametime.ElapsedGameTime.TotalSeconds);            
             if (this.Status == "walking")
             {
                 switch (this.WalkingDirection)
@@ -128,8 +143,7 @@ namespace Lolo
                 totalFrames = 1;
             }
             else if(this.Status == "dead")
-            {
-                
+            {                
                 totalFrames = 1;
             }
 
@@ -680,6 +694,12 @@ namespace Lolo
             string KeyH = "";
             string KeyV = "";
 
+            if (PausedLoop > 0)
+            {
+                PausedLoop--;
+                return;
+            }
+
             if (PStlye == PlayerStyle.Human)
             {                
                 if (this.Status != "dead")
@@ -831,6 +851,155 @@ namespace Lolo
                 this.sndFXList[(int)PlayerSndFXs.PlaceBomb].Play();
             }
         }
+     
+        #region Apply Items
+
+        public void EternalFire()
+        {
+            this.ItemTime = -1;
+            this.Item = ItemTypes.EternalFire;
+            this.ItemDisplay = ItemTypeNames(this.Item);            
+        }
+
+        public void BouncingBombs()
+        {
+            this.ItemTime = -1;
+            this.Item = ItemTypes.BouncingBombs;
+            this.ItemDisplay = ItemTypeNames(this.Item);
+        }
+
+        public void RoundX2()
+        {
+            this.ItemTime = -1;
+            this.Item = ItemTypes.Roundx2;
+            this.ItemDisplay = ItemTypeNames(this.Item);
+        }
+
+        public void ExtraTime()
+        {
+            this.ItemTime = -1;
+            this.Item = ItemTypes.ExtraTime;
+            this.ItemDisplay = ItemTypeNames(this.Item);
+        }
+
+        public void Contructor()
+        {
+            this.ItemTime = -1;
+            this.Item = ItemTypes.Contructor;
+            this.ItemDisplay = ItemTypeNames(this.Item);
+        }
+
+        public void Ghost()
+        {
+            this.ItemTime = 50;
+            this.Item = ItemTypes.Ghost;
+            this.ItemDisplay = ItemTypeNames(this.Item);
+        }
+
+        public void Plus1()
+        {
+            this.ItemTime = -1;
+            this.Item = ItemTypes.Plus1;
+            this.ItemDisplay = ItemTypeNames(this.Item);
+        }
+
+        public void SwitchScore()
+        {
+            this.ItemTime = -1;
+            this.Item = ItemTypes.SwitchScore;
+            this.ItemDisplay = ItemTypeNames(this.Item);
+        }
+
+        public void Portal()
+        {
+            this.ItemTime = -1;
+            this.Item = ItemTypes.Portal;
+            this.ItemDisplay = ItemTypeNames(this.Item);
+        }
+
+        public void Death()
+        {
+            this.ItemTime = 50;
+            this.Item = ItemTypes.Death;
+            this.ItemDisplay = ItemTypeNames(this.Item);
+            
+        }
+
+        public void Shield()
+        {
+            this.ItemTime = 50;
+            this.Item = ItemTypes.Shield;
+            this.ItemDisplay = ItemTypeNames(this.Item);
+        }
+
+        public void Freeze()
+        {
+            this.ItemTime = 200;
+            this.Item = ItemTypes.Freeze;
+            this.ItemDisplay = ItemTypeNames(this.Item);
+        }
+
+        #endregion
+
+        private string ItemTypeNames(ItemTypes it)
+        {
+            string name = "";
+            switch (it)
+            {
+                case ItemTypes.BouncingBombs:
+                    name = "Bouncing Bombs";
+                    break;
+                case ItemTypes.Contructor:
+                    name = "Contructor Mode";
+                    break;
+                case ItemTypes.Death:
+                    name = "Sudden Death";
+                    break;
+                case ItemTypes.EternalFire:
+                    name = "Eternal Fire";
+                    break;
+                case ItemTypes.ExtraTime:
+                    name = "Extra Time";
+                    break;
+                case ItemTypes.Freeze:
+                    name = "Freeze";
+                    break;
+                case ItemTypes.Ghost:
+                    name = "Ghost (boo!)";
+                    break;
+                case ItemTypes.Plus1:
+                    name = "+1";
+                    break;
+                case ItemTypes.Portal:
+                    name = "Teleporter";
+                    break;
+                case ItemTypes.Roundx2:
+                    name = "Round x 2";
+                    break;
+                case ItemTypes.Shield:
+                    name = "Shield";
+                    break;
+                case ItemTypes.SwitchScore:
+                    name = "Switch Scores";
+                    break;
+            }
+            return name;
+        }
+
+        private void infoAdic(SpriteBatch spriteBatch)
+        {
+            Vector2 infoPOs;
+            // Player info
+            if (InstanceName == "p1")
+            { 
+                infoPOs = new Vector2(0 + 5, ScreenHeight - 50);
+            }
+            else
+            {
+                infoPOs = new Vector2(ScreenWidth - Font.MeasureString(this.ItemDisplay).X - 5, ScreenHeight - 50);
+            }
+            spriteBatch.DrawString(Font, this.ItemDisplay, infoPOs, Color.White);
+        }
 
         public void Draw(SpriteBatch spriteBatch)
         {
@@ -853,8 +1022,22 @@ namespace Lolo
                 int hitY = (int)Location.Y + 10;
                 hitBox = new Rectangle(hitX, hitY, 40, 40);//destinationRectangle;
                 spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White);
-
                 //spriteBatch.Draw(Texture, hitBox, hitBox, Color.Red);
+
+                if (Item != ItemTypes.None)
+                {
+                    // Text aditional info
+                    infoAdic(spriteBatch);
+                    if (this.ItemTime > 0)
+                    {
+                        this.ItemTime--;
+                    }
+                    else if (this.ItemTime == 0) // The item expired
+                    {
+                        this.ItemDisplay = "";
+                        this.Item = ItemTypes.None;
+                    }
+                }
             }
         }
     }

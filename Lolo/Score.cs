@@ -19,9 +19,11 @@ namespace Lolo
         private int ScreenHeight;
         private int ScreenWidth;
         private string GameType;
+        private bool WinByTile;
             
         public Score(int screenheight, int screenwidth, SpriteFont font, float totaltime, string gametype)
         {
+            this.WinByTile = false;
             this.GameType = gametype;
             this.currentTime = totaltime;            
             this.ScreenHeight = screenheight;
@@ -29,17 +31,52 @@ namespace Lolo
             this.Font = font;
         }
 
+        public void MakeWin(string player)
+        {
+            WinByTile = true;
+            currentTime = 0;
+            if(player == "p1")
+            {
+                scoreP1 = 1;
+                scoreP2 = 0;
+            }
+            else
+            {
+                scoreP1 = 0;
+                scoreP2 = 1;                
+            }
+        }
+
         public string getResult(out int scorep1, out int scorep2, Match match)
         {
             string r;
+            string tilemsg = "";            
+            if (WinByTile)
+            {
+                tilemsg = " [By blowing up the tile]";
+            }
             if (scoreP1 > scoreP2)
             {
-                r = "P1 Wins!";
+                if ((scoreP1 - scoreP2) >= 10)
+                {
+                    r = "P1 Just kicked your ass!";
+                }
+                else
+                {
+                    r = "P1 Wins!" + tilemsg;
+                }                
                 match.p1Win();
             }
             else if (scoreP1 < scoreP2)
             {
-                r = "P2 Wins!";
+                if ((scoreP2 - scoreP1) >= 10)
+                {
+                    r = "P2 Just kicked your ass!";
+                }
+                else
+                {
+                    r = "P2 Wins!" + tilemsg;
+                }
                 match.p2Win();
             }
             else

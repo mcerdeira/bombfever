@@ -35,8 +35,7 @@ namespace Lolo
         public Item(ContentManager content, Vector2 position, Player player, Player player2, Map map)
         {
             Random rnd = new Random();
-            this.Style = rnd.Next(0, 6);
-            #warning This will be content.Load<Texture2D>("item" + this.Style + this.Style.ToString());
+            this.Style = 3;// rnd.Next(0, 12);
             this.Texture = content.Load<Texture2D>("item"); 
             this.Position = position;
             this.Columns = Texture.Width / 50;
@@ -70,8 +69,62 @@ namespace Lolo
             if (hitBox.Intersects(player.hitBox))
             {
                 collected = true;
-                player.setItem(this.Style);
                 map.RemoveItem(this);
+                switch (this.Style)
+                {
+                    case (int)ItemTypes.BouncingBombs:
+                        player.BouncingBombs();
+                        break;
+                    case (int)ItemTypes.Contructor:
+                        player.Contructor();
+                        break;
+                    case (int)ItemTypes.Death:
+                        player.Death();
+                        if (player.InstanceName == "p1")
+                        {
+                            player2.Kill();
+                        }
+                        else
+                        {
+                            this.player.Kill();
+                        }
+                        break;
+                    case (int)ItemTypes.EternalFire:
+                        player.EternalFire();
+                        break;
+                    case (int)ItemTypes.ExtraTime:
+                        player.ExtraTime();
+                        break;
+                    case (int)ItemTypes.Freeze:
+                        player.Freeze();
+                        if (player.InstanceName == "p1")
+                        {
+                            player2.Pause();
+                        }
+                        else
+                        {
+                            this.player.Pause();
+                        }
+                        break;
+                    case (int)ItemTypes.Ghost:
+                        player.Ghost();
+                        break;
+                    case (int)ItemTypes.Plus1:
+                        player.Plus1();
+                        break;
+                    case (int)ItemTypes.Portal:
+                        player.Portal();
+                        break;
+                    case (int)ItemTypes.Roundx2:
+                        player.RoundX2();
+                        break;
+                    case (int)ItemTypes.Shield:
+                        player.Shield();
+                        break;
+                    case (int)ItemTypes.SwitchScore:
+                        player.SwitchScore();
+                        break;
+                }                
             }
         }
 

@@ -15,7 +15,5 @@ namespace Lolo
         public int p2control;
         public int gametype;
         public int timelimit;
-        public int music;
-        public int fx;
     }
 }
