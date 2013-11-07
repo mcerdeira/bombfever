@@ -20,7 +20,7 @@ namespace Lolo
         private Texture2D bombTexture;
         private Texture2D particleTexture;
         private SoundEffect sndFXExplode;
-        private SoundEffect sndFXMiniExplode;
+        private SoundEffect sndFXMiniExplode;        
 
         public BombManager(SoundEffect sndfxexplode, SoundEffect sndxminiexplode, Texture2D bombtexture, Texture2D particletexture)
         {
@@ -134,16 +134,17 @@ namespace Lolo
 
         public void RemoveBomb(Bomb bomb, Vector2 position)
         {
+            bool eternalfire = bomb.EternalFire;
             bombs.Remove(bomb);
             bomb = null;
-            BombExplosion ex = new BombExplosion(50, map, this, Player, Player2, particleTexture, position);
+            BombExplosion ex = new BombExplosion(50, map, this, Player, Player2, particleTexture, position, eternalfire:eternalfire);
             bombex.Add(ex);
             sndFXExplode.Play();
         }
 
-        public void SpawnBomb(Vector2 position, string owner)
+        public void SpawnBomb(Vector2 position, string owner, bool eternalFire = false, bool bouncing= false)
         {
-            Bomb b = new Bomb(position, owner, this, bombTexture, Player, Player2);
+            Bomb b = new Bomb(position, owner, this, bombTexture, Player, Player2, eternalFire, bouncing);
             bombs.Add(b);
         }
 

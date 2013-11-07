@@ -11,6 +11,13 @@ namespace Lolo
         private int p2Wins;
         private int draws;
 
+        public Match()
+        {
+            this.p1Wins = 0;
+            this.p2Wins = 0;
+            this.draws = 0;
+        }
+
         public int p1Score()
         {
             return this.p1Wins;
@@ -37,12 +44,6 @@ namespace Lolo
         public void DrawGame()
         {
             this.draws++;
-        }
-        public void reset()
-        {
-            this.draws = 0;
-            this.p2Wins = 0;
-            this.p2Wins = 0;
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Lolo
         public Item(ContentManager content, Vector2 position, Player player, Player player2, Map map)
         {
             Random rnd = new Random();
-            this.Style = 3;// rnd.Next(0, 12);
+            this.Style = 10;// rnd.Next(0, 12);
             this.Texture = content.Load<Texture2D>("item"); 
             this.Position = position;
             this.Columns = Texture.Width / 50;
@@ -110,7 +110,7 @@ namespace Lolo
                         player.Ghost();
                         break;
                     case (int)ItemTypes.Plus1:
-                        player.Plus1();
+                        player.Plus1();                        
                         break;
                     case (int)ItemTypes.Portal:
                         player.Portal();

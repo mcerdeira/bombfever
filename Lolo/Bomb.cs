@@ -23,10 +23,12 @@ namespace Lolo
         private int xMove = 0;
         private int yMove = 0;
         private int LifeLoop = 100;
-        public bool wallHitted = false;        
+        public bool wallHitted = false;
+        public bool EternalFire = false;
+        public bool BouncingBomb = false;
         BombManager BombMan;                
 
-        public Bomb(Vector2 position, string owner, BombManager BombMan, Texture2D texture, Player player, Player player2)
+        public Bomb(Vector2 position, string owner, BombManager BombMan, Texture2D texture, Player player, Player player2, bool eternalFire, bool bouncing)
         {
             this.Owner = owner;
             this.BombMan = BombMan;
@@ -35,6 +37,8 @@ namespace Lolo
             Texture = texture;           
             this.Position = position;
             this.Columns = Texture.Width / 50; //30            
+            this.EternalFire = eternalFire;
+            this.BouncingBomb = bouncing;
         }
 
         public void Kicked(string direction)

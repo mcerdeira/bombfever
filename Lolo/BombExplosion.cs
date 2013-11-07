@@ -24,8 +24,9 @@ namespace Lolo
         private Map map;
         private int totalParticles;
         private bool miniExplosion = false;
+        private bool Eternalfire = false;
 
-        public BombExplosion(int TTL, Map map, BombManager bombman, Player player, Player player2, Texture2D texture, Vector2 location, int totalParticles = 20, bool miniexplosion = false)
+        public BombExplosion(int TTL, Map map, BombManager bombman, Player player, Player player2, Texture2D texture, Vector2 location, int totalParticles = 20, bool miniexplosion = false, bool eternalfire = false)
         {
             this.miniExplosion = miniexplosion;
             this.totalParticles = totalParticles;
@@ -38,6 +39,11 @@ namespace Lolo
             this.texture = texture;
             this.particles = new List<Particle>();
             this.random = new Random();
+            this.Eternalfire = eternalfire;
+            if (this.Eternalfire)
+            {
+                this.totalParticles = 40;
+            }
         }
 
         public void Update()
@@ -92,7 +98,7 @@ namespace Lolo
             float size = (float)random.NextDouble();
             int ttl = totalParticles + random.Next(100);
 
-            return new Particle(map, player, player2, texture, position, velocity, angle, angularVelocity, color, size, ttl, EmitterLocation, this.miniExplosion);
+            return new Particle(map, player, player2, texture, position, velocity, angle, angularVelocity, color, size, ttl, EmitterLocation, this.miniExplosion, this.Eternalfire);
         }
 
         public void Draw(SpriteBatch spriteBatch)

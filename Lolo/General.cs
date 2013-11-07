@@ -28,7 +28,7 @@ namespace Lolo
         King = 2,
         Man = 3,
         Skelet = 4,
-        Sorce = 5
+        Sorce = 5        
     }
 
     public enum GameState
@@ -85,16 +85,16 @@ namespace Lolo
     public enum ItemTypes
     {        
         None = -1,
-        Shield = 0,
-        Death = 1,
+        Shield = 0, //
+        Death = 1, //
         Ghost = 2,
-        Freeze = 3,
-        Plus1 = 4,
-        SwitchScore = 6,
+        Freeze = 3, //
+        Plus1 = 4, //
+        SwitchScore = 6, //
         ExtraTime = 7,
         Roundx2 = 8,
         BouncingBombs = 9,        
-        EternalFire = 10,
+        EternalFire = 10, //
         Contructor = 11,
         Portal = 12
     }

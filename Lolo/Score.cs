@@ -33,8 +33,7 @@ namespace Lolo
 
         public void MakeWin(string player)
         {
-            WinByTile = true;
-            currentTime = 0;
+            WinByTile = true;            
             if(player == "p1")
             {
                 scoreP1 = 1;
@@ -45,6 +44,7 @@ namespace Lolo
                 scoreP1 = 0;
                 scoreP2 = 1;                
             }
+            currentTime = 0;
         }
 
         public string getResult(out int scorep1, out int scorep2, Match match)
@@ -101,6 +101,14 @@ namespace Lolo
                 startCount--;
             }
             return currentTime;
+        }
+
+        public void SwitchScores()
+        {
+            int temp;
+            temp = scoreP1;
+            scoreP1 = scoreP2;
+            scoreP2 = temp;
         }
 
         public void setScore(string player)

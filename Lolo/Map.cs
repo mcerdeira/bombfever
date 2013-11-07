@@ -10,25 +10,6 @@ using System.IO;
  * Implements map layout as seen in ScreenMap.xlsx!Basic Layout 
  */
 
-/*
- * 0 Empty space
- * 1 Brick (breakable 1 hit)  
- * 2 Iron (unbreakable)
- * 3 Stone (breakable 2 hits)
- * 4 Grass (walkable)
- * 5 Wood breakable 1 hit
- * 6 Empty space
- * 7 Empty space
- * 8 Empty space
- * 9 Brick (breakable 1 hit)
- * P Main player
- * E Enemy
- * A Pit
- * K Portal (teletransportation)
- * C Ice (slipery floor)
- * M Moving floor
-*/
-
 namespace Lolo
 {
     public class Map
@@ -83,7 +64,7 @@ namespace Lolo
                 int v;
                 if (tile.ID == 1)
                 {
-                    v = rdn.Next(0, 50); // If it is a regular brick, chances are lower
+                    v = rdn.Next(0, 20); // If it is a regular brick, chances are lower
                 }
                 else
                 {
@@ -95,8 +76,7 @@ namespace Lolo
                     Item itm = new Item(Content, tile.Position, player, player2, this);
                     items.Add(itm);
                 }
-            }
-            //TODO, previous to remove the item, an animation must occur
+            }            
             tile.ID = 0;
             tile.Walkable = true;
             tile.BreakAble = true;

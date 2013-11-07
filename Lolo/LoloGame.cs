@@ -54,6 +54,7 @@ namespace Lolo
         private Texture2D bombTex;
         private Texture2D particleTex;
         private Texture2D pbarTex;
+        private Texture2D bubble;
         private SoundEffect sfxExplosion;
         private SoundEffect sfxMiniExplosion;
         private List<Texture2D> PlayerTextures = new List<Texture2D>();
@@ -358,6 +359,7 @@ namespace Lolo
             mainFont = Content.Load<SpriteFont>("mainfont");
             chartFont = Content.Load<SpriteFont>("chartsfont");
             titleFont = Content.Load<SpriteFont>("titlefont");
+            bubble = Content.Load<Texture2D>("bubble");
             PauseFX = Content.Load<Effect>("Dark.mgfxo");
             PauseFX.Parameters["Percentage"].SetValue(0.30f);
             List<string> cr = new List<string>();
@@ -495,15 +497,15 @@ namespace Lolo
                                 // In Game objects                                    
                                 score = new Score(ScreenHeight, ScreenWidth, mainFont, roundTime, General.getGameTypes()[gameOPT.gametype]);
                                 bombmanager = new BombManager(sfxExplosion, sfxMiniExplosion, bombTex, particleTex);
-                                p1 = new Player(PlayerTextures[(int)p1Sel], new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human, PlayersndFXList, mainFont, ScreenHeight, ScreenWidth);
+                                p1 = new Player(PlayerTextures[(int)p1Sel], new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human, PlayersndFXList, mainFont, ScreenHeight, ScreenWidth, bubble);
                                 if (CurrentGameState == GameState.Start1P)
                                 {
-                                    p2 = new Player(PlayerTextures[(int)p2Sel], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Machine, PlayersndFXList, mainFont, ScreenHeight, ScreenWidth);
+                                    p2 = new Player(PlayerTextures[(int)p2Sel], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Machine, PlayersndFXList, mainFont, ScreenHeight, ScreenWidth, bubble);
                                     CurrentGameState = GameState.Playing1P;
                                 }
                                 else
                                 {
-                                    p2 = new Player(PlayerTextures[(int)p2Sel], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Human, PlayersndFXList, mainFont, ScreenHeight, ScreenWidth);
+                                    p2 = new Player(PlayerTextures[(int)p2Sel], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Human, PlayersndFXList, mainFont, ScreenHeight, ScreenWidth, bubble);
                                     CurrentGameState = GameState.Playing2P;
                                 }
                                 map = new Map(p1, p2, bombmanager, ItemTextures, score);
@@ -531,7 +533,7 @@ namespace Lolo
                         break;
                     case GameState.GotoMainMenu:
                         PlayerSelected = false;
-                        cMatch.reset();
+                        cMatch = new Match();
                         CurrentGameState = GameState.MainMenu;
                         menuMusicInstance.Volume = 0.5f;
                         bkMusicInstance.Volume = 0.5f;

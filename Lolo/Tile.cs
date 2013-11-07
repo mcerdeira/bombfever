@@ -104,6 +104,7 @@ namespace Lolo
             }
             if(Action == "dead")
             {
+                #warning This tiles must accept more than one hit
                 //Status = 1;
                 if (this.ID == -100)
                 {

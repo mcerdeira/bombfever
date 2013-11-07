@@ -65,13 +65,14 @@ namespace Lolo
         SpriteFont Font;
         private int ScreenHeight;
         private int ScreenWidth;
+        private Texture2D Bubble;
         // Items apply related vars
         private ItemTypes Item = ItemTypes.None;
         private int ItemTime = 0;
         private string ItemDisplay = "";
         private int PausedLoop = 0;
 
-        public Player(Texture2D texture, Vector2 location, ControlType ctype, BombManager BombMan, Score score, string instancename, PlayerStyle pstlye, List<SoundEffect> sndfxlist, SpriteFont font, int screenheight, int screenwidth)
+        public Player(Texture2D texture, Vector2 location, ControlType ctype, BombManager BombMan, Score score, string instancename, PlayerStyle pstlye, List<SoundEffect> sndfxlist, SpriteFont font, int screenheight, int screenwidth, Texture2D bubble)
         {
             if (instancename == "p1")
             {
@@ -102,10 +103,11 @@ namespace Lolo
             this.sndFXList = sndfxlist;
             this.ScreenHeight = screenheight;
             this.ScreenWidth = screenwidth;
+            this.Bubble = bubble;
         }
 
         public void Kill()
-        {
+        {            
             this.Status = "dead";
         }
 
@@ -188,10 +190,14 @@ namespace Lolo
             Console.WriteLine("################################################ D I E D ###################################################");
             this.inmunityCounter = 170; // Lasts, more or less a bomb explosion time =)
             this.Status = "respawning";
-            string dest = (InstanceName == "p1") ? "p2" : "p1";
-            Score.setScore(dest);            
-            this.Location = this.RespawnLoc;
+            if (Item != ItemTypes.Shield)
+            {
+                string dest = (InstanceName == "p1") ? "p2" : "p1";
+                Score.setScore(dest);
+                this.Location = this.RespawnLoc;
+            }
             sndFXList[(int)PlayerSndFXs.Die].Play();
+            Item = ItemTypes.None;
         }
 
         // AI Stuff
@@ -846,7 +852,11 @@ namespace Lolo
         {
             if (this.BombCount < this.BombMax)
             {
-                BombMan.SpawnBomb(Location, InstanceName);
+                BombMan.SpawnBomb(Location, InstanceName, (this.Item == ItemTypes.EternalFire), (this.Item == ItemTypes.BouncingBombs));
+                if (Item == ItemTypes.EternalFire || Item == ItemTypes.BouncingBombs)
+                {
+                    Item = ItemTypes.None;
+                }
                 this.BombCount++;
                 this.sndFXList[(int)PlayerSndFXs.PlaceBomb].Play();
             }
@@ -901,6 +911,8 @@ namespace Lolo
             this.ItemTime = -1;
             this.Item = ItemTypes.Plus1;
             this.ItemDisplay = ItemTypeNames(this.Item);
+            this.Score.setScore(this.InstanceName);
+            #warning Add big text telling the +1 situation
         }
 
         public void SwitchScore()
@@ -908,6 +920,7 @@ namespace Lolo
             this.ItemTime = -1;
             this.Item = ItemTypes.SwitchScore;
             this.ItemDisplay = ItemTypeNames(this.Item);
+            this.Score.SwitchScores();
         }
 
         public void Portal()
@@ -927,7 +940,7 @@ namespace Lolo
 
         public void Shield()
         {
-            this.ItemTime = 50;
+            this.ItemTime = -1;
             this.Item = ItemTypes.Shield;
             this.ItemDisplay = ItemTypeNames(this.Item);
         }
@@ -1026,6 +1039,12 @@ namespace Lolo
 
                 if (Item != ItemTypes.None)
                 {
+                    if (Item == ItemTypes.Shield)
+                    {
+                        Rectangle source = new Rectangle(0, 0, width, height);
+                        spriteBatch.Draw(Bubble, destinationRectangle, source, Color.White);
+                    }
+
                     // Text aditional info
                     infoAdic(spriteBatch);
                     if (this.ItemTime > 0)
