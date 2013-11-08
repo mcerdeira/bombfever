@@ -31,6 +31,11 @@ namespace Lolo
             this.Font = font;
         }
 
+        public void ExtraTime()
+        {
+            currentTime += 10;
+        }
+
         public void MakeWin(string player)
         {
             WinByTile = true;            

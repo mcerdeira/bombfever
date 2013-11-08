@@ -37,6 +37,11 @@ namespace Lolo
             this.Score.MakeWin(player);
         }
 
+        public void ExtraTime()
+        {
+            this.Score.ExtraTime();
+        }
+
         public void Update()
         {
             for (int index = 0; index < tiles.Count; index++)

@@ -91,9 +91,9 @@ namespace Lolo
         Freeze = 3, //
         Plus1 = 4, //
         SwitchScore = 6, //
-        ExtraTime = 7,
+        ExtraTime = 7, //
         Roundx2 = 8,
-        BouncingBombs = 9,        
+        BouncingBombs = 9, //  
         EternalFire = 10, //
         Contructor = 11,
         Portal = 12
