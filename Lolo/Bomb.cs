@@ -39,6 +39,10 @@ namespace Lolo
             this.Columns = Texture.Width / 50; //30            
             this.EternalFire = eternalFire;
             this.BouncingBomb = bouncing;
+            if (bouncing)
+            {
+                LifeLoop = 200;
+            }
         }
 
         public void Kicked(string direction)
@@ -126,9 +130,24 @@ namespace Lolo
 
             if (wallHitted)
             {
-                xMove = 0;
-                yMove = 0;
-                wallHitted = false;
+                if (this.BouncingBomb)
+                {
+                    if (xMove > 0 || xMove <0)
+                    {
+                        xMove *= -1;
+                    }
+                    if (yMove > 0 || yMove < 0)
+                    {
+                        yMove *= -1;
+                    }
+                    wallHitted = false;
+                }
+                else
+                {
+                    xMove = 0;
+                    yMove = 0;
+                    wallHitted = false;
+                }
             }
             Position.X += xMove;
             Position.Y += yMove;
