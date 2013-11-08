@@ -890,6 +890,7 @@ namespace Lolo
             this.ItemTime = -1;
             this.Item = ItemTypes.ExtraTime;
             this.ItemDisplay = ItemTypeNames(this.Item);
+            #warning Add big text telling extra time situation
         }
 
         public void Contructor()

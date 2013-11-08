@@ -143,8 +143,8 @@ namespace Lolo
                 spriteBatch.End();
                 if (this.Eternalfire)
                 {
-                    spriteBatch.Begin(0, BlendState.AlphaBlend, null, null, null);
-                    spriteBatch.Draw(Texture, Position, sourceRectangle, Color.White, 0, origin, Size, SpriteEffects.None, 0f);
+                    spriteBatch.Begin(0, BlendState.Additive, null, null, null);
+                    spriteBatch.Draw(Texture, Position, sourceRectangle, Color.BlueViolet, 0, origin, Size, SpriteEffects.None, 0f);
                 }
                 else
                 {
