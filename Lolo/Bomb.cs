@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Lolo
 {
@@ -26,9 +27,11 @@ namespace Lolo
         public bool wallHitted = false;
         public bool EternalFire = false;
         public bool BouncingBomb = false;
-        BombManager BombMan;                
+        public string flying = "";
+        BombManager BombMan;
+        List<SoundEffect> SndfxBouncingBomb;
 
-        public Bomb(Vector2 position, string owner, BombManager BombMan, Texture2D texture, Player player, Player player2, bool eternalFire, bool bouncing)
+        public Bomb(Vector2 position, string owner, BombManager BombMan, Texture2D texture, Player player, Player player2, bool eternalFire, bool bouncing, List<SoundEffect> sndfxbouncingbomb)
         {
             this.Owner = owner;
             this.BombMan = BombMan;
@@ -39,6 +42,7 @@ namespace Lolo
             this.Columns = Texture.Width / 50; //30            
             this.EternalFire = eternalFire;
             this.BouncingBomb = bouncing;
+            this.SndfxBouncingBomb = sndfxbouncingbomb;
             if (bouncing)
             {
                 LifeLoop = 200;
@@ -53,15 +57,19 @@ namespace Lolo
             switch (direction)
             {
                 case "top":
+                    this.flying = "V";
                     yMove = 10;
                     break;
                 case "bottom":
+                    this.flying = "V";
                     yMove = -10;
                     break;
                 case "left":
+                    this.flying = "H";
                     xMove = 10;
                     break;
                 case "right":
+                    this.flying = "H";
                     xMove = -10;
                     break;
             }
@@ -73,6 +81,7 @@ namespace Lolo
             int height = Texture.Height;
             int row = (int)((float)Status / (float)Columns);
             int column = Status % Columns;
+            int hitBoxSize = 35;
             // Warps
             if (Position.X < -21)
             {
@@ -86,14 +95,14 @@ namespace Lolo
             Rectangle dest = new Rectangle((int)Position.X, (int)Position.Y, width, height);
             //hitBox = dest;
 
-            int hitX = (int)Position.X + 10;
-            int hitY = (int)Position.Y + 10;
-            hitBox = new Rectangle(hitX, hitY, 40, 40);
+            int hitX = (int)Position.X + (width / 2) - (hitBoxSize / 2);
+            int hitY = (int)Position.Y + (height / 2) - (hitBoxSize / 2);            
+            hitBox = new Rectangle(hitX, hitY, hitBoxSize, hitBoxSize);
 
             spriteBatch.Draw(Texture, dest, source, Color.White);
 
             //This was for debugging
-            //spriteBatch.Draw(Texture, hitBox, hitBox, Color.Red);
+            //spriteBatch.Draw(Texture, hitBox, source, Color.Red);
         }
 
         private void CheckCollisions(Player player)
@@ -132,7 +141,7 @@ namespace Lolo
             {
                 if (this.BouncingBomb)
                 {
-                    if (xMove > 0 || xMove <0)
+                    if (xMove > 0 || xMove < 0)
                     {
                         xMove *= -1;
                     }
@@ -140,10 +149,14 @@ namespace Lolo
                     {
                         yMove *= -1;
                     }
+                    Random rnd = new Random();
+                    int i = rnd.Next(0, 2);
+                    SndfxBouncingBomb[i].Play();
                     wallHitted = false;
                 }
                 else
                 {
+                    this.flying = "";
                     xMove = 0;
                     yMove = 0;
                     wallHitted = false;

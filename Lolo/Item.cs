@@ -35,8 +35,8 @@ namespace Lolo
         public Item(ContentManager content, Vector2 position, Player player, Player player2, Map map)
         {
             Random rnd = new Random();
-            this.Style = 10;// rnd.Next(0, 12);
-            this.Texture = content.Load<Texture2D>("item"); 
+            this.Style = (int)ItemTypes.BouncingBombs;// rnd.Next(0, 12);
+            this.Texture = content.Load<Texture2D>("item");
             this.Position = position;
             this.Columns = Texture.Width / 50;
             this.player = player;

@@ -20,19 +20,23 @@ namespace Lolo
         private Texture2D bombTexture;
         private Texture2D particleTexture;
         private SoundEffect sndFXExplode;
-        private SoundEffect sndFXMiniExplode;        
+        private SoundEffect sndFXMiniExplode;
+        private List<SoundEffect> sndfxBouncingBomb;
+        private SoundEffect sndfxbigExplode;
 
-        public BombManager(SoundEffect sndfxexplode, SoundEffect sndxminiexplode, Texture2D bombtexture, Texture2D particletexture)
+        public BombManager(SoundEffect sndfxexplode, SoundEffect sndxminiexplode, SoundEffect sndfxbigexplode, List<SoundEffect> sndfxbouncingbomb, Texture2D bombtexture, Texture2D particletexture)
         {
             this.sndFXExplode = sndfxexplode;
             this.sndFXMiniExplode = sndxminiexplode;
             this.bombTexture = bombtexture;
             this.particleTexture = particletexture;
+            this.sndfxbigExplode = sndfxbigexplode;
+            this.sndfxBouncingBomb = sndfxbouncingbomb;
         }
 
-        public void addExplossion(Vector2 position, int particles = 20)
+        public void addExplossion(Vector2 position, int particles = 20, bool charExplosion = false)
         {
-            BombExplosion ex = new BombExplosion(7, map, this, Player, Player2, particleTexture, position, particles, true);
+            BombExplosion ex = new BombExplosion(7, map, this, Player, Player2, particleTexture, position, particles, true, false, charExplosion);
             bombex.Add(ex);
             sndFXMiniExplode.Play();
         }
@@ -139,12 +143,19 @@ namespace Lolo
             bomb = null;
             BombExplosion ex = new BombExplosion(50, map, this, Player, Player2, particleTexture, position, eternalfire:eternalfire);
             bombex.Add(ex);
-            sndFXExplode.Play();
+            if (eternalfire)
+            {
+                sndfxbigExplode.Play();
+            }
+            else
+            {
+                sndFXExplode.Play();
+            }
         }
 
         public void SpawnBomb(Vector2 position, string owner, bool eternalFire = false, bool bouncing= false)
         {
-            Bomb b = new Bomb(position, owner, this, bombTexture, Player, Player2, eternalFire, bouncing);
+            Bomb b = new Bomb(position, owner, this, bombTexture, Player, Player2, eternalFire, bouncing, sndfxBouncingBomb);
             bombs.Add(b);
         }
 

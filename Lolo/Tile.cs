@@ -29,10 +29,10 @@ namespace Lolo
         private int ShakeCount = 0;
         private int shakeY = 0;
         private int shakeX = 0;
-        private BombManager bombmanager;
+        private BombManager bombmanager;       
 
         public Tile(Vector2 position, ContentManager Content, Player player, Player player2, bool brekable, bool walkable, Map map, int id, BombManager bombmanager)
-        {
+        {            
             this.bombmanager = bombmanager;
             this.Walkable = walkable;
             this.BreakAble = brekable;
@@ -107,11 +107,11 @@ namespace Lolo
                 #warning This tiles must accept more than one hit
                 //Status = 1;
                 if (this.ID == -100)
-                {
+                {                    
                     Map.MakeWin("p2");    
                 }
                 if (this.ID == -200)
-                {
+                {                    
                     Map.MakeWin("p1");
                 }
 
@@ -153,9 +153,40 @@ namespace Lolo
             {
                 for (int index = 0; index < bombmanager.bombs.Count; index++)
                 {
-                    if (this.hitBox.Intersects(bombmanager.bombs[index].hitBox))
+                    string flying = bombmanager.bombs[index].flying;
+                    if (this.hitBox.Intersects(bombmanager.bombs[index].hitBox) && flying != "") // I don't care stationary bombs
                     {
-                        bombmanager.bombs[index].wallHitted = true;
+                        Vector2 v = General.IntersectDepthVector(bombmanager.bombs[index].hitBox, this.hitBox);
+                        float absx = Math.Abs(v.X);
+                        float absy = Math.Abs(v.Y);
+                        bool realHit = true;
+                        
+                        // This handles the case when a flying bomb hits a wall
+                        if (!(v.X == 0 && v.Y == 0))
+                        {
+                            if (absx > absy) // the shallower impact is the correct one- this is on the y axis
+                            {
+                                if (flying == "H")
+                                {
+                                    realHit = false;
+                                }
+                            }
+                            else
+                            {
+                                if (flying == "V")
+                                {
+                                    realHit = false;
+                                }
+                            }
+                        }
+                        if (realHit)
+                        {
+                            bombmanager.bombs[index].wallHitted = true;
+                            if (bombmanager.bombs[index].BouncingBomb)
+                            {
+                                Shake();
+                            }
+                        }
                         break;
                     }
                 }

@@ -38,18 +38,21 @@ namespace Lolo
 
         public void MakeWin(string player)
         {
-            WinByTile = true;            
-            if(player == "p1")
+            if (currentTime > 0 && !WinByTile)
             {
-                scoreP1 = 1;
-                scoreP2 = 0;
+                WinByTile = true;
+                if (player == "p1")
+                {
+                    scoreP1 = 1;
+                    scoreP2 = 0;
+                }
+                else
+                {
+                    scoreP1 = 0;
+                    scoreP2 = 1;
+                }
+                currentTime = 0;
             }
-            else
-            {
-                scoreP1 = 0;
-                scoreP2 = 1;                
-            }
-            currentTime = 0;
         }
 
         public string getResult(out int scorep1, out int scorep2, Match match)

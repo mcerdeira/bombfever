@@ -107,7 +107,8 @@ namespace Lolo
         }
 
         public void Kill()
-        {            
+        {
+            this.BombMan.addExplossion(new Vector2(this.hitBox.Center.X, this.hitBox.Center.Y), 8, true);
             this.Status = "dead";
         }
 
@@ -935,8 +936,7 @@ namespace Lolo
         {
             this.ItemTime = 50;
             this.Item = ItemTypes.Death;
-            this.ItemDisplay = ItemTypeNames(this.Item);
-            
+            this.ItemDisplay = ItemTypeNames(this.Item);            
         }
 
         public void Shield()

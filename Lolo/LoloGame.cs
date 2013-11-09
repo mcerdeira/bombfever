@@ -57,6 +57,8 @@ namespace Lolo
         private Texture2D bubble;
         private SoundEffect sfxExplosion;
         private SoundEffect sfxMiniExplosion;
+        private SoundEffect sndfxBigExplode;
+        private List<SoundEffect> sndfxBouncingBomb = new List<SoundEffect>();
         private List<Texture2D> PlayerTextures = new List<Texture2D>();
         private List<Texture2D> PlayerSelectionTextures = new List<Texture2D>();
         private List<Texture2D> ItemTextures = new List<Texture2D>();
@@ -404,6 +406,7 @@ namespace Lolo
             pbarTex = Content.Load<Texture2D>("pbar");
             sfxExplosion = Content.Load<SoundEffect>("explosion");
             sfxMiniExplosion = Content.Load<SoundEffect>("miniexplosion");
+            sndfxBigExplode = Content.Load<SoundEffect>("explosion_big");
             cMatch = new Match();
         }
 
@@ -425,6 +428,9 @@ namespace Lolo
             PlayersndFXList.Add(Content.Load<SoundEffect>("char_selected"));
             PlayersndFXList.Add(Content.Load<SoundEffect>("char_unselected"));
             PlayersndFXList.Add(Content.Load<SoundEffect>("yay"));
+            // Bouncing bomb sounds
+            sndfxBouncingBomb.Add(Content.Load<SoundEffect>("bounce1"));
+            sndfxBouncingBomb.Add(Content.Load<SoundEffect>("bounce2"));
         }
 
         /// <summary>
@@ -496,7 +502,7 @@ namespace Lolo
 
                                 // In Game objects                                    
                                 score = new Score(ScreenHeight, ScreenWidth, mainFont, roundTime, General.getGameTypes()[gameOPT.gametype]);
-                                bombmanager = new BombManager(sfxExplosion, sfxMiniExplosion, bombTex, particleTex);
+                                bombmanager = new BombManager(sfxExplosion, sfxMiniExplosion, sndfxBigExplode, sndfxBouncingBomb, bombTex, particleTex);
                                 p1 = new Player(PlayerTextures[(int)p1Sel], new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human, PlayersndFXList, mainFont, ScreenHeight, ScreenWidth, bubble);
                                 if (CurrentGameState == GameState.Start1P)
                                 {
