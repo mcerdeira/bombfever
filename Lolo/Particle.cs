@@ -20,8 +20,7 @@ namespace Lolo
         public Vector2 Position;
         public Vector2 Velocity;
         public float Angle { get; set; }
-        public float AngularVelocity { get; set; }
-        public Color Color { get; set; }
+        public float AngularVelocity { get; set; }        
         public float Size { get; set; }
         public int TTL { get; set; }
         private Vector2 EmitterLocation;
@@ -30,7 +29,7 @@ namespace Lolo
         private bool CharExplosion = false;        
 
         public Particle(Map map, Player player, Player player2, Texture2D texture, Vector2 position, Vector2 velocity,
-            float angle, float angularVelocity, Color color, float size, int ttl, Vector2 emitterlocation, bool miniexplosion = false, bool eternalfire =false, bool charexplosion = false)
+            float angle, float angularVelocity, float size, int ttl, Vector2 emitterlocation, bool miniexplosion = false, bool eternalfire =false, bool charexplosion = false)
         {
             //this.ExplodeFX = explodefx;
             this.EmitterLocation = emitterlocation;
@@ -45,8 +44,7 @@ namespace Lolo
             this.Position = position;
             this.Velocity = velocity;
             this.Angle = angle;
-            this.AngularVelocity = angularVelocity;
-            this.Color = color;
+            this.AngularVelocity = angularVelocity;            
             this.Size = size;
             this.TTL = ttl;
             this.TTL_Total = ttl;
@@ -54,6 +52,7 @@ namespace Lolo
 
         public void Update()
         {
+            float distance = 0;
             hitBox = new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
             TTL--;
             if(TTL <= (TTL_Total / 2) - 2)
@@ -71,47 +70,53 @@ namespace Lolo
                     player2.Status = "dead";
                 }
             }
-
-            for (int index = 0; index < map.tiles.Count; index++)
+            if (!disabled)
             {
-                if (map.tiles[index].ID != 0 &&  this.hitBox.Intersects(map.tiles[index].hitBox))
+                for (int index = 0; index < map.tiles.Count; index++)
                 {
-                    if (!disabled && map.tiles[index].BreakAble)
+                    if (map.tiles[index].ID != 0)
                     {
-                        map.tiles[index].Action = "dead";
-                    }
-                    else
-                    {
-                        float distance = Vector2.Distance(General.Rectangle2Vector(map.tiles[index].hitBox), this.EmitterLocation);
-                        if (Math.Abs(distance) < 100)
+                        distance = Vector2.Distance(General.Rectangle2Vector(map.tiles[index].hitBox), this.EmitterLocation);
+                        if (distance < 100 && this.hitBox.Intersects(map.tiles[index].hitBox))
                         {
-                            map.tiles[index].Shake();
+
+                            if (!disabled && map.tiles[index].BreakAble)
+                            {
+                                map.tiles[index].Action = "dead";
+                            }
+                            else
+                            {
+                                if (Math.Abs(distance) < 100)
+                                {
+                                    map.tiles[index].Shake();
+                                }
+                            }
+
+                            disabled = true; // If the particle has bounced, its no longuer deathly (maybe it should dissapear too)
+
+                            Random rnd = new Random();
+                            int speedup = rnd.Next(1, 5);
+
+                            Velocity.X *= speedup;
+                            Velocity.Y *= speedup;
+
+                            //Velocity.X *= -1;
+                            Velocity.Y *= -1;
+
+                            if (!miniExplosion)
+                            {
+                                // Decide if the disabled dissapears
+                                //int i = rnd.Next(0, 5);
+                                //if (i < 2)
+                                //{
+                                TTL = -1;
+                                //}
+                            }
+                            break;
                         }
                     }
-
-                    disabled = true; // If the particle has bounced, its no longuer deathly (maybe it should dissapear too)
-
-                    Random rnd = new Random();
-                    int speedup = rnd.Next(1, 5);
-
-                    Velocity.X *= speedup;
-                    Velocity.Y *= speedup;
-
-                    //Velocity.X *= -1;
-                    Velocity.Y *= -1;
-
-                    if (!miniExplosion)
-                    {
-                        // Decide if the disabled dissapears
-                        //int i = rnd.Next(0, 5);
-                        //if (i < 2)
-                        //{
-                        TTL = -1;
-                        //}
-                    }
-                    break;
                 }
-            }
+            }            
             Position += Velocity;
             //Angle += AngularVelocity;
         }

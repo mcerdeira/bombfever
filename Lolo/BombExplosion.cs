@@ -77,30 +77,17 @@ namespace Lolo
 
         private Particle GenerateNewParticle()
         {
-            List<Color> cololist = new List<Color>();
-
-            cololist.Add(Color.Yellow);
-            cololist.Add(Color.Red);
-            cololist.Add(Color.White);
-            cololist.Add(Color.OrangeRed);
-            cololist.Add(Color.LightYellow);
-            cololist.Add(Color.DarkRed);
-            cololist.Add(Color.Black);
-            cololist.Add(Color.Crimson);
-
-
             Vector2 position = EmitterLocation;
             Vector2 velocity = new Vector2(
                                     1f * (float)(random.NextDouble() * 2 - 1),
                                     1f * (float)(random.NextDouble() * 2 - 1));
 
             float angle = 0;
-            float angularVelocity = 0.1f * (float)(random.NextDouble() * 2 - 1);
-            Color color = cololist[random.Next(cololist.Count)];
+            float angularVelocity = 0.1f * (float)(random.NextDouble() * 2 - 1);            
             float size = (float)random.NextDouble();
             int ttl = totalParticles + random.Next(100);
 
-            return new Particle(map, player, player2, texture, position, velocity, angle, angularVelocity, color, size, ttl, EmitterLocation, this.miniExplosion, this.Eternalfire, this.CharExplosion);
+            return new Particle(map, player, player2, texture, position, velocity, angle, angularVelocity, size, ttl, EmitterLocation, this.miniExplosion, this.Eternalfire, this.CharExplosion);
         }
 
         public void Draw(SpriteBatch spriteBatch)
