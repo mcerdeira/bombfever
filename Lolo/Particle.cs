@@ -52,15 +52,15 @@ namespace Lolo
 
         public void Update()
         {
-            float distance = 0;
-            hitBox = new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
             TTL--;
-            if(TTL <= (TTL_Total / 2) - 2)
-            {
-                disabled = true;
-            }
             if (!disabled)
             {
+                float distance = 0;
+                hitBox = new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);                
+                if (TTL <= (TTL_Total / 2) - 2)
+                {
+                    disabled = true;
+                }
                 if (player.Status != "respawning" && player.inmunityCounter == 0 && hitBox.Intersects(player.hitBox))
                 {
                     player.Status = "dead";
@@ -69,9 +69,6 @@ namespace Lolo
                 {
                     player2.Status = "dead";
                 }
-            }
-            if (!disabled)
-            {
                 for (int index = 0; index < map.tiles.Count; index++)
                 {
                     if (map.tiles[index].ID != 0)
@@ -79,8 +76,7 @@ namespace Lolo
                         distance = Vector2.Distance(General.Rectangle2Vector(map.tiles[index].hitBox), this.EmitterLocation);
                         if (distance < 100 && this.hitBox.Intersects(map.tiles[index].hitBox))
                         {
-
-                            if (!disabled && map.tiles[index].BreakAble)
+                            if (!disabled && map.tiles[index].inmunityCounter == 0 && map.tiles[index].BreakAble)
                             {
                                 map.tiles[index].Action = "dead";
                             }
@@ -100,25 +96,18 @@ namespace Lolo
                             Velocity.X *= speedup;
                             Velocity.Y *= speedup;
 
-                            //Velocity.X *= -1;
                             Velocity.Y *= -1;
 
                             if (!miniExplosion)
                             {
-                                // Decide if the disabled dissapears
-                                //int i = rnd.Next(0, 5);
-                                //if (i < 2)
-                                //{
                                 TTL = -1;
-                                //}
                             }
                             break;
                         }
                     }
                 }
-            }            
+            }
             Position += Velocity;
-            //Angle += AngularVelocity;
         }
 
         public void Draw(SpriteBatch spriteBatch)

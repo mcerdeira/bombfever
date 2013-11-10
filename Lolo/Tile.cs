@@ -18,18 +18,19 @@ namespace Lolo
         public int Status = 0; // frame status
         public int deadCounter = 0;
         public int ID;
-        private int Index;
         public Vector2 Position;
         private Texture2D Texture;
         private int Columns;
-        public Rectangle hitBox;        
+        public Rectangle hitBox;
         private Player player;        
         private Player player2;
         private Map Map;
         private int ShakeCount = 0;
         private int shakeY = 0;
         private int shakeX = 0;
-        private BombManager bombmanager;       
+        private BombManager bombmanager;
+        public int inmunityCounter = 0; // Frame duration of inmunity (after being hitted)
+        private int Life = 1;
 
         public Tile(Vector2 position, ContentManager Content, Player player, Player player2, bool brekable, bool walkable, Map map, int id, BombManager bombmanager)
         {            
@@ -45,15 +46,21 @@ namespace Lolo
                 if (this.ID == -100)
                 {
                     Texture = Content.Load<Texture2D>("1pflag");
+                    Life = 3;
                 }
                 else if (this.ID == -200)
                 {
                     Texture = Content.Load<Texture2D>("2pflag");
+                    Life = 3;
                 }            
             }
             else if (this.ID > 0)
             {
                 Texture = Content.Load<Texture2D>(this.ID.ToString());
+                if (this.ID == 3)
+                {
+                    Life = 2;
+                }
             }
             if (this.ID != 0)
             {                
@@ -96,18 +103,20 @@ namespace Lolo
                 default:
                     break;
             }
-            if(!this.Walkable)
+            if (this.Action == "dead")
             {
-                CheckCollisions(player);
-                CheckCollisions(player2);
-                CheckCollisionsBomb();
+                Life--;
+                if (this.Life > 0)
+                {
+                    this.Action = "";
+                    this.inmunityCounter = 170;
+                }
             }
+
             if(Action == "dead")
             {
-                #warning This tiles must accept more than one hit
-                //Status = 1;
                 if (this.ID == -100)
-                {                    
+                {
                     Map.MakeWin("p2");    
                 }
                 if (this.ID == -200)
@@ -130,6 +139,19 @@ namespace Lolo
                         bombmanager.addExplossion(new Vector2(this.Position.X + this.hitBox.Width, this.Position.Y + this.hitBox.Height), 8);
                     }
                     Map.RemoveTile(this);
+                }
+            }
+            else
+            {
+                if (!this.Walkable)
+                {
+                    CheckCollisions(player);
+                    CheckCollisions(player2);
+                    CheckCollisionsBomb();
+                    if (this.inmunityCounter != 0)
+                    {
+                        this.inmunityCounter--;
+                    }
                 }
             }
         }
@@ -256,14 +278,17 @@ namespace Lolo
         {
             if (this.ID != 0)
             {
-                int width = Texture.Width / Columns;
-                int height = Texture.Height;
-                int row = (int)((float)Status / (float)Columns);
-                int column = Status % Columns;
-                Rectangle source = new Rectangle(width * column, height * row, width, height);
-                Rectangle dest = new Rectangle((int)Position.X + shakeX, (int)Position.Y + shakeY, width, height);
-                hitBox = dest;
-                spriteBatch.Draw(Texture, dest, source, Color.White);
+                if (inmunityCounter % 2 == 0)
+                {
+                    int width = Texture.Width / Columns;
+                    int height = Texture.Height;
+                    int row = (int)((float)Status / (float)Columns);
+                    int column = Status % Columns;
+                    Rectangle source = new Rectangle(width * column, height * row, width, height);
+                    Rectangle dest = new Rectangle((int)Position.X + shakeX, (int)Position.Y + shakeY, width, height);
+                    hitBox = dest;
+                    spriteBatch.Draw(Texture, dest, source, Color.White);
+                }
             }
         }
     }
