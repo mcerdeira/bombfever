@@ -83,11 +83,14 @@ namespace Lolo
                     Item itm = new Item(Content, tile.Position, player, player2, this);
                     items.Add(itm);
                 }
-            }            
+            }
+            /*
+            This need for the empty tile is a problem related with the NPC, for now, removed...
             tile.ID = 0;
             tile.Walkable = true;
             tile.BreakAble = true;
-            //tiles.Remove(tile); // Remove is replaced by turning the tile into an empty tile
+            */
+            tiles.Remove(tile); // Remove is replaced by turning the tile into an empty tile
         }
 
         public void GenerateLevel(ContentManager content, string LevelFile = "")
@@ -177,13 +180,6 @@ namespace Lolo
                                 }                                
                             }
                         }
-
-//                        if (v != 2)
-//                        {
-//#warning Remove this IF, debuging purposes
-//                            v = 0;
-//                        }
-
                         if (v == 0)
                         {                            
                             walkable = true;
@@ -199,9 +195,12 @@ namespace Lolo
                                 tntCounter--;
                             }
                         }
-                        Vector2 pos = new Vector2(col, row);
-                        Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v, bombmanager);
-                        tiles.Add(t);
+                        if (v != 0)
+                        {
+                            Vector2 pos = new Vector2(col, row);
+                            Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v, bombmanager);
+                            tiles.Add(t);
+                        }
                         col += 50;
                     }
                     row += 50;
@@ -272,20 +271,16 @@ namespace Lolo
                                 v = 1; // and regular bricks has even more chances!
                             }
                         }
-
-//                        if (v != 2)
-//                        {
-//#warning Remove this IF, debuging purposes
-//                            v = 0;
-//                        }
-
                         if (v == 0)
                         {                            
                             walkable = true;
                         }
-                        Vector2 pos = new Vector2(col, row);
-                        Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v, bombmanager);
-                        tiles.Add(t);
+                        if (v != 0)
+                        {
+                            Vector2 pos = new Vector2(col, row);
+                            Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v, bombmanager);
+                            tiles.Add(t);
+                        }
                         col += 50;
                     }
                     row += 50;

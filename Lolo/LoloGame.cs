@@ -82,8 +82,7 @@ namespace Lolo
         public LoloGame()
             : base()
         {
-            graphics = new GraphicsDeviceManager(this);
-            
+            graphics = new GraphicsDeviceManager(this);         
             //ScreenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             //ScreenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;            
             #warning Make mouse invisible
@@ -616,6 +615,11 @@ namespace Lolo
             _total_frames++;
             this.Window.Title = string.Format("FPS={0}", _fps);
             //</FPS>
+
+            if (gameTime.IsRunningSlowly)
+            {
+                Console.WriteLine("SLOW " + gameTime.TotalGameTime);
+            }
 
             GraphicsDevice.Clear(Color.Transparent);
             if (paused)

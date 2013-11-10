@@ -53,14 +53,14 @@ namespace Lolo
         public void Update()
         {
             TTL--;
+            if (TTL <= (TTL_Total / 2) - 2)
+            {
+                disabled = true;
+            }
             if (!disabled)
             {
                 float distance = 0;
                 hitBox = new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);                
-                if (TTL <= (TTL_Total / 2) - 2)
-                {
-                    disabled = true;
-                }
                 if (player.Status != "respawning" && player.inmunityCounter == 0 && hitBox.Intersects(player.hitBox))
                 {
                     player.Status = "dead";
@@ -76,9 +76,12 @@ namespace Lolo
                         distance = Vector2.Distance(General.Rectangle2Vector(map.tiles[index].hitBox), this.EmitterLocation);
                         if (distance < 100 && this.hitBox.Intersects(map.tiles[index].hitBox))
                         {
-                            if (!disabled && map.tiles[index].inmunityCounter == 0 && map.tiles[index].BreakAble)
+                            if (!disabled && map.tiles[index].BreakAble)
                             {
-                                map.tiles[index].Action = "dead";
+                                if (map.tiles[index].inmunityCounter == 0)
+                                {
+                                    map.tiles[index].Action = "dead";
+                                }
                             }
                             else
                             {
@@ -134,7 +137,7 @@ namespace Lolo
                 spriteBatch.Draw(Texture, Position, sourceRectangle, Color.Gray, 0, origin, Size, SpriteEffects.None, 0f);
             }
             else
-            {                
+            {
                 spriteBatch.End();
                 if (this.Eternalfire)
                 {

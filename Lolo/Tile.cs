@@ -158,7 +158,7 @@ namespace Lolo
 
         public void Shake()
         {
-            if (this.ID != 0)
+            if (this.ID != 0 || this.ID < 0)
             {
                 if (this.ShakeCount == 0)
                 {
@@ -176,7 +176,7 @@ namespace Lolo
                 for (int index = 0; index < bombmanager.bombs.Count; index++)
                 {
                     string flying = bombmanager.bombs[index].flying;
-                    if (this.hitBox.Intersects(bombmanager.bombs[index].hitBox) && flying != "") // I don't care stationary bombs
+                    if (flying != "" && this.hitBox.Intersects(bombmanager.bombs[index].hitBox)) // I don't care stationary bombs
                     {
                         Vector2 v = General.IntersectDepthVector(bombmanager.bombs[index].hitBox, this.hitBox);
                         float absx = Math.Abs(v.X);
