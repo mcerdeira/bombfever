@@ -141,7 +141,7 @@ namespace Lolo
             bool eternalfire = bomb.EternalFire;
             bombs.Remove(bomb);
             bomb = null;
-            BombExplosion ex = new BombExplosion(50, map, this, Player, Player2, particleTexture, position, eternalfire:eternalfire);
+            BombExplosion ex = new BombExplosion(20, map, this, Player, Player2, particleTexture, position, eternalfire:eternalfire);
             bombex.Add(ex);
             if (eternalfire)
             {

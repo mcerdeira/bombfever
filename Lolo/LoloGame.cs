@@ -615,12 +615,6 @@ namespace Lolo
             _total_frames++;
             this.Window.Title = string.Format("FPS={0}", _fps);
             //</FPS>
-
-            if (gameTime.IsRunningSlowly)
-            {
-                Console.WriteLine("SLOW " + gameTime.TotalGameTime);
-            }
-
             GraphicsDevice.Clear(Color.Transparent);
             if (paused)
             {

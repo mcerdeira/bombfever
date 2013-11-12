@@ -334,7 +334,7 @@ namespace Lolo
                         }
                     }
                     file.Close();
-                }catch(Exception exc){
+                }catch(Exception){
                     // If an error ocurred loading from file, lets just leave what we can load
                 }
             }

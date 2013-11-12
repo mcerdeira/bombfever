@@ -57,8 +57,7 @@ namespace Lolo
                     particles.Add(GenerateNewParticle());
                 }
                 TTL--;
-            }
-
+            }            
             for (int particle = 0; particle < particles.Count; particle++)
             {
                 particles[particle].Update();
