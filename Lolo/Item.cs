@@ -32,11 +32,11 @@ namespace Lolo
         private Player player2;
         private bool collected = false;
 
-        public Item(ContentManager content, Vector2 position, Player player, Player player2, Map map)
+        public Item(Texture2D texture, Vector2 position, Player player, Player player2, Map map, int style)
         {
             Random rnd = new Random();
-            this.Style = (int)ItemTypes.Shield;// rnd.Next(0, 12);
-            this.Texture = content.Load<Texture2D>("item");
+            this.Style = style;
+            this.Texture = texture;
             this.Position = position;
             this.Columns = Texture.Width / 50;
             this.player = player;

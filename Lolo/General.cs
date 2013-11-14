@@ -82,6 +82,12 @@ namespace Lolo
         None
     }
 
+    public enum TileIndexes
+    {
+        p1flag = 5,
+        p2flag = 6
+    }
+
     public enum ItemTypes
     {        
         None = -1,

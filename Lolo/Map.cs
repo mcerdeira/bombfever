@@ -21,12 +21,14 @@ namespace Lolo
         private Player player2;
         private BombManager bombmanager;
         private Score Score;
-        private List<Texture2D> ItemTextures = new List<Texture2D>();        
+        private List<Texture2D> ItemTextures = new List<Texture2D>();
+        private List<Texture2D> TileTextures = new List<Texture2D>();
 
-        public Map(Player player, Player player2, BombManager bombmanager, List<Texture2D> itemtextures, Score score)
+        public Map(Player player, Player player2, BombManager bombmanager, List<Texture2D> itemtextures, List<Texture2D> tiletextures, Score score)
         {            
             this.Score = score;
             this.ItemTextures = itemtextures;
+            this.TileTextures = tiletextures;
             this.bombmanager = bombmanager;
             this.player = player;
             this.player2 = player2;
@@ -80,7 +82,8 @@ namespace Lolo
                 if (v == 1)
                 {                    
                     // An item is hidden inside, yay!!
-                    Item itm = new Item(Content, tile.Position, player, player2, this);
+                    int style = (int)ItemTypes.Shield;// rnd.Next(0, 12);
+                    Item itm = new Item(TileTextures[style], tile.Position, player, player2, this, style);
                     items.Add(itm);
                 }
             }
@@ -198,7 +201,20 @@ namespace Lolo
                         if (v != 0)
                         {
                             Vector2 pos = new Vector2(col, row);
-                            Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v, bombmanager);
+                            int tile_index = 0;
+                            if (v == -100)
+                            {
+                                tile_index = (int)TileIndexes.p1flag;
+                            }
+                            else if (v == -200)
+                            {
+                                tile_index = (int)TileIndexes.p2flag;
+                            }
+                            else
+                            {
+                                tile_index = v - 1;
+                            }
+                            Tile t = new Tile(pos,TileTextures[tile_index], player, player2, (v != 2), walkable, this, v, bombmanager);
                             tiles.Add(t);
                         }
                         col += 50;
@@ -278,7 +294,20 @@ namespace Lolo
                         if (v != 0)
                         {
                             Vector2 pos = new Vector2(col, row);
-                            Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v, bombmanager);
+                            int tile_index = 0;
+                            if (v == -100)
+                            {
+                                tile_index = (int)TileIndexes.p1flag;
+                            }
+                            else if (v == -200)
+                            {
+                                tile_index = (int)TileIndexes.p2flag;
+                            }
+                            else
+                            {
+                                tile_index = v - 1;
+                            }
+                            Tile t = new Tile(pos, TileTextures[tile_index], player, player2, (v != 2), walkable, this, v, bombmanager);
                             tiles.Add(t);
                         }
                         col += 50;
@@ -321,7 +350,20 @@ namespace Lolo
                                         walkable = true;
                                     }
                                     Vector2 pos = new Vector2(col, row);
-                                    Tile t = new Tile(pos, content, player, player2, (v != 2), walkable, this, v, bombmanager);
+                                    int tile_index = 0;
+                                    if (v == -100)
+                                    {
+                                        tile_index = (int)TileIndexes.p1flag;
+                                    }
+                                    else if (v == -200)
+                                    {
+                                        tile_index = (int)TileIndexes.p2flag;
+                                    }
+                                    else
+                                    {
+                                        tile_index = v - 1;
+                                    }
+                                    Tile t = new Tile(pos, TileTextures[tile_index], player, player2, (v != 2), walkable, this, v, bombmanager);
                                     tiles.Add(t);
                                     col += 50;
                                 }

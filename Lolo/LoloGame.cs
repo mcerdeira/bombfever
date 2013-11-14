@@ -61,7 +61,6 @@ namespace Lolo
         private List<SoundEffect> sndfxBouncingBomb = new List<SoundEffect>();
         private List<Texture2D> PlayerTextures = new List<Texture2D>();
         private List<Texture2D> PlayerSelectionTextures = new List<Texture2D>();
-        private List<Texture2D> ItemTextures = new List<Texture2D>();
         private bool paused = false;
         private bool pauseKeyDown = false;
         private PlayerActions previousMenuKey = PlayerActions.None;
@@ -76,7 +75,10 @@ namespace Lolo
         private bool PlayerSelected = false;
         private int PlayerSelectedDelay = 0;
         private PlayerTex p1Sel;
-        private PlayerTex p2Sel;        
+        private PlayerTex p2Sel;
+        private List<Texture2D> ItemsTx = new List<Texture2D>();
+        private List<Texture2D> TilesTx = new List<Texture2D>();
+
         GameState CurrentGameState = GameState.MainMenu;
 
         public LoloGame()
@@ -394,6 +396,16 @@ namespace Lolo
             PlayerSelectionTextures.Add(Content.Load<Texture2D>("Man_S"));
             PlayerSelectionTextures.Add(Content.Load<Texture2D>("Skelet_S"));
             PlayerSelectionTextures.Add(Content.Load<Texture2D>("Sorce_S"));
+
+            ItemsTx.Add();
+
+            TilesTx.Add(Content.Load<Texture2D>("1"));
+            TilesTx.Add(Content.Load<Texture2D>("2"));
+            TilesTx.Add(Content.Load<Texture2D>("3"));
+            TilesTx.Add(Content.Load<Texture2D>("4"));
+            TilesTx.Add(Content.Load<Texture2D>("5"));
+            TilesTx.Add(Content.Load<Texture2D>("1pflag"));
+            TilesTx.Add(Content.Load<Texture2D>("2pflag"));
             
             LoadControls();
             LoadMusicFX();
@@ -513,7 +525,7 @@ namespace Lolo
                                     p2 = new Player(PlayerTextures[(int)p2Sel], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Human, PlayersndFXList, mainFont, ScreenHeight, ScreenWidth, bubble);
                                     CurrentGameState = GameState.Playing2P;
                                 }
-                                map = new Map(p1, p2, bombmanager, ItemTextures, score);
+                                map = new Map(p1, p2, bombmanager, ItemsTx, TilesTx, score);
                                 map.GenerateLevel(Content, LevelName);
                                 bombmanager.UpdateMap(map, p1, p2);
                                 if (CurrentGameState == GameState.Playing1P)

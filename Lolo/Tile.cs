@@ -32,7 +32,7 @@ namespace Lolo
         public int inmunityCounter = 0; // Frame duration of inmunity (after being hitted)
         private int Life = 1;
 
-        public Tile(Vector2 position, ContentManager Content, Player player, Player player2, bool brekable, bool walkable, Map map, int id, BombManager bombmanager)
+        public Tile(Vector2 position, Texture2D texture, Player player, Player player2, bool brekable, bool walkable, Map map, int id, BombManager bombmanager)
         {            
             this.bombmanager = bombmanager;
             this.Walkable = walkable;
@@ -41,22 +41,20 @@ namespace Lolo
             this.player = player;
             this.player2 = player2;
             this.ID = id;
+            this.Texture = texture;
             if (this.ID < 0)
             {
                 if (this.ID == -100)
                 {
-                    Texture = Content.Load<Texture2D>("1pflag");
                     Life = 3;
                 }
                 else if (this.ID == -200)
                 {
-                    Texture = Content.Load<Texture2D>("2pflag");
                     Life = 3;
                 }            
             }
             else if (this.ID > 0)
-            {
-                Texture = Content.Load<Texture2D>(this.ID.ToString());
+            {                
                 if (this.ID == 3)
                 {
                     Life = 2;
