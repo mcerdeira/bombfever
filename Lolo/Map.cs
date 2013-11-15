@@ -74,6 +74,10 @@ namespace Lolo
                 {
                     v = rdn.Next(0, 20); // If it is a regular brick, chances are lower
                 }
+                else if (tile.ID == 5)
+                {
+                    v = rdn.Next(0, 2); // If it is wood, chances are really high
+                }
                 else
                 {
                     v = rdn.Next(0, 8); // If it is a special brick, chances are higher
@@ -81,7 +85,7 @@ namespace Lolo
                 if (v == 1)
                 {                    
                     // An item is hidden inside, yay!!
-                    int style = rdn.Next(0, 12);
+                    int style = (int)ItemTypes.Ghost;  //rdn.Next(0, 12);
                     Item itm = new Item(ItemTextures[style], tile.Position, player, player2, this, style);
                     items.Add(itm);
                 }

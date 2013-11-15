@@ -66,8 +66,8 @@ namespace Lolo
         private int ScreenHeight;
         private int ScreenWidth;
         private Texture2D Bubble;
-        // Items apply related vars
-        private ItemTypes Item = ItemTypes.None;
+        // Items apply related vars        
+        public ItemTypes Item = ItemTypes.None;
         private int ItemTime = 0;
         private string ItemDisplay = "";
         private int PausedLoop = 0;
@@ -902,8 +902,9 @@ namespace Lolo
         }
 
         public void Ghost()
-        {
-            this.ItemTime = 50;
+        {            
+            this.inmunityCounter = 500;
+            this.ItemTime = 500;
             this.Item = ItemTypes.Ghost;
             this.ItemDisplay = ItemTypeNames(this.Item);
         }
@@ -1022,41 +1023,39 @@ namespace Lolo
                 Location = newPosition;
                 wallHitted = false;
             }
+            int width = Texture.Width / Columns;
+            int height = Texture.Height;
+            int row = (int)((float)currentFrame / (float)Columns);
+            int column = currentFrame % Columns;
+            // Draw the player in the new location(x,y)
+            Rectangle sourceRectangle = new Rectangle(width * column, height * row, width, height);
+            Rectangle destinationRectangle = new Rectangle((int)Location.X, (int)Location.Y, width, height);
             if (inmunityCounter % 2 == 0)
             {
-                // Draw the player in the new location(x,y)
-                int width = Texture.Width / Columns;
-                int height = Texture.Height;
-                int row = (int)((float)currentFrame / (float)Columns);
-                int column = currentFrame % Columns;
-                Rectangle sourceRectangle = new Rectangle(width * column, height * row, width, height);
-                Rectangle destinationRectangle = new Rectangle((int)Location.X, (int)Location.Y, width, height);
-
                 int hitX = (int)Location.X + 5;
                 int hitY = (int)Location.Y + 10;
                 hitBox = new Rectangle(hitX, hitY, 40, 40);//destinationRectangle;
                 spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White);
                 //spriteBatch.Draw(Texture, hitBox, hitBox, Color.Red);
-
-                if (Item != ItemTypes.None)
+            }
+            if (Item != ItemTypes.None)
+            {
+                if (Item == ItemTypes.Shield)
                 {
-                    if (Item == ItemTypes.Shield)
-                    {
-                        Rectangle source = new Rectangle(0, 0, width, height);
-                        spriteBatch.Draw(Bubble, destinationRectangle, source, Color.White);
-                    }
+                    Rectangle source = new Rectangle(0, 0, width, height);
+                    spriteBatch.Draw(Bubble, destinationRectangle, source, Color.White);
+                }
 
-                    // Text aditional info
-                    infoAdic(spriteBatch);
-                    if (this.ItemTime > 0)
-                    {
-                        this.ItemTime--;
-                    }
-                    else if (this.ItemTime == 0) // The item expired
-                    {
-                        this.ItemDisplay = "";
-                        this.Item = ItemTypes.None;
-                    }
+                // Text aditional info
+                infoAdic(spriteBatch);
+                if (this.ItemTime > 0)
+                {
+                    this.ItemTime--;
+                }
+                else if (this.ItemTime == 0) // The item expired
+                {
+                    this.ItemDisplay = "";
+                    this.Item = ItemTypes.None;
                 }
             }
         }

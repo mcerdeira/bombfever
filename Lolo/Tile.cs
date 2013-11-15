@@ -215,6 +215,11 @@ namespace Lolo
 
         private void CheckCollisions(Player player)
         {
+            if (player.Item == ItemTypes.Ghost && this.ID != 2)
+            {
+                return;
+            }
+
             if (this.ID != 0)
             {
                 if (hitBox.Intersects(player.hitBox))
