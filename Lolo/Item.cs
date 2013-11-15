@@ -33,8 +33,7 @@ namespace Lolo
         private bool collected = false;
 
         public Item(Texture2D texture, Vector2 position, Player player, Player player2, Map map, int style)
-        {
-            Random rnd = new Random();
+        {            
             this.Style = style;
             this.Texture = texture;
             this.Position = position;

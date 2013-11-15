@@ -352,32 +352,34 @@ namespace Lolo
         /// all of your content.
         /// </summary>
         protected override void LoadContent()
-        {
+        {            
+            mainFont = Content.Load<SpriteFont>("mainfont");           
             gameOPT = new GameOptions();
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             background = Content.Load<Texture2D>("Background");
-            pauseSprite = new Pause(ScreenHeight, ScreenWidth, Content.Load<SpriteFont>("mainfont"), Content.Load<SpriteFont>("chartsfont")); 
-            menues = Content.Load<Texture2D>("MainMenu");
-            mainFont = Content.Load<SpriteFont>("mainfont");
             chartFont = Content.Load<SpriteFont>("chartsfont");
+            pauseSprite = new Pause(ScreenHeight, ScreenWidth, mainFont, chartFont); 
+            menues = Content.Load<Texture2D>("MainMenu");                        
             titleFont = Content.Load<SpriteFont>("titlefont");
             bubble = Content.Load<Texture2D>("bubble");
             PauseFX = Content.Load<Effect>("Dark.mgfxo");
             PauseFX.Parameters["Percentage"].SetValue(0.30f);
             List<string> cr = new List<string>();
-            cr.Add("[Concept Idea]");
+            cr.Add("+++ CONCEPT +++");
             cr.Add("Flor Gigy & Martin Cerdeira");
-            cr.Add(" ");
-            cr.Add("[Art & Design]");
+            //cr.Add(" ");
+            cr.Add("+++ ARTWORK +++");
             cr.Add("Flor Gigy");
-            cr.Add(" ");
-            cr.Add("[Coding]");
-            cr.Add("Martin Cerdeira");
-            cr.Add(" ");
-            cr.Add("[Music & SFX]");
             cr.Add("http://opengameart.org/");
-            cr.Add(" ");
+            //cr.Add(" ");
+            cr.Add("+++ CODING +++");
+            cr.Add("Martin Cerdeira");
+            //cr.Add(" ");
+            cr.Add("+++ MUSIC & SFX +++");
+            cr.Add("http://www.bfxr.net/");
+            cr.Add("http://opengameart.org/");
+            //cr.Add(" ");
             credits = new Credits(menues, mainFont, cr, ScreenHeight, ScreenWidth);
             menu = new MainMenu(menues, mainFont,titleFont, ScreenHeight, ScreenWidth, "Boom Hunters");
             lvlLoad = new LevelLoader(menues, mainFont, ScreenHeight, ScreenWidth);
@@ -397,7 +399,18 @@ namespace Lolo
             PlayerSelectionTextures.Add(Content.Load<Texture2D>("Skelet_S"));
             PlayerSelectionTextures.Add(Content.Load<Texture2D>("Sorce_S"));
 
-            ItemsTx.Add();
+            ItemsTx.Add(Content.Load<Texture2D>("shield"));
+            ItemsTx.Add(Content.Load<Texture2D>("skull"));
+            ItemsTx.Add(Content.Load<Texture2D>("ghost"));
+            ItemsTx.Add(Content.Load<Texture2D>("freeze"));
+            ItemsTx.Add(Content.Load<Texture2D>("dummy")); // Plus1
+            ItemsTx.Add(Content.Load<Texture2D>("dummy")); // SwitchScore
+            ItemsTx.Add(Content.Load<Texture2D>("dummy")); // ExtraTime
+            ItemsTx.Add(Content.Load<Texture2D>("dummy")); // Roundx2
+            ItemsTx.Add(Content.Load<Texture2D>("dummy")); // BouncingBombs
+            ItemsTx.Add(Content.Load<Texture2D>("dummy")); // EternalFire
+            ItemsTx.Add(Content.Load<Texture2D>("dummy")); // Contructor
+            ItemsTx.Add(Content.Load<Texture2D>("dummy")); // Portal
 
             TilesTx.Add(Content.Load<Texture2D>("1"));
             TilesTx.Add(Content.Load<Texture2D>("2"));
@@ -526,7 +539,7 @@ namespace Lolo
                                     CurrentGameState = GameState.Playing2P;
                                 }
                                 map = new Map(p1, p2, bombmanager, ItemsTx, TilesTx, score);
-                                map.GenerateLevel(Content, LevelName);
+                                map.GenerateLevel(LevelName);
                                 bombmanager.UpdateMap(map, p1, p2);
                                 if (CurrentGameState == GameState.Playing1P)
                                 {
@@ -667,7 +680,7 @@ namespace Lolo
                     credits.Draw(spriteBatch);
                     break;
                 case GameState.LoadFromFile:
-                    lvlLoad.Draw(spriteBatch);
+                    lvlLoad.Draw(spriteBatch);                    
                     break;
             }
             if (paused)

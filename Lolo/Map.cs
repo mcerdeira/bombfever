@@ -16,7 +16,6 @@ namespace Lolo
     {        
         public List<Tile> tiles = new List<Tile>();
         public List<Item> items = new List<Item>();        
-        private ContentManager Content;
         private Player player;
         private Player player2;
         private BombManager bombmanager;
@@ -82,8 +81,8 @@ namespace Lolo
                 if (v == 1)
                 {                    
                     // An item is hidden inside, yay!!
-                    int style = (int)ItemTypes.Shield;// rnd.Next(0, 12);
-                    Item itm = new Item(TileTextures[style], tile.Position, player, player2, this, style);
+                    int style = rdn.Next(0, 12);
+                    Item itm = new Item(ItemTextures[style], tile.Position, player, player2, this, style);
                     items.Add(itm);
                 }
             }
@@ -96,9 +95,8 @@ namespace Lolo
             tiles.Remove(tile); // Remove is replaced by turning the tile into an empty tile
         }
 
-        public void GenerateLevel(ContentManager content, string LevelFile = "")
-        {
-            this.Content = content;
+        public void GenerateLevel(string LevelFile = "")
+        {            
             Random rdn = new Random();
             int row = 0;
             int col = 0;
