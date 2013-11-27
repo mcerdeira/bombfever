@@ -90,7 +90,7 @@ namespace Lolo
 
     public enum ItemTypes
     {        
-        Count = 12,
+        Count = 12, // This just keeps the item count
         None = -1,
         Shield = 0, //
         Death = 1, //
@@ -103,7 +103,7 @@ namespace Lolo
         BouncingBombs = 9, //  
         EternalFire = 10, //
         ExtraBomb = 11, //
-        Portal = 12
+        Portal = 12 // The implementation will we, turn the tile and opposite tile into a portal
     }
 
     class General
