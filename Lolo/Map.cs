@@ -85,7 +85,7 @@ namespace Lolo
                 if (v == 1)
                 {                    
                     // An item is hidden inside, yay!!
-                    int style = (int)ItemTypes.Ghost;  //rdn.Next(0, 12);
+                    int style = rdn.Next(0, (int)ItemTypes.Count);
                     Item itm = new Item(ItemTextures[style], tile.Position, player, player2, this, style);
                     items.Add(itm);
                 }

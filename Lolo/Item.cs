@@ -74,8 +74,8 @@ namespace Lolo
                     case (int)ItemTypes.BouncingBombs:
                         player.BouncingBombs();
                         break;
-                    case (int)ItemTypes.Contructor:
-                        player.Contructor();
+                    case (int)ItemTypes.ExtraBomb:
+                        player.ExtraBomb();
                         break;
                     case (int)ItemTypes.Death:
                         player.Death();

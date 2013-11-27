@@ -90,18 +90,19 @@ namespace Lolo
 
     public enum ItemTypes
     {        
+        Count = 12,
         None = -1,
         Shield = 0, //
         Death = 1, //
-        Ghost = 2,
+        Ghost = 2, // 70% (do more testing with block pass through)
         Freeze = 3, //
-        Plus1 = 4, //
+        Plus1 = 4, // 90% Add a big sign with the +1 text
         SwitchScore = 6, //
         ExtraTime = 7, //
-        Roundx2 = 8,
+        Roundx2 = 8, // This must be score X2 at the end of the round
         BouncingBombs = 9, //  
         EternalFire = 10, //
-        Contructor = 11,
+        ExtraBomb = 11, //
         Portal = 12
     }
 

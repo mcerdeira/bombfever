@@ -66,7 +66,8 @@ namespace Lolo
         private int ScreenHeight;
         private int ScreenWidth;
         private Texture2D Bubble;
-        // Items apply related vars        
+        // Items apply related vars
+        private List<ItemTypes> Items = new List<ItemTypes>(); // This list holds the combinable items
         public ItemTypes Item = ItemTypes.None;
         private int ItemTime = 0;
         private string ItemDisplay = "";
@@ -196,6 +197,7 @@ namespace Lolo
                 string dest = (InstanceName == "p1") ? "p2" : "p1";
                 Score.setScore(dest);
                 this.Location = this.RespawnLoc;
+                this.BombMax = 2;
             }
             sndFXList[(int)PlayerSndFXs.Die].Play();
             Item = ItemTypes.None;
@@ -851,32 +853,57 @@ namespace Lolo
 
         private void placeBomb(bool attacking = false)
         {
-            if (this.BombCount < this.BombMax)
+            ItemTypes curIt;
+            if (Items.Count > 0)
             {
-                BombMan.SpawnBomb(Location, InstanceName, (this.Item == ItemTypes.EternalFire), (this.Item == ItemTypes.BouncingBombs));
-                if (Item == ItemTypes.EternalFire || Item == ItemTypes.BouncingBombs)
-                {
-                    Item = ItemTypes.None;
-                }
-                this.BombCount++;
-                this.sndFXList[(int)PlayerSndFXs.PlaceBomb].Play();
+                curIt = Items[Items.Count - 1];
             }
-        }
+            else
+            {
+                curIt = ItemTypes.None;
+            }
+
+            if (curIt == ItemTypes.Portal)
+            {
+                // Do the portal stuff
+                Items.RemoveAt(Items.Count - 1);
+            }
+            else
+            {
+                if (this.BombCount < this.BombMax)
+                {
+                    BombMan.SpawnBomb(Location, InstanceName, (curIt == ItemTypes.EternalFire), (curIt == ItemTypes.BouncingBombs));
+                    if (curIt == ItemTypes.EternalFire || curIt == ItemTypes.BouncingBombs)
+                    {                        
+                        Items.RemoveAt(Items.Count - 1);
+                    }
+                    this.BombCount++;
+                    this.sndFXList[(int)PlayerSndFXs.PlaceBomb].Play();
+                }
+            }
+        }       
      
         #region Apply Items
 
         public void EternalFire()
         {
-            this.ItemTime = -1;
-            this.Item = ItemTypes.EternalFire;
-            this.ItemDisplay = ItemTypeNames(this.Item);            
+            this.ItemTime = -1;            
+            this.ItemDisplay = ItemTypeNames(this.Item);
+            this.Items.Add(ItemTypes.EternalFire);
         }
 
         public void BouncingBombs()
         {
-            this.ItemTime = -1;
-            this.Item = ItemTypes.BouncingBombs;
+            this.ItemTime = -1;            
             this.ItemDisplay = ItemTypeNames(this.Item);
+            this.Items.Add(ItemTypes.BouncingBombs);
+        }
+
+        public void Portal()
+        {
+            this.ItemTime = -1;            
+            this.ItemDisplay = ItemTypeNames(this.Item);
+            this.Items.Add(ItemTypes.Portal);
         }
 
         public void RoundX2()
@@ -894,11 +921,12 @@ namespace Lolo
             #warning Add big text telling extra time situation
         }
 
-        public void Contructor()
+        public void ExtraBomb()
         {
             this.ItemTime = -1;
-            this.Item = ItemTypes.Contructor;
+            this.Item = ItemTypes.ExtraBomb;
             this.ItemDisplay = ItemTypeNames(this.Item);
+            this.BombMax++;
         }
 
         public void Ghost()
@@ -924,13 +952,6 @@ namespace Lolo
             this.Item = ItemTypes.SwitchScore;
             this.ItemDisplay = ItemTypeNames(this.Item);
             this.Score.SwitchScores();
-        }
-
-        public void Portal()
-        {
-            this.ItemTime = -1;
-            this.Item = ItemTypes.Portal;
-            this.ItemDisplay = ItemTypeNames(this.Item);
         }
 
         public void Death()
@@ -964,8 +985,8 @@ namespace Lolo
                 case ItemTypes.BouncingBombs:
                     name = "Bouncing Bombs";
                     break;
-                case ItemTypes.Contructor:
-                    name = "Contructor Mode";
+                case ItemTypes.ExtraBomb:
+                    name = "Extra Bomb";
                     break;
                 case ItemTypes.Death:
                     name = "Sudden Death";
