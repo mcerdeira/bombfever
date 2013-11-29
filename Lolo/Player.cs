@@ -107,6 +107,11 @@ namespace Lolo
             this.Bubble = bubble;
         }
 
+        public void setMap(Map map)
+        {
+            this.Map = map;
+        }
+
         public void Kill()
         {
             this.BombMan.addExplossion(new Vector2(this.hitBox.Center.X, this.hitBox.Center.Y), 8, true);
@@ -205,10 +210,9 @@ namespace Lolo
 
         // AI Stuff
 
-        public void InitAI(Player human, Map map)
+        public void InitAI(Player human)
         {
-            this.Human = human;
-            this.Map = map;
+            this.Human = human;            
             this.relevantDiff = 50;
         }
 
@@ -865,7 +869,8 @@ namespace Lolo
 
             if (curIt == ItemTypes.Portal)
             {
-                // Do the portal stuff
+                int currTile = IndexFromCell(new Vector2(normaLize(Location.X), normaLize(Location.Y)));
+                this.Map.GenPortal(currTile);
                 Items.RemoveAt(Items.Count - 1);
             }
             else

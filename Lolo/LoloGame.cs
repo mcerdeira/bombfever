@@ -409,7 +409,7 @@ namespace Lolo
             ItemsTx.Add(Content.Load<Texture2D>("dummy")); // Roundx2
             ItemsTx.Add(Content.Load<Texture2D>("dummy")); // BouncingBombs
             ItemsTx.Add(Content.Load<Texture2D>("dummy")); // EternalFire
-            ItemsTx.Add(Content.Load<Texture2D>("dummy")); // Contructor
+            ItemsTx.Add(Content.Load<Texture2D>("dummy")); // ExtraBomb
             ItemsTx.Add(Content.Load<Texture2D>("dummy")); // Portal
 
             TilesTx.Add(Content.Load<Texture2D>("1"));
@@ -419,6 +419,7 @@ namespace Lolo
             TilesTx.Add(Content.Load<Texture2D>("5"));
             TilesTx.Add(Content.Load<Texture2D>("1pflag"));
             TilesTx.Add(Content.Load<Texture2D>("2pflag"));
+            TilesTx.Add(Content.Load<Texture2D>("portal"));
             
             LoadControls();
             LoadMusicFX();
@@ -543,8 +544,10 @@ namespace Lolo
                                 bombmanager.UpdateMap(map, p1, p2);
                                 if (CurrentGameState == GameState.Playing1P)
                                 {
-                                    p2.InitAI(p1, map);
+                                    p2.InitAI(p1);
                                 }
+                                p1.setMap(map);
+                                p2.setMap(map);
                             }
                             else
                             {

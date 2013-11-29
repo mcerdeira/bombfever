@@ -97,13 +97,13 @@ namespace Lolo
         Ghost = 2, // 70% (do more testing with block pass through)
         Freeze = 3, //
         Plus1 = 4, // 90% Add a big sign with the +1 text
-        SwitchScore = 6, //
-        ExtraTime = 7, //
-        Roundx2 = 8, // This must be score X2 at the end of the round
-        BouncingBombs = 9, //  
-        EternalFire = 10, //
-        ExtraBomb = 11, //
-        Portal = 12 // The implementation will we, turn the tile and opposite tile into a portal
+        SwitchScore = 5, //
+        ExtraTime = 6, //
+        Roundx2 = 7, // This must be score X2 at the end of the round
+        BouncingBombs = 8, //  
+        EternalFire = 9, //
+        ExtraBomb = 10, //
+        Portal = 11 // The implementation will we, turn the tile and opposite tile into a portal
     }
 
     class General

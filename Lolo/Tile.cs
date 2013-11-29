@@ -68,6 +68,15 @@ namespace Lolo
             this.Position = position;                        
         }
 
+        public void GenPortal(Texture2D texture)
+        {
+            this.ID = 500;
+            this.Walkable = true;
+            this.BreakAble = false;
+            this.Texture = texture;
+            this.Columns = Texture.Width / 50;
+        }
+
         public void Update()
         {
             if(this.ID == 0)
