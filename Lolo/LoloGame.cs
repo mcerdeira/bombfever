@@ -417,9 +417,9 @@ namespace Lolo
             TilesTx.Add(Content.Load<Texture2D>("3"));
             TilesTx.Add(Content.Load<Texture2D>("4"));
             TilesTx.Add(Content.Load<Texture2D>("5"));
+            TilesTx.Add(Content.Load<Texture2D>("6"));
             TilesTx.Add(Content.Load<Texture2D>("1pflag"));
-            TilesTx.Add(Content.Load<Texture2D>("2pflag"));
-            TilesTx.Add(Content.Load<Texture2D>("portal"));
+            TilesTx.Add(Content.Load<Texture2D>("2pflag"));            
             
             LoadControls();
             LoadMusicFX();
@@ -440,7 +440,7 @@ namespace Lolo
             menuMusicInstance = Content.Load<SoundEffect>("menumusic").CreateInstance();
             menuMusicInstance.IsLooped = true;
             menuMusicInstance.Volume = 0.5f;
-            menuMusicInstance.Play();            
+            menuMusicInstance.Play();
             bkMusicInstance = Content.Load<SoundEffect>("backmusic").CreateInstance();
             bkMusicInstance.IsLooped = true;
             bkMusicInstance.Volume = 0.5f;

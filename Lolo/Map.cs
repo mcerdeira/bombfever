@@ -33,13 +33,6 @@ namespace Lolo
             this.player2 = player2;
         }
 
-        public void GenPortal(int tile1)
-        {
-            int tile2 = getOppositeTile(tile1);
-            tiles[tile1].GenPortal(TileTextures[7]);
-            tiles[tile2].GenPortal(TileTextures[7]);
-        }
-
         public int getOppositeTile(int tile)
         {
             int result = -1;
@@ -529,22 +522,23 @@ namespace Lolo
                 else
                 {
                     v = rdn.Next(0, 8); // If it is a special brick, chances are higher
-                }                
+                }
+
                 if (v == 1)
                 {                    
                     // An item is hidden inside, yay!!
-                    int style = (int)ItemTypes.Portal;// rdn.Next(0, (int)ItemTypes.Count);
+                    int style = rdn.Next(0, (int)ItemTypes.Count);
                     Item itm = new Item(ItemTextures[style], tile.Position, player, player2, this, style);
                     items.Add(itm);
                 }
             }
             /*
-            This need for the empty tile is a problem related with the NPC, for now, removed...
-            */
+            This need for the empty tile is a problem related with the NPC, for now, removed...            
             tile.ID = 0;
             tile.Walkable = true;
             tile.BreakAble = true;
-            //tiles.Remove(tile); // Remove is replaced by turning the tile into an empty tile
+            */
+            tiles.Remove(tile); // Remove is replaced by turning the tile into an empty tile
         }
 
         public void GenerateLevel(string LevelFile = "")
@@ -555,6 +549,7 @@ namespace Lolo
             int v = 0;
             bool walkable = false;
             int[,] arrtiles = new int[16, 12];
+            Tile[,] arrportals = new Tile[16, 12];
             int[] colsMap = new int[] { 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
             int[] rowsMap = new int[] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
             int tntCounter = 0;
@@ -618,14 +613,14 @@ namespace Lolo
                         {
                             v = 0; // But, 0 has a little more chances
                         }
-                        if (v < 0 || v == 6 || v == 7 || v == 8 || v == 9)
+                        if (v < 0 || v == 7 || v == 8 || v == 9)
                         {
                             if (v != -200 && v != -100)
                             {
                                 if (tntCounter > 0)
                                 {
                                     v = 4;
-                                    arrtiles[c, r] = v; // Save the random, for mirroring                                    
+                                    arrtiles[c, r] = v; // Save the random, for mirroring
                                 }
                                 else
                                 {
@@ -633,7 +628,7 @@ namespace Lolo
                                 }                                
                             }
                         }
-                        if (v == 0)
+                        if (v == 0 || v == 6)
                         {                            
                             walkable = true;
                         }
@@ -664,8 +659,12 @@ namespace Lolo
                             {
                                 tile_index = v - 1;
                             }
-                            Tile t = new Tile(pos,TileTextures[tile_index], player, player2, (v != 2), walkable, this, v, bombmanager);
+                            Tile t = new Tile(pos, TileTextures[tile_index], player, player2, (v != 2), walkable, this, v, bombmanager);
                             tiles.Add(t);
+                            if (v == 6)
+                            {
+                                arrportals[c, r] = t;
+                            }
                         }
                         col += 50;
                     }
@@ -730,17 +729,18 @@ namespace Lolo
                         {
                             v = 0; // But, 0 has a little more chances
                         }
-                        if (v < 0 || v == 6 || v == 7 || v == 8 || v == 9)
+                        if (v < 0 || v == 7 || v == 8 || v == 9)
                         {
                             if (v != -200 && v != -100)
                             {
                                 v = 1; // and regular bricks has even more chances!
                             }
                         }
-                        if (v == 0)
+                        if (v == 0 || v == 6)
                         {                            
                             walkable = true;
                         }
+
                         if (v != 0)
                         {
                             Vector2 pos = new Vector2(col, row);
@@ -759,6 +759,11 @@ namespace Lolo
                             }
                             Tile t = new Tile(pos, TileTextures[tile_index], player, player2, (v != 2), walkable, this, v, bombmanager);
                             tiles.Add(t);
+                            if (v == 6)
+                            {
+                                t.setPartner(arrportals[colsMap[c], rowsMap[r]]);
+                                arrportals[colsMap[c], rowsMap[r]].setPartner(t);
+                            }
                         }
                         col += 50;
                     }
@@ -794,27 +799,29 @@ namespace Lolo
                                     {
                                         v = Int32.Parse(line.Substring(c, 1));
                                     }
-                                    if (v == 0)
-                                    {
-                                        // If 0, then is a walkable block, but lets put some random to decide if regular empty space or what
+                                    if (v == 0 || v == 6)
+                                    {                                        
                                         walkable = true;
                                     }
-                                    Vector2 pos = new Vector2(col, row);
-                                    int tile_index = 0;
-                                    if (v == -100)
+                                    if (v != 0)
                                     {
-                                        tile_index = (int)TileIndexes.p1flag;
+                                        Vector2 pos = new Vector2(col, row);
+                                        int tile_index = 0;
+                                        if (v == -100)
+                                        {
+                                            tile_index = (int)TileIndexes.p1flag;
+                                        }
+                                        else if (v == -200)
+                                        {
+                                            tile_index = (int)TileIndexes.p2flag;
+                                        }
+                                        else
+                                        {
+                                            tile_index = v - 1;
+                                        }
+                                        Tile t = new Tile(pos, TileTextures[tile_index], player, player2, (v != 2), walkable, this, v, bombmanager);
+                                        tiles.Add(t);
                                     }
-                                    else if (v == -200)
-                                    {
-                                        tile_index = (int)TileIndexes.p2flag;
-                                    }
-                                    else
-                                    {
-                                        tile_index = v - 1;
-                                    }
-                                    Tile t = new Tile(pos, TileTextures[tile_index], player, player2, (v != 2), walkable, this, v, bombmanager);
-                                    tiles.Add(t);
                                     col += 50;
                                 }
                                 row += 50;

@@ -71,7 +71,7 @@ namespace Lolo
                 }
                 for (int index = 0; index < map.tiles.Count; index++)
                 {
-                    if (map.tiles[index].ID != 0)
+                    if (map.tiles[index].ID != 0 && map.tiles[index].ID != 6)
                     {
                         distance = Vector2.Distance(General.Rectangle2Vector(map.tiles[index].hitBox), this.EmitterLocation);
                         if (distance < 100 && this.hitBox.Intersects(map.tiles[index].hitBox))

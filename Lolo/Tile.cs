@@ -30,6 +30,8 @@ namespace Lolo
         private int shakeX = 0;
         private BombManager bombmanager;
         public int inmunityCounter = 0; // Frame duration of inmunity (after being hitted)
+        public int PortalDeactivateTime = 0;
+        public Tile Partner;
         private int Life = 1;
 
         public Tile(Vector2 position, Texture2D texture, Player player, Player player2, bool brekable, bool walkable, Map map, int id, BombManager bombmanager)
@@ -63,18 +65,14 @@ namespace Lolo
             if (this.ID != 0)
             {                
                 this.Columns = Texture.Width / 50;
-                this.Map = map;
-            }        
-            this.Position = position;                        
+            }
+            this.Map = map;
+            this.Position = position;            
         }
 
-        public void GenPortal(Texture2D texture)
+        public void setPartner(Tile partner)
         {
-            this.ID = 500;
-            this.Walkable = true;
-            this.BreakAble = false;
-            this.Texture = texture;
-            this.Columns = Texture.Width / 50;
+            this.Partner = partner;
         }
 
         public void Update()
@@ -150,7 +148,7 @@ namespace Lolo
             }
             else
             {
-                if (!this.Walkable)
+                if (!this.Walkable || this.ID == 6) // Walkable or portal
                 {
                     CheckCollisions(player);
                     CheckCollisions(player2);
@@ -180,6 +178,11 @@ namespace Lolo
         {
             if (this.ID != 0)
             {
+                if (this.ID == 6 && PortalDeactivateTime != 0)
+                {
+                    PortalDeactivateTime--;
+                    return;
+                }
                 for (int index = 0; index < bombmanager.bombs.Count; index++)
                 {
                     string flying = bombmanager.bombs[index].flying;
@@ -189,31 +192,40 @@ namespace Lolo
                         float absx = Math.Abs(v.X);
                         float absy = Math.Abs(v.Y);
                         bool realHit = true;
-                        
-                        // This handles the case when a flying bomb hits a wall
-                        if (!(v.X == 0 && v.Y == 0))
-                        {
-                            if (absx > absy) // the shallower impact is the correct one- this is on the y axis
-                            {
-                                if (flying == "H")
-                                {
-                                    realHit = false;
-                                }
-                            }
-                            else
-                            {
-                                if (flying == "V")
-                                {
-                                    realHit = false;
-                                }
-                            }
+
+                        if (this.ID == 6)
+                        {                            
+                            this.Partner.PortalDeactivateTime = 50;
+                            bombmanager.bombs[index].Position = this.Partner.Position;
+                            bombmanager.bombs[index].Teletransported();
                         }
-                        if (realHit)
+                        else
                         {
-                            bombmanager.bombs[index].wallHitted = true;
-                            if (bombmanager.bombs[index].BouncingBomb)
+                            // This handles the case when a flying bomb hits a wall
+                            if (!(v.X == 0 && v.Y == 0))
                             {
-                                Shake();
+                                if (absx > absy) // the shallower impact is the correct one- this is on the y axis
+                                {
+                                    if (flying == "H")
+                                    {
+                                        realHit = false;
+                                    }
+                                }
+                                else
+                                {
+                                    if (flying == "V")
+                                    {
+                                        realHit = false;
+                                    }
+                                }
+                            }
+                            if (realHit)
+                            {
+                                bombmanager.bombs[index].wallHitted = true;
+                                if (bombmanager.bombs[index].BouncingBomb)
+                                {
+                                    Shake();
+                                }
                             }
                         }
                         break;
@@ -224,12 +236,11 @@ namespace Lolo
 
         private void CheckCollisions(Player player)
         {
-            if (player.Item == ItemTypes.Ghost && this.ID != 2)
+            if (player.Item == ItemTypes.Ghost && this.ID != 2) // Ghost can go through portals
             {
                 return;
             }
-
-            if (this.ID != 0)
+            if (this.ID != 0 && this.ID != 6)
             {
                 if (hitBox.Intersects(player.hitBox))
                 {
@@ -279,7 +290,7 @@ namespace Lolo
                             }
                             Vector2 newpos = new Vector2(player.getLocation().X + v.X, player.getLocation().Y + autoAd);
                             player.newPosition = newpos;
-                        }
+                        }                        
                         player.wallHitted = true;
                     }
                 }

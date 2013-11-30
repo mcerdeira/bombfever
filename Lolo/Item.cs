@@ -112,9 +112,6 @@ namespace Lolo
                     case (int)ItemTypes.Plus1:
                         player.Plus1();                        
                         break;
-                    case (int)ItemTypes.Portal:
-                        player.Portal();
-                        break;
                     case (int)ItemTypes.Roundx2:
                         player.RoundX2();
                         break;

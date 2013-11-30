@@ -49,6 +49,12 @@ namespace Lolo
             }
         }
 
+        public void Teletransported()
+        {
+            this.xMove *= -1;
+            this.yMove *= -1;
+        }
+
         public void Kicked(string direction)
         {
             this.LifeLoop += 5; // A little extra time if it gets kicked

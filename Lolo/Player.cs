@@ -866,25 +866,15 @@ namespace Lolo
             {
                 curIt = ItemTypes.None;
             }
-
-            if (curIt == ItemTypes.Portal)
+            if (this.BombCount < this.BombMax)
             {
-                int currTile = IndexFromCell(new Vector2(normaLize(Location.X), normaLize(Location.Y)));
-                this.Map.GenPortal(currTile);
-                Items.RemoveAt(Items.Count - 1);
-            }
-            else
-            {
-                if (this.BombCount < this.BombMax)
-                {
-                    BombMan.SpawnBomb(Location, InstanceName, (curIt == ItemTypes.EternalFire), (curIt == ItemTypes.BouncingBombs));
-                    if (curIt == ItemTypes.EternalFire || curIt == ItemTypes.BouncingBombs)
-                    {                        
-                        Items.RemoveAt(Items.Count - 1);
-                    }
-                    this.BombCount++;
-                    this.sndFXList[(int)PlayerSndFXs.PlaceBomb].Play();
+                BombMan.SpawnBomb(Location, InstanceName, (curIt == ItemTypes.EternalFire), (curIt == ItemTypes.BouncingBombs));
+                if (curIt == ItemTypes.EternalFire || curIt == ItemTypes.BouncingBombs)
+                {                        
+                    Items.RemoveAt(Items.Count - 1);
                 }
+                this.BombCount++;
+                this.sndFXList[(int)PlayerSndFXs.PlaceBomb].Play();
             }
         }       
      
@@ -902,13 +892,6 @@ namespace Lolo
             this.ItemTime = -1;            
             this.ItemDisplay = ItemTypeNames(this.Item);
             this.Items.Add(ItemTypes.BouncingBombs);
-        }
-
-        public void Portal()
-        {
-            this.ItemTime = -1;            
-            this.ItemDisplay = ItemTypeNames(this.Item);
-            this.Items.Add(ItemTypes.Portal);
         }
 
         public void RoundX2()
@@ -1010,9 +993,6 @@ namespace Lolo
                     break;
                 case ItemTypes.Plus1:
                     name = "+1";
-                    break;
-                case ItemTypes.Portal:
-                    name = "Teleporter";
                     break;
                 case ItemTypes.Roundx2:
                     name = "Round x 2";

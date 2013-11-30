@@ -84,13 +84,13 @@ namespace Lolo
 
     public enum TileIndexes
     {
-        p1flag = 5,
-        p2flag = 6
+        p1flag = 6,
+        p2flag = 7
     }
 
     public enum ItemTypes
     {        
-        Count = 12, // This just keeps the item count
+        Count = 11, // This just keeps the item count
         None = -1,
         Shield = 0, //
         Death = 1, //
@@ -102,8 +102,7 @@ namespace Lolo
         Roundx2 = 7, // This must be score X2 at the end of the round
         BouncingBombs = 8, //  
         EternalFire = 9, //
-        ExtraBomb = 10, //
-        Portal = 11 // The implementation will we, turn the tile and opposite tile into a portal
+        ExtraBomb = 10, //        
     }
 
     class General
