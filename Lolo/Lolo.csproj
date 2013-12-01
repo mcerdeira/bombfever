@@ -290,6 +290,12 @@
     <Content Include="Content\6.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\freezefx.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\unfreezefx.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Lolo_TemporaryKey.pfx" />
     <None Include="portal.xnb" />
   </ItemGroup>

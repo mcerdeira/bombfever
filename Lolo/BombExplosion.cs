@@ -26,8 +26,9 @@ namespace Lolo
         private bool miniExplosion = false;
         private bool Eternalfire = false;
         private bool CharExplosion = false;
+        private string Owner = "";
 
-        public BombExplosion(int TTL, Map map, BombManager bombman, Player player, Player player2, Texture2D texture, Vector2 location, int totalParticles = 20, bool miniexplosion = false, bool eternalfire = false, bool charExplosion = false)
+        public BombExplosion(int TTL, Map map, BombManager bombman, Player player, Player player2, Texture2D texture, Vector2 location, string owner, int totalParticles = 20, bool miniexplosion = false, bool eternalfire = false, bool charExplosion = false)
         {
             this.miniExplosion = miniexplosion;
             this.totalParticles = totalParticles;
@@ -42,6 +43,7 @@ namespace Lolo
             this.random = new Random();
             this.Eternalfire = eternalfire;
             this.CharExplosion = charExplosion;
+            this.Owner = owner;
             if (this.Eternalfire)
             {
                 this.totalParticles = 40;
@@ -49,7 +51,46 @@ namespace Lolo
         }
 
         public void Update()
-        {            
+        {
+            // This two if are fir freezing bombs when player is paused
+            if (this.Owner == "p1")
+            {
+                int pl = this.player.PausedLoop;
+                if (pl != 0)
+                {
+                    if(pl <= 350)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        if (pl % 2 == 0)
+                        {
+                            return;
+                        }
+                    }                    
+                }
+            }
+            if (this.Owner == "p2")
+            {
+                int pl = this.player2.PausedLoop;
+                if (pl != 0)
+                {
+                    if (pl <= 350)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        if (pl % 2 == 0)
+                        {
+                            return;
+                        }
+                    }
+                }
+            }
+
+
             if (TTL > 0)
             {
                 for (int i = 0; i < totalParticles; i++)

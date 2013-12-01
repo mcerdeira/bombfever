@@ -97,16 +97,19 @@ namespace Lolo
             return r;
         }
 
-        public float Update(GameTime gametime)
+        public float Update(GameTime gametime, bool freezed)
         {
-            if (startCount == 0)
+            if (!freezed)
             {
-                startCount = 60;
-                currentTime--;
-            }
-            else
-            {
-                startCount--;
+                if (startCount == 0)
+                {
+                    startCount = 60;
+                    currentTime--;
+                }
+                else
+                {
+                    startCount--;
+                }
             }
             return currentTime;
         }

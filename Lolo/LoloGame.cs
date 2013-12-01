@@ -78,6 +78,10 @@ namespace Lolo
         private PlayerTex p2Sel;
         private List<Texture2D> ItemsTx = new List<Texture2D>();
         private List<Texture2D> TilesTx = new List<Texture2D>();
+        private bool bkmusicPaused = false;
+        private SoundEffect sfxFreeze;
+        private SoundEffect sfxUnFreeze;
+        private int unfreezeDelay = 0;
 
         GameState CurrentGameState = GameState.MainMenu;
 
@@ -456,6 +460,9 @@ namespace Lolo
             // Bouncing bomb sounds
             sndfxBouncingBomb.Add(Content.Load<SoundEffect>("bounce1"));
             sndfxBouncingBomb.Add(Content.Load<SoundEffect>("bounce2"));
+
+            sfxFreeze = Content.Load<SoundEffect>("freezefx");
+            sfxUnFreeze = Content.Load<SoundEffect>("unfreezefx");
         }
 
         /// <summary>
@@ -517,6 +524,7 @@ namespace Lolo
                         {
                             if (PlayerSelectedDelay == 0)
                             {
+                                unfreezeDelay = 0;
                                 charselect.Reset();
                                 menuMusicInstance.Stop();
                                 bkMusicInstance.Play();
@@ -588,7 +596,34 @@ namespace Lolo
                         break;
                     case GameState.Playing1P:
                     case GameState.Playing2P:
-                        float currTime = score.Update(gameTime);
+                        bool freezed = (p1.PausedLoop != 0 || p2.PausedLoop != 0);
+                        if (freezed)
+                        {
+                            if (bkMusicInstance.Volume > 0f)
+                            {                                
+                                sfxFreeze.Play();
+                                bkMusicInstance.Volume = 0f;
+                                bkmusicPaused = true;
+                                unfreezeDelay = 100;
+                            }
+                        }
+                        else
+                        {
+                            if (bkmusicPaused)
+                            {
+                                if (unfreezeDelay == 100)
+                                {
+                                    sfxUnFreeze.Play();
+                                }
+                                if (unfreezeDelay == 0)
+                                {
+                                    bkmusicPaused = false;
+                                    bkMusicInstance.Volume = 0.5f;
+                                }
+                                unfreezeDelay--;
+                            }
+                        }
+                        float currTime = score.Update(gameTime, freezed);                        
                         if (currTime < 15)
                         {                            
                             bkMusicInstance.Pitch = 0.2f;

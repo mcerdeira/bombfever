@@ -71,7 +71,7 @@ namespace Lolo
         public ItemTypes Item = ItemTypes.None;
         private int ItemTime = 0;
         private string ItemDisplay = "";
-        private int PausedLoop = 0;
+        public int PausedLoop = 0;
 
         public Player(Texture2D texture, Vector2 location, ControlType ctype, BombManager BombMan, Score score, string instancename, PlayerStyle pstlye, List<SoundEffect> sndfxlist, SpriteFont font, int screenheight, int screenwidth, Texture2D bubble)
         {
@@ -121,7 +121,7 @@ namespace Lolo
         public void Pause()
         {
             this.Status = "idle";
-            PausedLoop = 200;
+            PausedLoop = 400;
         }
 
         public void Update(GameTime gametime)

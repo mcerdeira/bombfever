@@ -17,7 +17,7 @@ namespace Lolo
         public Vector2 Position;
         private Texture2D Texture;
         private int Columns;
-        private string Owner;
+        public string Owner;
         public Rectangle hitBox;
         private Player player;
         private Player player2;
@@ -138,9 +138,22 @@ namespace Lolo
 
         public void Update()
         {
-            #warning See what happens with no bomb colitions
-            //CheckCollisions(player);
-            //CheckCollisions(player2);
+            // This two if are fir freezing bombs when player is paused
+            if (this.Owner == "p1")
+            {
+                if (this.player.PausedLoop != 0)
+                {
+                    return;
+                }
+            }
+            if (this.Owner == "p2")
+            {
+                if (this.player2.PausedLoop != 0)
+                {
+                    return;
+                }
+            }
+            
             LifeLoop--;
 
             if (wallHitted)

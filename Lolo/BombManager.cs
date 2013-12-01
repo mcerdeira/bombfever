@@ -36,7 +36,7 @@ namespace Lolo
 
         public void addExplossion(Vector2 position, int particles = 20, bool charExplosion = false)
         {
-            BombExplosion ex = new BombExplosion(7, map, this, Player, Player2, particleTexture, position, particles, true, false, charExplosion);
+            BombExplosion ex = new BombExplosion(7, map, this, Player, Player2, particleTexture, position, "", particles, true, false, charExplosion);
             bombex.Add(ex);
             sndFXMiniExplode.Play();
         }
@@ -121,7 +121,7 @@ namespace Lolo
         public void Update()
         {
             for (int index = 0; index < bombs.Count; index++)
-            {
+            {                
                 bombs[index].Update();
             }
             for (int i = 0; i < bombex.Count; i++)
@@ -139,9 +139,10 @@ namespace Lolo
         public void RemoveBomb(Bomb bomb, Vector2 position)
         {
             bool eternalfire = bomb.EternalFire;
+            string bowner = bomb.Owner;
             bombs.Remove(bomb);
             bomb = null;
-            BombExplosion ex = new BombExplosion(20, map, this, Player, Player2, particleTexture, position, eternalfire:eternalfire);
+            BombExplosion ex = new BombExplosion(20, map, this, Player, Player2, particleTexture, position, bowner, eternalfire: eternalfire);
             bombex.Add(ex);
             if (eternalfire)
             {
