@@ -72,6 +72,7 @@ namespace Lolo
         private int ItemTime = 0;
         private string ItemDisplay = "";
         public int PausedLoop = 0;
+        public int ForcedPausedLoop = 0;
 
         public Player(Texture2D texture, Vector2 location, ControlType ctype, BombManager BombMan, Score score, string instancename, PlayerStyle pstlye, List<SoundEffect> sndfxlist, SpriteFont font, int screenheight, int screenwidth, Texture2D bubble)
         {
@@ -118,10 +119,17 @@ namespace Lolo
             this.Status = "dead";
         }
 
-        public void Pause()
-        {
+        public void Pause(bool forced = false)
+        {            
             this.Status = "idle";
-            PausedLoop = 400;
+            if (forced)
+            {
+                ForcedPausedLoop = 400;
+            }
+            else
+            {
+                PausedLoop = 400;
+            }
         }
 
         public void Update(GameTime gametime)
@@ -712,6 +720,12 @@ namespace Lolo
                 PausedLoop--;
                 return;
             }
+            if (ForcedPausedLoop > 0)
+            {
+                ForcedPausedLoop--;
+                return;
+            }
+
 
             if (PStlye == PlayerStyle.Human)
             {                

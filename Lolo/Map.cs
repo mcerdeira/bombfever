@@ -35,8 +35,8 @@ namespace Lolo
      
         public void MakeWin(string player)
         {
-            this.player.Pause();
-            this.player2.Pause();
+            this.player.Pause(true);
+            this.player2.Pause(true);
             this.Score.MakeWin(player);
         }
 
@@ -72,21 +72,21 @@ namespace Lolo
                 int v;
                 if (tile.ID == 1)
                 {
-                    v = rdn.Next(0, 20); // If it is a regular brick, chances are lower
+                    v = rdn.Next(0, 15); // If it is a regular brick, chances are lower
                 }
                 else if (tile.ID == 5)
                 {
-                    v = rdn.Next(0, 2); // If it is wood, chances are really high
+                    v = 1; // If it is wood brick, allways an item
                 }
                 else
                 {
                     v = rdn.Next(0, 8); // If it is a special brick, chances are higher
                 }
 
-                if (v != -1)
+                if (v == 1)
                 {                    
                     // An item is hidden inside, yay!!
-                    int style = (int)ItemTypes.Freeze; //rdn.Next(0, (int)ItemTypes.Count);
+                    int style = rdn.Next(0, (int)ItemTypes.Count);
                     Item itm = new Item(ItemTextures[style], tile.Position, player, player2, this, style);
                     items.Add(itm);
                 }
