@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
+using Microsoft.Xna.Framework.Audio;
 
 /*
  * 0 Four bombs
@@ -31,8 +32,9 @@ namespace Lolo
         private Player player;
         private Player player2;
         private bool collected = false;
+        private SoundEffect sndPick;
 
-        public Item(Texture2D texture, Vector2 position, Player player, Player player2, Map map, int style)
+        public Item(Texture2D texture, Vector2 position, Player player, Player player2, Map map, int style, SoundEffect sndpick)
         {            
             this.Style = style;
             this.Texture = texture;
@@ -41,6 +43,7 @@ namespace Lolo
             this.player = player;
             this.player2 = player2;
             this.map = map;
+            this.sndPick = sndpick;
         }
 
         public void Update()
@@ -67,6 +70,7 @@ namespace Lolo
         {
             if (hitBox.Intersects(player.hitBox))
             {
+                sndPick.Play();
                 collected = true;
                 map.RemoveItem(this);
                 switch (this.Style)

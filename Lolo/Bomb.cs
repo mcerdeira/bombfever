@@ -30,8 +30,9 @@ namespace Lolo
         public string flying = "";
         BombManager BombMan;
         List<SoundEffect> SndfxBouncingBomb;
+        SoundEffect sndfxPortal;
 
-        public Bomb(Vector2 position, string owner, BombManager BombMan, Texture2D texture, Player player, Player player2, bool eternalFire, bool bouncing, List<SoundEffect> sndfxbouncingbomb)
+        public Bomb(Vector2 position, string owner, BombManager BombMan, Texture2D texture, Player player, Player player2, bool eternalFire, bool bouncing, List<SoundEffect> sndfxbouncingbomb, SoundEffect sndportal)
         {
             this.Owner = owner;
             this.BombMan = BombMan;
@@ -42,6 +43,7 @@ namespace Lolo
             this.Columns = Texture.Width / 50; //30            
             this.EternalFire = eternalFire;
             this.BouncingBomb = bouncing;
+            this.sndfxPortal = sndportal;
             this.SndfxBouncingBomb = sndfxbouncingbomb;
             if (bouncing)
             {
@@ -51,6 +53,7 @@ namespace Lolo
 
         public void Teletransported()
         {
+            this.sndfxPortal.Play();
             this.xMove *= -1;
             this.yMove *= -1;
         }
@@ -169,7 +172,7 @@ namespace Lolo
                         yMove *= -1;
                     }
                     Random rnd = new Random();
-                    int i = rnd.Next(0, 2);
+                    int i = rnd.Next(0, SndfxBouncingBomb.Count);
                     SndfxBouncingBomb[i].Play();
                     wallHitted = false;
                 }

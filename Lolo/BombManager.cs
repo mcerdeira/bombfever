@@ -23,8 +23,9 @@ namespace Lolo
         private SoundEffect sndFXMiniExplode;
         private List<SoundEffect> sndfxBouncingBomb;
         private SoundEffect sndfxbigExplode;
+        private SoundEffect sndfxPortal;
 
-        public BombManager(SoundEffect sndfxexplode, SoundEffect sndxminiexplode, SoundEffect sndfxbigexplode, List<SoundEffect> sndfxbouncingbomb, Texture2D bombtexture, Texture2D particletexture)
+        public BombManager(SoundEffect sndfxexplode, SoundEffect sndxminiexplode, SoundEffect sndfxbigexplode, List<SoundEffect> sndfxbouncingbomb, Texture2D bombtexture, Texture2D particletexture, SoundEffect sndPortal)
         {
             this.sndFXExplode = sndfxexplode;
             this.sndFXMiniExplode = sndxminiexplode;
@@ -32,6 +33,7 @@ namespace Lolo
             this.particleTexture = particletexture;
             this.sndfxbigExplode = sndfxbigexplode;
             this.sndfxBouncingBomb = sndfxbouncingbomb;
+            this.sndfxPortal = sndPortal;
         }
 
         public void addExplossion(Vector2 position, int particles = 20, bool charExplosion = false)
@@ -156,7 +158,7 @@ namespace Lolo
 
         public void SpawnBomb(Vector2 position, string owner, bool eternalFire = false, bool bouncing= false)
         {
-            Bomb b = new Bomb(position, owner, this, bombTexture, Player, Player2, eternalFire, bouncing, sndfxBouncingBomb);
+            Bomb b = new Bomb(position, owner, this, bombTexture, Player, Player2, eternalFire, bouncing, sndfxBouncingBomb, sndfxPortal);
             bombs.Add(b);
         }
 

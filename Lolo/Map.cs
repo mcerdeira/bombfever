@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
+using Microsoft.Xna.Framework.Audio;
 /*
  * Implements map layout as seen in ScreenMap.xlsx!Basic Layout 
  */
@@ -22,8 +23,9 @@ namespace Lolo
         private Score Score;
         private List<Texture2D> ItemTextures = new List<Texture2D>();
         private List<Texture2D> TileTextures = new List<Texture2D>();
+        private SoundEffect sndItemPick;
 
-        public Map(Player player, Player player2, BombManager bombmanager, List<Texture2D> itemtextures, List<Texture2D> tiletextures, Score score)
+        public Map(Player player, Player player2, BombManager bombmanager, List<Texture2D> itemtextures, List<Texture2D> tiletextures, Score score, SoundEffect snditempick)
         {            
             this.Score = score;
             this.ItemTextures = itemtextures;
@@ -31,6 +33,7 @@ namespace Lolo
             this.bombmanager = bombmanager;
             this.player = player;
             this.player2 = player2;
+            this.sndItemPick = snditempick;
         }
      
         public void MakeWin(string player)
@@ -87,7 +90,7 @@ namespace Lolo
                 {                    
                     // An item is hidden inside, yay!!
                     int style = rdn.Next(0, (int)ItemTypes.Count);
-                    Item itm = new Item(ItemTextures[style], tile.Position, player, player2, this, style);
+                    Item itm = new Item(ItemTextures[style], tile.Position, player, player2, this, style, this.sndItemPick);
                     items.Add(itm);
                 }
             }

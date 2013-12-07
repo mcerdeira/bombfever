@@ -58,6 +58,7 @@ namespace Lolo
         private SoundEffect sfxExplosion;
         private SoundEffect sfxMiniExplosion;
         private SoundEffect sndfxBigExplode;
+        private SoundEffect sndfxItemPick;
         private List<SoundEffect> sndfxBouncingBomb = new List<SoundEffect>();
         private List<Texture2D> PlayerTextures = new List<Texture2D>();
         private List<Texture2D> PlayerSelectionTextures = new List<Texture2D>();
@@ -81,6 +82,7 @@ namespace Lolo
         private bool bkmusicPaused = false;
         private SoundEffect sfxFreeze;
         private SoundEffect sfxUnFreeze;
+        private SoundEffect sfxPortal;
         private int unfreezeDelay = 0;
 
         GameState CurrentGameState = GameState.MainMenu;
@@ -436,6 +438,8 @@ namespace Lolo
             sfxExplosion = Content.Load<SoundEffect>("explosion");
             sfxMiniExplosion = Content.Load<SoundEffect>("miniexplosion");
             sndfxBigExplode = Content.Load<SoundEffect>("explosion_big");
+            sndfxItemPick = Content.Load<SoundEffect>("itempick");
+            sfxPortal = Content.Load<SoundEffect>("portal");
             cMatch = new Match();
         }
 
@@ -460,6 +464,7 @@ namespace Lolo
             // Bouncing bomb sounds
             sndfxBouncingBomb.Add(Content.Load<SoundEffect>("bounce1"));
             sndfxBouncingBomb.Add(Content.Load<SoundEffect>("bounce2"));
+            sndfxBouncingBomb.Add(Content.Load<SoundEffect>("bounce3"));
 
             sfxFreeze = Content.Load<SoundEffect>("freezefx");
             sfxUnFreeze = Content.Load<SoundEffect>("unfreezefx");
@@ -535,7 +540,7 @@ namespace Lolo
 
                                 // In Game objects                                    
                                 score = new Score(ScreenHeight, ScreenWidth, mainFont, roundTime, General.getGameTypes()[gameOPT.gametype]);
-                                bombmanager = new BombManager(sfxExplosion, sfxMiniExplosion, sndfxBigExplode, sndfxBouncingBomb, bombTex, particleTex);
+                                bombmanager = new BombManager(sfxExplosion, sfxMiniExplosion, sndfxBigExplode, sndfxBouncingBomb, bombTex, particleTex, sfxPortal);
                                 p1 = new Player(PlayerTextures[(int)p1Sel], new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human, PlayersndFXList, mainFont, ScreenHeight, ScreenWidth, bubble);
                                 if (CurrentGameState == GameState.Start1P)
                                 {
@@ -547,7 +552,7 @@ namespace Lolo
                                     p2 = new Player(PlayerTextures[(int)p2Sel], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Human, PlayersndFXList, mainFont, ScreenHeight, ScreenWidth, bubble);
                                     CurrentGameState = GameState.Playing2P;
                                 }
-                                map = new Map(p1, p2, bombmanager, ItemsTx, TilesTx, score);
+                                map = new Map(p1, p2, bombmanager, ItemsTx, TilesTx, score, sndfxItemPick);
                                 map.GenerateLevel(LevelName);
                                 bombmanager.UpdateMap(map, p1, p2);
                                 if (CurrentGameState == GameState.Playing1P)
