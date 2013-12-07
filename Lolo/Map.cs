@@ -158,7 +158,16 @@ namespace Lolo
                         }
                         else
                         {
-                            v = rdn.Next(-20, 20); // Now lets do some random...  
+                            // Now lets do some random... 
+                            v = rdn.Next(-20, 20);
+                            if (v == 6)
+                            {
+                                // Portals tiles requires that Rows must be uneven and Cols must be even
+                                if (r % 2 == 0 || c % 2 != 0)
+                                {
+                                    v = rdn.Next(1, 6);
+                                }
+                            }
                             arrtiles[c, r] = v; // Save the random, for mirroring
                         }
 
