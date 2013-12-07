@@ -122,6 +122,18 @@ namespace Lolo
             scoreP2 = temp;
         }
 
+        public void Scorex2(string player)
+        {
+            if (player == "p1")
+            {
+                scoreP1 *= 2;
+            }
+            else
+            {
+                scoreP2 *= 2;
+            }
+        }
+
         public void setScore(string player)
         {
             if (this.GameType == "First hit wins")

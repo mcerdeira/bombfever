@@ -70,9 +70,11 @@ namespace Lolo
         private List<ItemTypes> Items = new List<ItemTypes>(); // This list holds the combinable items
         public ItemTypes Item = ItemTypes.None;
         private int ItemTime = 0;
+        private int ItemDisplayTime = 0;
         private string ItemDisplay = "";
         public int PausedLoop = 0;
         public int ForcedPausedLoop = 0;
+        private bool Shielded = false;
 
         public Player(Texture2D texture, Vector2 location, ControlType ctype, BombManager BombMan, Score score, string instancename, PlayerStyle pstlye, List<SoundEffect> sndfxlist, SpriteFont font, int screenheight, int screenwidth, Texture2D bubble)
         {
@@ -212,6 +214,7 @@ namespace Lolo
                 this.Location = this.RespawnLoc;
                 this.BombMax = 2;
             }
+            this.Shielded = false;
             sndFXList[(int)PlayerSndFXs.Die].Play();
             Item = ItemTypes.None;
         }
@@ -896,28 +899,34 @@ namespace Lolo
 
         public void EternalFire()
         {
-            this.ItemTime = -1;            
-            this.ItemDisplay = ItemTypeNames(this.Item);
+            this.ItemTime = -1;
+            this.ItemDisplayTime = 200;
+            this.ItemDisplay = ItemTypeNames(ItemTypes.EternalFire);
             this.Items.Add(ItemTypes.EternalFire);
         }
 
         public void BouncingBombs()
         {
-            this.ItemTime = -1;            
-            this.ItemDisplay = ItemTypeNames(this.Item);
+            this.ItemTime = -1;
+            this.ItemDisplayTime = 200;
+            this.ItemDisplay = ItemTypeNames(ItemTypes.BouncingBombs);
             this.Items.Add(ItemTypes.BouncingBombs);
         }
 
         public void RoundX2()
         {
             this.ItemTime = -1;
+            this.ItemDisplayTime = 200;
             this.Item = ItemTypes.Roundx2;
             this.ItemDisplay = ItemTypeNames(this.Item);
+            this.Score.Scorex2(this.InstanceName);
+            #warning Add big text telling extra time situation
         }
 
         public void ExtraTime()
         {
             this.ItemTime = -1;
+            this.ItemDisplayTime = 200;
             this.Item = ItemTypes.ExtraTime;
             this.ItemDisplay = ItemTypeNames(this.Item);
             #warning Add big text telling extra time situation
@@ -926,13 +935,15 @@ namespace Lolo
         public void ExtraBomb()
         {
             this.ItemTime = -1;
+            this.ItemDisplayTime = 200;
             this.Item = ItemTypes.ExtraBomb;
             this.ItemDisplay = ItemTypeNames(this.Item);
             this.BombMax++;
         }
 
         public void Ghost()
-        {            
+        {
+            this.ItemDisplayTime = 200;
             this.inmunityCounter = 500;
             this.ItemTime = 500;
             this.Item = ItemTypes.Ghost;
@@ -941,6 +952,7 @@ namespace Lolo
 
         public void Plus1()
         {
+            this.ItemDisplayTime = 200;
             this.ItemTime = -1;
             this.Item = ItemTypes.Plus1;
             this.ItemDisplay = ItemTypeNames(this.Item);
@@ -950,6 +962,7 @@ namespace Lolo
 
         public void SwitchScore()
         {
+            this.ItemDisplayTime = 200;
             this.ItemTime = -1;
             this.Item = ItemTypes.SwitchScore;
             this.ItemDisplay = ItemTypeNames(this.Item);
@@ -958,6 +971,7 @@ namespace Lolo
 
         public void Death()
         {
+            this.ItemDisplayTime = 200;
             this.ItemTime = 50;
             this.Item = ItemTypes.Death;
             this.ItemDisplay = ItemTypeNames(this.Item);            
@@ -965,6 +979,8 @@ namespace Lolo
 
         public void Shield()
         {
+            this.Shielded = true;
+            this.ItemDisplayTime = 200;
             this.ItemTime = -1;
             this.Item = ItemTypes.Shield;
             this.ItemDisplay = ItemTypeNames(this.Item);
@@ -972,6 +988,7 @@ namespace Lolo
 
         public void Freeze()
         {
+            this.ItemDisplayTime = 200;
             this.ItemTime = 200;
             this.Item = ItemTypes.Freeze;
             this.ItemDisplay = ItemTypeNames(this.Item);
@@ -1009,7 +1026,7 @@ namespace Lolo
                     name = "+1";
                     break;
                 case ItemTypes.Roundx2:
-                    name = "Round x 2";
+                    name = "Score x 2";
                     break;
                 case ItemTypes.Shield:
                     name = "Shield";
@@ -1058,23 +1075,33 @@ namespace Lolo
                 spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White);
                 //spriteBatch.Draw(Texture, hitBox, hitBox, Color.Red);
             }
-            if (Item != ItemTypes.None)
+            if (this.Shielded)
             {
-                if (Item == ItemTypes.Shield)
-                {
-                    Rectangle source = new Rectangle(0, 0, width, height);
-                    spriteBatch.Draw(Bubble, destinationRectangle, source, Color.White);
-                }
+                Rectangle source = new Rectangle(0, 0, width, height);
+                spriteBatch.Draw(Bubble, destinationRectangle, source, Color.White);
+            }
 
+            // Control item info display
+            if (this.ItemDisplayTime > 0)
+            {
                 // Text aditional info
                 infoAdic(spriteBatch);
+                this.ItemDisplayTime--;
+            }
+            else if (this.ItemDisplayTime == 0)
+            {
+                this.ItemDisplay = "";
+            }
+
+            // Control Item duration
+            if (Item != ItemTypes.None)
+            {                
                 if (this.ItemTime > 0)
                 {
                     this.ItemTime--;
                 }
                 else if (this.ItemTime == 0) // The item expired
-                {
-                    this.ItemDisplay = "";
+                {                    
                     this.Item = ItemTypes.None;
                 }
             }
