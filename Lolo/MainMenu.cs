@@ -27,9 +27,11 @@ namespace Lolo
             this.TFont = titlefont;
             this.Font = font;
             this.GameTitle = gametitle;
-            Button btn = new Button("1P vs 2P", screenwidth, font, Color.Yellow, Color.White, GameState.Start2P);            
+            Button btn = new Button("2P Versus", screenwidth, font, Color.Yellow, Color.White, GameState.Start2P);            
             btns.Add(btn);
-            btn = new Button("1P vs CPU", screenwidth, font, Color.DarkGray, Color.Gray, GameState.MainMenu, false); // GameState.Start1P
+            btn = new Button("1P Survival", screenwidth, font, Color.DarkGray, Color.Gray, GameState.MainMenu, false); // GameState.Start1P
+            btns.Add(btn);
+            btn = new Button("Co-op Survival", screenwidth, font, Color.DarkGray, Color.Gray, GameState.MainMenu, false); // GameState.Start1P
             btns.Add(btn);
             btn = new Button("Options", screenwidth, font, Color.Yellow, Color.White, GameState.GotoOptions);
             btns.Add(btn);
@@ -65,9 +67,9 @@ namespace Lolo
         {
             calcCurrentButton(direction);
 
-            if (!btns[currButton].Enabled)
+            while (!btns[currButton].Enabled)
             {
-                calcCurrentButton(direction);
+                calcCurrentButton(direction);                
             }
 
             for (int index = 0; index < btns.Count; index++)
