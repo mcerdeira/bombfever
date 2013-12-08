@@ -36,9 +36,9 @@ namespace Lolo
             this.sndfxPortal = sndPortal;
         }
 
-        public void addExplossion(Vector2 position, int particles = 20, bool charExplosion = false)
+        public void addExplossion(Vector2 position, int particles = 20, bool charExplosion = false, bool portalexplosion = false)
         {
-            BombExplosion ex = new BombExplosion(7, map, this, Player, Player2, particleTexture, position, "", particles, true, false, charExplosion);
+            BombExplosion ex = new BombExplosion(7, map, this, Player, Player2, particleTexture, position, "", particles, true, false, charExplosion, portalexplosion);
             bombex.Add(ex);
             sndFXMiniExplode.Play();
         }

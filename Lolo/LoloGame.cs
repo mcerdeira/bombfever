@@ -541,15 +541,15 @@ namespace Lolo
                                 // In Game objects                                    
                                 score = new Score(ScreenHeight, ScreenWidth, mainFont, roundTime, General.getGameTypes()[gameOPT.gametype]);
                                 bombmanager = new BombManager(sfxExplosion, sfxMiniExplosion, sndfxBigExplode, sndfxBouncingBomb, bombTex, particleTex, sfxPortal);
-                                p1 = new Player(PlayerTextures[(int)p1Sel], new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human, PlayersndFXList, mainFont, ScreenHeight, ScreenWidth, bubble);
+                                p1 = new Player(PlayerTextures[(int)p1Sel], new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human, PlayersndFXList, mainFont, ScreenHeight, ScreenWidth, bubble, ItemsTx);
                                 if (CurrentGameState == GameState.Start1P)
                                 {
-                                    p2 = new Player(PlayerTextures[(int)p2Sel], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Machine, PlayersndFXList, mainFont, ScreenHeight, ScreenWidth, bubble);
+                                    p2 = new Player(PlayerTextures[(int)p2Sel], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Machine, PlayersndFXList, mainFont, ScreenHeight, ScreenWidth, bubble, ItemsTx);
                                     CurrentGameState = GameState.Playing1P;
                                 }
                                 else
                                 {
-                                    p2 = new Player(PlayerTextures[(int)p2Sel], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Human, PlayersndFXList, mainFont, ScreenHeight, ScreenWidth, bubble);
+                                    p2 = new Player(PlayerTextures[(int)p2Sel], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Human, PlayersndFXList, mainFont, ScreenHeight, ScreenWidth, bubble, ItemsTx);
                                     CurrentGameState = GameState.Playing2P;
                                 }
                                 map = new Map(p1, p2, bombmanager, ItemsTx, TilesTx, score, sndfxItemPick);

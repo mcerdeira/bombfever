@@ -75,8 +75,9 @@ namespace Lolo
         public int PausedLoop = 0;
         public int ForcedPausedLoop = 0;
         private bool Shielded = false;
+        List<Texture2D> ItemTextures;
 
-        public Player(Texture2D texture, Vector2 location, ControlType ctype, BombManager BombMan, Score score, string instancename, PlayerStyle pstlye, List<SoundEffect> sndfxlist, SpriteFont font, int screenheight, int screenwidth, Texture2D bubble)
+        public Player(Texture2D texture, Vector2 location, ControlType ctype, BombManager BombMan, Score score, string instancename, PlayerStyle pstlye, List<SoundEffect> sndfxlist, SpriteFont font, int screenheight, int screenwidth, Texture2D bubble, List<Texture2D> itemtextures)
         {
             if (instancename == "p1")
             {
@@ -108,6 +109,7 @@ namespace Lolo
             this.ScreenHeight = screenheight;
             this.ScreenWidth = screenwidth;
             this.Bubble = bubble;
+            this.ItemTextures = itemtextures;
         }
 
         public void setMap(Map map)
@@ -893,7 +895,16 @@ namespace Lolo
                 this.BombCount++;
                 this.sndFXList[(int)PlayerSndFXs.PlaceBomb].Play();
             }
-        }       
+        }
+
+        private void addCollectableItem(ItemTypes itm)
+        {
+            this.Items.Add(itm);
+            if (this.Items.Count > 3)
+            {
+                this.Items.RemoveAt(0);
+            }            
+        }
      
         #region Apply Items
 
@@ -902,15 +913,15 @@ namespace Lolo
             this.ItemTime = -1;
             this.ItemDisplayTime = 200;
             this.ItemDisplay = ItemTypeNames(ItemTypes.EternalFire);
-            this.Items.Add(ItemTypes.EternalFire);
+            addCollectableItem(ItemTypes.EternalFire);
         }
 
         public void BouncingBombs()
         {
             this.ItemTime = -1;
             this.ItemDisplayTime = 200;
-            this.ItemDisplay = ItemTypeNames(ItemTypes.BouncingBombs);
-            this.Items.Add(ItemTypes.BouncingBombs);
+            this.ItemDisplay = ItemTypeNames(ItemTypes.BouncingBombs);            
+            addCollectableItem(ItemTypes.BouncingBombs);
         }
 
         public void RoundX2()
@@ -919,8 +930,7 @@ namespace Lolo
             this.ItemDisplayTime = 200;
             this.Item = ItemTypes.Roundx2;
             this.ItemDisplay = ItemTypeNames(this.Item);
-            this.Score.Scorex2(this.InstanceName);
-            #warning Add big text telling extra time situation
+            this.Score.Scorex2(this.InstanceName);            
         }
 
         public void ExtraTime()
@@ -928,8 +938,7 @@ namespace Lolo
             this.ItemTime = -1;
             this.ItemDisplayTime = 200;
             this.Item = ItemTypes.ExtraTime;
-            this.ItemDisplay = ItemTypeNames(this.Item);
-            #warning Add big text telling extra time situation
+            this.ItemDisplay = ItemTypeNames(this.Item);            
         }
 
         public void ExtraBomb()
@@ -956,8 +965,7 @@ namespace Lolo
             this.ItemTime = -1;
             this.Item = ItemTypes.Plus1;
             this.ItemDisplay = ItemTypeNames(this.Item);
-            this.Score.setScore(this.InstanceName);
-            #warning Add big text telling the +1 situation
+            this.Score.setScore(this.InstanceName);            
         }
 
         public void SwitchScore()
@@ -1023,7 +1031,7 @@ namespace Lolo
                     name = "Ghost (boo!)";
                     break;
                 case ItemTypes.Plus1:
-                    name = "+1";
+                    name = "Score + 1";
                     break;
                 case ItemTypes.Roundx2:
                     name = "Score x 2";
@@ -1105,6 +1113,33 @@ namespace Lolo
                     this.Item = ItemTypes.None;
                 }
             }
+            if (Items.Count > 0)
+            {
+                DrawItems(spriteBatch);
+            }
+        }
+
+        private void DrawItems(SpriteBatch spriteBatch)
+        {
+            float scale = .5f; //50% smaller
+            Vector2 position = new Vector2();
+            Vector2 origin = new Vector2(0, 0);
+            Rectangle source = new Rectangle(0, 0, 50, 50);
+            if (this.InstanceName == "p1")
+            {
+                position.X = 200;
+                position.Y = 10;
+            }
+            else
+            {
+                position.X = 515;
+                position.Y = 10;
+            }
+            for (int i = 0; i < Items.Count; i++)
+            {                
+                spriteBatch.Draw(ItemTextures[(int)Items[i]], position, source, Color.White, 0f, origin, scale, SpriteEffects.None, 0f);
+                position.X += 30;
+            }            
         }
     }
 }

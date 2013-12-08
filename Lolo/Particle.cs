@@ -26,14 +26,16 @@ namespace Lolo
         private Vector2 EmitterLocation;
         private bool miniExplosion = false;
         private bool Eternalfire = false;
-        private bool CharExplosion = false;        
+        private bool CharExplosion = false;
+        private bool PortalExplosion = false;
 
         public Particle(Map map, Player player, Player player2, Texture2D texture, Vector2 position, Vector2 velocity,
-            float angle, float angularVelocity, float size, int ttl, Vector2 emitterlocation, bool miniexplosion = false, bool eternalfire =false, bool charexplosion = false)
+            float angle, float angularVelocity, float size, int ttl, Vector2 emitterlocation, bool miniexplosion = false, 
+            bool eternalfire = false, bool charexplosion = false, bool portalexplosion = false)
         {
             //this.ExplodeFX = explodefx;
             this.EmitterLocation = emitterlocation;
-            this.disabled = false;
+            this.disabled = portalexplosion ? true : false;
             this.map = map;
             this.player = player;
             this.player2 = player2;
@@ -48,6 +50,7 @@ namespace Lolo
             this.Size = size;
             this.TTL = ttl;
             this.TTL_Total = ttl;
+            this.PortalExplosion = portalexplosion;
         }
 
         public void Update()
@@ -130,7 +133,7 @@ namespace Lolo
             Rectangle sourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
             Vector2 origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
 
-            if (disabled && !this.Eternalfire)
+            if (disabled && !this.Eternalfire && !this.PortalExplosion)
             {
                 spriteBatch.End();
                 spriteBatch.Begin();
@@ -148,6 +151,11 @@ namespace Lolo
                 {
                     spriteBatch.Begin(0, BlendState.Additive, null, null, null);
                     spriteBatch.Draw(Texture, Position, sourceRectangle, Color.GreenYellow, 0, origin, Size, SpriteEffects.None, 0f);
+                }
+                else if (this.PortalExplosion)
+                {
+                    spriteBatch.Begin(0, BlendState.Additive, null, null, null);
+                    spriteBatch.Draw(Texture, Position, sourceRectangle, Color.Crimson, 0, origin, Size, SpriteEffects.None, 0f);
                 }
                 else
                 {

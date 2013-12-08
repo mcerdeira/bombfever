@@ -192,12 +192,12 @@ namespace Lolo
                         float absx = Math.Abs(v.X);
                         float absy = Math.Abs(v.Y);
                         bool realHit = true;
-
                         if (this.ID == 6)
                         {                            
                             this.Partner.PortalDeactivateTime = 50;
                             bombmanager.bombs[index].Position = this.Partner.Position;
                             bombmanager.bombs[index].Teletransported();
+                            bombmanager.addExplossion(new Vector2(this.Position.X + (this.hitBox.Width / 2), this.Position.Y + (this.hitBox.Height / 2)), 8, false, true);
                         }
                         else
                         {
