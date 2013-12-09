@@ -19,6 +19,7 @@ namespace Lolo
         private int Columns;
         public string Owner;
         public Rectangle hitBox;
+        public Rectangle bombHitBox;
         private Player player;
         private Player player2;
         private int xMove = 0;
@@ -108,10 +109,12 @@ namespace Lolo
             int hitY = (int)Position.Y + (height / 2) - (hitBoxSize / 2);            
             hitBox = new Rectangle(hitX, hitY, hitBoxSize, hitBoxSize);
 
+            bombHitBox = new Rectangle((int)Position.X, (int)Position.Y, 50, 50);
+
             spriteBatch.Draw(Texture, dest, source, Color.White);
 
             //This was for debugging
-            //spriteBatch.Draw(Texture, hitBox, source, Color.Red);
+            //spriteBatch.Draw(Texture, bombHitBox, source, Color.Red);
         }
 
         private void CheckCollisions(Player player)
@@ -139,6 +142,34 @@ namespace Lolo
             }
         }
 
+        private void CheckCollisionsBomb()
+        {
+            if (this.flying != "")
+            {
+                for (int index = 0; index < BombMan.bombs.Count; index++)
+                {
+                    if (BombMan.bombs[index] != this)
+                    {
+                        string _flying = BombMan.bombs[index].flying;
+                        if (this.bombHitBox.Intersects(BombMan.bombs[index].bombHitBox)) // I don't care stationary bombs
+                        {                            
+                            Vector2 v = General.IntersectDepthVector(BombMan.bombs[index].bombHitBox, this.bombHitBox);
+                            float absx = Math.Abs(v.X);
+                            float absy = Math.Abs(v.Y);                            
+
+                            // This handles the case when a flying bomb hits a wall
+                            if (!(v.X == 0 && v.Y == 0))
+                            {                                
+                                BombMan.bombs[index].wallHitted = true;
+                                this.wallHitted = true;
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
         public void Update()
         {
             // This two if are fir freezing bombs when player is paused
@@ -156,11 +187,13 @@ namespace Lolo
                     return;
                 }
             }
+
+            CheckCollisionsBomb();
             
             LifeLoop--;
 
             if (wallHitted)
-            {
+            {                
                 if (this.BouncingBomb)
                 {
                     if (xMove > 0 || xMove < 0)

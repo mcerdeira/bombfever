@@ -58,10 +58,10 @@ namespace Lolo
         public string getResult(out int scorep1, out int scorep2, Match match)
         {
             string r;
-            string tilemsg = "";            
+            string tilemsg = "";  
             if (WinByTile)
             {
-                tilemsg = " [By blowing up the tile]";
+                tilemsg = " [Grave robber]";
             }
             if (scoreP1 > scoreP2)
             {

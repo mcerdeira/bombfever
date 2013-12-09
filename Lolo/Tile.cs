@@ -198,6 +198,7 @@ namespace Lolo
                             bombmanager.bombs[index].Position = this.Partner.Position;
                             bombmanager.bombs[index].Teletransported();
                             bombmanager.addExplossion(new Vector2(this.Position.X + (this.hitBox.Width / 2), this.Position.Y + (this.hitBox.Height / 2)), 8, false, true);
+                            bombmanager.addExplossion(new Vector2(this.Partner.Position.X + (this.hitBox.Width / 2), this.Partner.Position.Y + (this.hitBox.Height / 2)), 8, false, true);
                         }
                         else
                         {
