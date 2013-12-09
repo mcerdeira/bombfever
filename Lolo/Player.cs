@@ -205,8 +205,7 @@ namespace Lolo
         }
 
         private void resPawn()
-        {
-            Console.WriteLine("################################################ D I E D ###################################################");
+        {            
             this.inmunityCounter = 170; // Lasts, more or less a bomb explosion time =)
             this.Status = "respawning";
             if (Item != ItemTypes.Shield)
@@ -287,8 +286,7 @@ namespace Lolo
         }
 
         private void AI_HandleState(float elapsedTime, Vector2 pos)
-        {
-            Console.WriteLine(AI_State);
+        {            
             switch(AI_State)
             {
                 case AI_States.None:
@@ -341,8 +339,7 @@ namespace Lolo
 
             //counter++;
             //if (counter > 10)
-            //{
-            //    Console.WriteLine("FAKE END");
+            //{            
             //    this.PathFound = true; // Fake path found, is a recursion control
             //}
 
@@ -353,13 +350,11 @@ namespace Lolo
             if (initNode == -1)
             {
                 Vector2 myCell = findMyCell();
-                initNode = IndexFromCell(myCell);
-                Console.WriteLine("I'm at " + initNode.ToString());
+                initNode = IndexFromCell(myCell);                
             }
             if (endNode == -1)
             {                
-                endNode = IndexFromCell(new Vector2(normaLize(target.X), normaLize(target.Y)));
-                Console.WriteLine("Wanna Find " + endNode.ToString());
+                endNode = IndexFromCell(new Vector2(normaLize(target.X), normaLize(target.Y)));                
             }
 
             // Sorts the neighbor list by the lowest Distance to the target
@@ -388,8 +383,7 @@ namespace Lolo
                 }
                 if (dirs.Contains(endNode))
                 {
-                    // We find the final node!
-                    Console.WriteLine("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<found!>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><");
+                    // We find the final node!                    
                     path.Add(endNode);                    
                     this.PathFound = true;
                     return 0;
@@ -400,15 +394,13 @@ namespace Lolo
                     {
                         if (!(endNode == -2) || Map.tiles[i].Walkable) // If scaping, only search open tiles
                         {
-                            path.Add(i);
-                            Console.WriteLine(i + " --> " + endNode.ToString());
+                            path.Add(i);                            
                             int r = AI_PathFind(target, counter, i, endNode);
                         }
                     }
                 }
             }
-            #warning Analize the dead ends to remove dead nodes from the path
-            Console.WriteLine("dead end");
+            #warning Analize the dead ends to remove dead nodes from the path            
             return 1;
         }
 
@@ -501,8 +493,7 @@ namespace Lolo
         private void AI_WalkTillWall(float elapsedTime)
         {
             Vector2 desiredLoc = new Vector2();
-            string currentDir = "";
-            Console.WriteLine("Walking " + Direction.SecondaryDirection + " till wall...");
+            string currentDir = "";            
             desiredLoc.Y = Location.Y;
             desiredLoc.X = Location.X;
             currentDir = Direction.SecondaryDirection;
@@ -542,8 +533,7 @@ namespace Lolo
 
 
         private void AI_TryWalk(Vector2 pos, float elapsedTime)
-        {
-            //Console.WriteLine("-----------------------------------------------------------");
+        {            
             string currentDir = "";
             List<string> tries = new List<string>();
             this.Status = "walking";
@@ -566,12 +556,10 @@ namespace Lolo
                     break;
             }
             AI_chekWalkable(desiredLoc, currentDir); // Check if I can go, to the main direction
-            //tries.Add(currentDir);
-            //Console.WriteLine("1° " + currentDir);
+            //tries.Add(currentDir);            
 
             if (this.hasToCorrect)
-            {
-                //Console.WriteLine("can't");
+            {                
                 desiredLoc.Y = Location.Y;
                 desiredLoc.X = Location.X;
                 currentDir = Direction.SecondaryDirection;
@@ -626,8 +614,7 @@ namespace Lolo
                             if (this.BombCount < this.BombMax)
                             {
                                 if (!runningAway)
-                                {
-                                    Console.WriteLine("$$$$$$$$$$$$$ BOMB $$$$$$$$$$$$$");
+                                {                                    
                                     placeBomb();
                                 }
                                 else
