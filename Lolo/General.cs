@@ -38,10 +38,12 @@ namespace Lolo
         GotoMainMenu,  // (Command) Call the main menu display
         Options,       // Displaying game options
         GotoOptions,   // (Command) Call the options menu
-        Start1P,       // (Command) Starts the game 1P vs CPU
+        Start1P,       // (Command) Starts the game 1P Survival
         Start2P,       // (Command) Starts the game 1P vs 2P
-        Playing1P,     // Displaying in-game
+        StartCoOp,     // (Command) Starts the game Coop Survival
+        Playing1P,     // Displaying in-game 
         Playing2P,     // Displaying in-game
+        PlayingCoOP,   // Displaying in-game
         LoadFromFile,  // Load a level from a txt file
         Credits,       // Shows the game credits
         Quit,          // (Command) Quit the game 
