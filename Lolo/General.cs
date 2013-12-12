@@ -31,6 +31,13 @@ namespace Lolo
         Sorce = 5        
     }
 
+    public enum EnemyTypes
+    {
+        Devil1,
+        Devil2,
+        Spider
+    }
+
     public enum GameState
     {        
         None,

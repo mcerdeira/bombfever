@@ -50,7 +50,7 @@ namespace Lolo
         public Vector2 newPosition;
         private int resetFrame = -1;
         private int frameCount = 0;
-        Vector2 Location;        
+        Vector2 Location;
         Vector2 Speed = new Vector2();
         //Vector2 Acceleration = new Vector2(40, 40);
         BombManager BombMan;
@@ -90,13 +90,13 @@ namespace Lolo
             this.Score = score;
             this.RespawnLoc = location;
             this.Location = location;
-            Speed.X = minVel;
-            Speed.Y = minVel;
-            Status = "idle";
-            PrevStatus = "";
-            Texture = texture;
-            currentFrame = 0;
-            Columns = texture.Width / 50; //30
+            this.Speed.X = minVel;
+            this.Speed.Y = minVel;
+            this.Status = "idle";
+            this.PrevStatus = "";
+            this.Texture = texture;
+            this.currentFrame = 0;
+            this.Columns = texture.Width / 50; //30
             this.PStlye = pstlye;
             this.InstanceName = instancename;
             this.BombMan = BombMan;
