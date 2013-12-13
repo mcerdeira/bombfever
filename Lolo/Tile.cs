@@ -302,7 +302,7 @@ namespace Lolo
         {
             if (this.ID != 0)
             {
-                if (inmunityCounter % 4 == 0)
+                if (inmunityCounter % 5 == 0)
                 {
                     int width = Texture.Width / Columns;
                     int height = Texture.Height;

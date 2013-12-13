@@ -41,6 +41,7 @@ namespace Lolo
         OptionMenu options;
         Credits credits;
         BombManager bombmanager;
+        EnemyManager enemymanager;
         SpriteFont mainFont;
         SpriteFont chartFont;
         RoundResults roundR;
@@ -79,6 +80,7 @@ namespace Lolo
         private PlayerTex p2Sel;
         private List<Texture2D> ItemsTx = new List<Texture2D>();
         private List<Texture2D> TilesTx = new List<Texture2D>();
+        private List<Texture2D> EnemyTx = new List<Texture2D>();
         private bool bkmusicPaused = false;
         private SoundEffect sfxFreeze;
         private SoundEffect sfxUnFreeze;
@@ -425,7 +427,11 @@ namespace Lolo
             TilesTx.Add(Content.Load<Texture2D>("5"));
             TilesTx.Add(Content.Load<Texture2D>("6"));
             TilesTx.Add(Content.Load<Texture2D>("1pflag"));
-            TilesTx.Add(Content.Load<Texture2D>("2pflag"));            
+            TilesTx.Add(Content.Load<Texture2D>("2pflag"));
+
+            EnemyTx.Add(Content.Load<Texture2D>("Devil1"));
+            EnemyTx.Add(Content.Load<Texture2D>("Devil2"));
+            EnemyTx.Add(Content.Load<Texture2D>("Spider"));
             
             LoadControls();
             LoadMusicFX();
@@ -507,13 +513,14 @@ namespace Lolo
             }
 
             // This is the character selection screen
-            if((CurrentGameState == GameState.Start1P || CurrentGameState == GameState.Start2P && !PlayerSelected))
+            if((CurrentGameState == GameState.Start1P || CurrentGameState == GameState.Start2P || CurrentGameState == GameState.StartCoOp) 
+                && !PlayerSelected)
             {
                 prevKey1 = charSelectKey(cwrap1, prevKey1, "p1");
                 prevKey2 = charSelectKey(cwrapReal2, prevKey2, "p2");
             }
 
-            if (CurrentGameState == GameState.Playing1P || CurrentGameState == GameState.Playing2P)
+            if (CurrentGameState == GameState.Playing1P || CurrentGameState == GameState.Playing2P || CurrentGameState == GameState.PlayingCoOP)
             {
                 checkPauseKey(Keyboard.GetState());
                 checkMenuKey();
@@ -525,6 +532,7 @@ namespace Lolo
                 {
                     case GameState.Start1P:
                     case GameState.Start2P:
+                    case GameState.StartCoOp:
                         if (PlayerSelected)
                         {
                             if (PlayerSelectedDelay == 0)
@@ -535,10 +543,18 @@ namespace Lolo
                                 bkMusicInstance.Play();
                                 // Load game options
                                 gameOPT = options.loadOptions();
+                                if (CurrentGameState == GameState.StartCoOp || CurrentGameState == GameState.Start1P)
+                                {
+                                    // Overwrite some game options for the survival modes
+                                    gameOPT.gametype = 1; // First hit kills
+                                    gameOPT.timelimit = 1; // 80 time limit
+                                    enemymanager = new EnemyManager(EnemyTx);
+                                    //TODO: Think a way of creating and position enemies
+                                }
                                 LoadControls();
                                 roundTime = float.Parse(General.getRoundTimes()[gameOPT.timelimit]);
 
-                                // In Game objects                                    
+                                // In Game objects
                                 score = new Score(ScreenHeight, ScreenWidth, mainFont, roundTime, General.getGameTypes()[gameOPT.gametype]);
                                 bombmanager = new BombManager(sfxExplosion, sfxMiniExplosion, sndfxBigExplode, sndfxBouncingBomb, bombTex, particleTex, sfxPortal);
                                 p1 = new Player(PlayerTextures[(int)p1Sel], new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human, PlayersndFXList, mainFont, ScreenHeight, ScreenWidth, bubble, ItemsTx);
@@ -550,15 +566,18 @@ namespace Lolo
                                 else
                                 {
                                     p2 = new Player(PlayerTextures[(int)p2Sel], new Vector2(702, 500), ctype2, bombmanager, score, "p2", PlayerStyle.Human, PlayersndFXList, mainFont, ScreenHeight, ScreenWidth, bubble, ItemsTx);
-                                    CurrentGameState = GameState.Playing2P;
+                                    if (CurrentGameState == GameState.StartCoOp)
+                                    {
+                                        CurrentGameState = GameState.PlayingCoOP;
+                                    }
+                                    else
+                                    {
+                                        CurrentGameState = GameState.Playing2P;
+                                    }
                                 }
-                                map = new Map(p1, p2, bombmanager, ItemsTx, TilesTx, score, sndfxItemPick);
+                                map = new Map(p1, p2, bombmanager, ItemsTx, TilesTx, score, sndfxItemPick, (CurrentGameState == GameState.PlayingCoOP));
                                 map.GenerateLevel(LevelName);
                                 bombmanager.UpdateMap(map, p1, p2);
-                                if (CurrentGameState == GameState.Playing1P)
-                                {
-                                    p2.InitAI(p1);
-                                }
                                 p1.setMap(map);
                                 p2.setMap(map);
                             }
@@ -601,6 +620,7 @@ namespace Lolo
                         break;
                     case GameState.Playing1P:
                     case GameState.Playing2P:
+                    case GameState.PlayingCoOP:
                         bool freezed = (p1.PausedLoop != 0 || p2.PausedLoop != 0);
                         if (freezed)
                         {
@@ -647,8 +667,19 @@ namespace Lolo
                         else
                         {
                             // Time is up!
-                            GameState st;
-                            st = (CurrentGameState == GameState.Playing1P) ? GameState.Start1P : GameState.Start2P;
+                            GameState st = new GameState();
+                            switch (CurrentGameState)
+                            {
+                                case GameState.Playing1P:
+                                    st = GameState.Start1P;
+                                    break;
+                                case GameState.Playing2P:
+                                    st = GameState.Start2P;
+                                    break;
+                                case GameState.PlayingCoOP:
+                                    st = GameState.StartCoOp;
+                                    break;
+                            }                            
                             roundR = new RoundResults(menues, mainFont, chartFont, score, st, cMatch, ScreenHeight, ScreenWidth, pbarTex);
                             CurrentGameState = GameState.RoundResults;
                             bkMusicInstance.Pitch = 0;
@@ -702,6 +733,7 @@ namespace Lolo
                     break;
                 case GameState.Playing1P:
                 case GameState.Playing2P:
+                case GameState.PlayingCoOP:
                     spriteBatch.Draw(background, new Rectangle(0, 0, ScreenWidth, ScreenHeight), Color.White);
                     map.Draw(spriteBatch);
                     p1.Draw(spriteBatch);
@@ -711,6 +743,7 @@ namespace Lolo
                     break;
                 case GameState.Start1P:
                 case GameState.Start2P:
+                case GameState.StartCoOp:
                     charselect.Draw(spriteBatch);                    
                     break;
                 case GameState.RoundResults:

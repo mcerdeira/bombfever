@@ -44,7 +44,7 @@ namespace Lolo
             // Draw the player in the new location(x,y)
             Rectangle sourceRectangle = new Rectangle(width * column, height * row, width, height);
             Rectangle destinationRectangle = new Rectangle((int)Location.X, (int)Location.Y, width, height);
-            if (inmunityCounter % 4 == 0)
+            if (inmunityCounter % 5 == 0)
             {
                 int hitX = (int)Location.X + 5;
                 int hitY = (int)Location.Y + 10;

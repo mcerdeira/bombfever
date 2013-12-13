@@ -24,8 +24,9 @@ namespace Lolo
         private List<Texture2D> ItemTextures = new List<Texture2D>();
         private List<Texture2D> TileTextures = new List<Texture2D>();
         private SoundEffect sndItemPick;
+        private bool Survival;
 
-        public Map(Player player, Player player2, BombManager bombmanager, List<Texture2D> itemtextures, List<Texture2D> tiletextures, Score score, SoundEffect snditempick)
+        public Map(Player player, Player player2, BombManager bombmanager, List<Texture2D> itemtextures, List<Texture2D> tiletextures, Score score, SoundEffect snditempick, bool survival)
         {            
             this.Score = score;
             this.ItemTextures = itemtextures;
@@ -34,6 +35,7 @@ namespace Lolo
             this.player = player;
             this.player2 = player2;
             this.sndItemPick = snditempick;
+            this.Survival = survival;
         }
      
         public void MakeWin(string player)
@@ -103,7 +105,7 @@ namespace Lolo
             tiles.Remove(tile); // Remove is replaced by turning the tile into an empty tile
         }
 
-        public void GenerateLevel(string LevelFile = "")
+        public void GenerateLevel(string LevelFile)
         {            
             Random rdn = new Random();
             int row = 0;
@@ -115,6 +117,8 @@ namespace Lolo
             int[] colsMap = new int[] { 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
             int[] rowsMap = new int[] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
             int tntCounter = 0;
+
+            //TODO: If it is survival, then it must position enemies and the exit door. Also central tomb tiles must not appear
 
             if (LevelFile == "")
             {

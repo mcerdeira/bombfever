@@ -31,7 +31,7 @@ namespace Lolo
             btns.Add(btn);
             btn = new Button("1P Survival", screenwidth, font, Color.DarkGray, Color.Gray, GameState.MainMenu, false); // GameState.Start1P
             btns.Add(btn);
-            btn = new Button("Co-op Survival", screenwidth, font, Color.DarkGray, Color.Gray, GameState.MainMenu, false); // GameState.Start1P
+            btn = new Button("Co-op Survival", screenwidth, font, Color.Yellow, Color.White, GameState.StartCoOp);
             btns.Add(btn);
             btn = new Button("Options", screenwidth, font, Color.Yellow, Color.White, GameState.GotoOptions);
             btns.Add(btn);
