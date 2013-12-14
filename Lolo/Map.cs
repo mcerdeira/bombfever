@@ -23,10 +23,11 @@ namespace Lolo
         private Score Score;
         private List<Texture2D> ItemTextures = new List<Texture2D>();
         private List<Texture2D> TileTextures = new List<Texture2D>();
+        private Texture2D GateTexture;
         private SoundEffect sndItemPick;
         private bool Survival;
 
-        public Map(Player player, Player player2, BombManager bombmanager, List<Texture2D> itemtextures, List<Texture2D> tiletextures, Score score, SoundEffect snditempick, bool survival)
+        public Map(Player player, Player player2, BombManager bombmanager, List<Texture2D> itemtextures, List<Texture2D> tiletextures, Score score, SoundEffect snditempick, bool survival, Texture2D gate)
         {            
             this.Score = score;
             this.ItemTextures = itemtextures;
@@ -36,6 +37,7 @@ namespace Lolo
             this.player2 = player2;
             this.sndItemPick = snditempick;
             this.Survival = survival;
+            this.GateTexture = gate;
         }
      
         public void MakeWin(string player)
@@ -72,28 +74,35 @@ namespace Lolo
         {
             if (tile.BreakAble && tile.ID != -100 && tile.ID != -200)
             {
-                // Decide, randomly if there is any item hidden inside
-                Random rdn = new Random();
-                int v;
-                if (tile.ID == 1)
+                if (!tile.isGate)
                 {
-                    v = rdn.Next(0, 15); // If it is a regular brick, chances are lower
-                }
-                else if (tile.ID == 5)
-                {
-                    v = 1; // If it is wood brick, allways an item
+                    // Decide, randomly if there is any item hidden inside
+                    Random rdn = new Random();
+                    int v;
+                    if (tile.ID == 1)
+                    {
+                        v = rdn.Next(0, 15); // If it is a regular brick, chances are lower
+                    }
+                    else if (tile.ID == 5)
+                    {
+                        v = 1; // If it is wood brick, allways an item
+                    }
+                    else
+                    {
+                        v = rdn.Next(0, 8); // If it is a special brick, chances are higher
+                    }
+                    if (v == 1)
+                    {
+                        // An item is hidden inside, yay!!
+                        int style = rdn.Next(0, (int)ItemTypes.Count);
+                        Item itm = new Item(ItemTextures[style], tile.Position, player, player2, this, style, this.sndItemPick);
+                        items.Add(itm);
+                    }
                 }
                 else
                 {
-                    v = rdn.Next(0, 8); // If it is a special brick, chances are higher
-                }
-
-                if (v == 1)
-                {                    
-                    // An item is hidden inside, yay!!
-                    int style = rdn.Next(0, (int)ItemTypes.Count);
-                    Item itm = new Item(ItemTextures[style], tile.Position, player, player2, this, style, this.sndItemPick);
-                    items.Add(itm);
+                    tile.TurnGate();
+                    return;
                 }
             }
             /*
@@ -117,6 +126,7 @@ namespace Lolo
             int[] colsMap = new int[] { 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
             int[] rowsMap = new int[] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
             int tntCounter = 0;
+            int gateTile = -1;
 
             //TODO: If it is survival, then it must position enemies and the exit door. Also central tomb tiles must not appear
 
@@ -343,6 +353,18 @@ namespace Lolo
                         col += 50;
                     }
                     row += 50;
+                }
+                if (this.Survival)
+                {                    
+                    while (true)
+                    {
+                        gateTile = rdn.Next(tiles.Count);
+                        if (tiles[gateTile].ID != 0 && tiles[gateTile].ID != 2 && tiles[gateTile].ID != -100 && tiles[gateTile].ID != -200)
+                        {
+                            tiles[gateTile].setGate(GateTexture);
+                            break;
+                        }
+                    }                    
                 }
             }
             else

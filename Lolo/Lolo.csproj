@@ -316,6 +316,9 @@
     <Content Include="Content\Spider.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\gate.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Lolo_TemporaryKey.pfx" />
     <None Include="portal.xnb" />
   </ItemGroup>

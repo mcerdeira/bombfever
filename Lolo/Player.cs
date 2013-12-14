@@ -1062,13 +1062,12 @@ namespace Lolo
             // Draw the player in the new location(x,y)
             Rectangle sourceRectangle = new Rectangle(width * column, height * row, width, height);
             Rectangle destinationRectangle = new Rectangle((int)Location.X, (int)Location.Y, width, height);
+            int hitX = (int)Location.X + 5;
+            int hitY = (int)Location.Y + 10;
+            hitBox = new Rectangle(hitX, hitY, 40, 40);//destinationRectangle;
             if (inmunityCounter % 5 == 0)
             {
-                int hitX = (int)Location.X + 5;
-                int hitY = (int)Location.Y + 10;
-                hitBox = new Rectangle(hitX, hitY, 40, 40);//destinationRectangle;
-                spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White);
-                //spriteBatch.Draw(Texture, hitBox, hitBox, Color.Red);
+                spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White);                
             }
             if (this.Shielded)
             {

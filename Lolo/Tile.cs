@@ -31,8 +31,10 @@ namespace Lolo
         private BombManager bombmanager;
         public int inmunityCounter = 0; // Frame duration of inmunity (after being hitted)
         public int PortalDeactivateTime = 0;
+        public bool isGate = false;
         public Tile Partner;
-        private int Life = 1;
+        private int Life = 1;        
+        private Texture2D gateTexture;
 
         public Tile(Vector2 position, Texture2D texture, Player player, Player player2, bool brekable, bool walkable, Map map, int id, BombManager bombmanager)
         {            
@@ -67,7 +69,19 @@ namespace Lolo
                 this.Columns = Texture.Width / 50;
             }
             this.Map = map;
-            this.Position = position;            
+            this.Position = position;
+        }
+
+        public void setGate(Texture2D gatetex)
+        {
+            this.isGate = true;
+            this.gateTexture = gatetex;            
+        }
+
+        public void TurnGate()
+        {
+            this.Walkable = true;
+            this.Texture = this.gateTexture;
         }
 
         public void setPartner(Tile partner)

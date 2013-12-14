@@ -86,6 +86,7 @@ namespace Lolo
         private SoundEffect sfxUnFreeze;
         private SoundEffect sfxPortal;
         private int unfreezeDelay = 0;
+        private Texture2D GPortal;
 
         GameState CurrentGameState = GameState.MainMenu;
 
@@ -438,6 +439,7 @@ namespace Lolo
 
             charselect = new CharacterSelection(menues, mainFont, PlayerSelectionTextures, ScreenHeight, ScreenWidth, PlayersndFXList[(int)PlayerSndFXs.CharSelect], PlayersndFXList[(int)PlayerSndFXs.CharSelected], PlayersndFXList[(int)PlayerSndFXs.CharUnSelected]);
 
+            GPortal = Content.Load<Texture2D>("gate"); 
             bombTex = Content.Load<Texture2D>("bomb");
             particleTex = Content.Load<Texture2D>("particle");
             pbarTex = Content.Load<Texture2D>("pbar");
@@ -547,7 +549,7 @@ namespace Lolo
                                 {
                                     // Overwrite some game options for the survival modes
                                     gameOPT.gametype = 1; // First hit kills
-                                    gameOPT.timelimit = 1; // 80 time limit
+                                    gameOPT.timelimit = 2; // 80 time limit
                                     enemymanager = new EnemyManager(EnemyTx);
                                     //TODO: Think a way of creating and position enemies
                                 }
@@ -575,7 +577,7 @@ namespace Lolo
                                         CurrentGameState = GameState.Playing2P;
                                     }
                                 }
-                                map = new Map(p1, p2, bombmanager, ItemsTx, TilesTx, score, sndfxItemPick, (CurrentGameState == GameState.PlayingCoOP));
+                                map = new Map(p1, p2, bombmanager, ItemsTx, TilesTx, score, sndfxItemPick, (CurrentGameState == GameState.PlayingCoOP), GPortal);
                                 map.GenerateLevel(LevelName);
                                 bombmanager.UpdateMap(map, p1, p2);
                                 p1.setMap(map);
