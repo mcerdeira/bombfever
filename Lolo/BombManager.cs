@@ -146,7 +146,7 @@ namespace Lolo
             string bowner = bomb.Owner;
             bombs.Remove(bomb);
             bomb = null;
-            BombExplosion ex = new BombExplosion(20, map, this, Player, Player2, particleTexture, position, bowner, eternalfire: eternalfire);
+            BombExplosion ex = new BombExplosion(30, map, this, Player, Player2, particleTexture, position, bowner,totalParticles:30, eternalfire: eternalfire);
             bombex.Add(ex);
             if (eternalfire)
             {

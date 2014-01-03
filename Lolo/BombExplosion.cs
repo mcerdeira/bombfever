@@ -28,6 +28,7 @@ namespace Lolo
         private bool CharExplosion = false;
         private bool PortalExplosion = false;
         private string Owner = "";
+        private List<Tile> subSetMap;
 
         public BombExplosion(int TTL, Map map, BombManager bombman, Player player, Player player2, Texture2D texture, Vector2 location, string owner, int totalParticles = 20, bool miniexplosion = false, bool eternalfire = false, bool charExplosion = false, bool portalexplosion = false)
         {
@@ -50,6 +51,8 @@ namespace Lolo
                 this.totalParticles = 40;
             }
             this.PortalExplosion = portalexplosion;
+
+            this.subSetMap = map.tiles.Where(x => (Vector2.Distance(x.Position, location) < 100 && x.ID != 0 && x.ID != 6)).ToList();
         }
 
         public void Update()
@@ -129,7 +132,7 @@ namespace Lolo
             float size = (float)random.NextDouble();
             int ttl = totalParticles + random.Next(100);
 
-            return new Particle(map, player, player2, texture, position, velocity, angle, angularVelocity, size, ttl, EmitterLocation, this.miniExplosion, this.Eternalfire, this.CharExplosion, this.PortalExplosion);
+            return new Particle(map, player, player2, texture, position, velocity, angle, angularVelocity, size, ttl, EmitterLocation, this.miniExplosion, this.Eternalfire, this.CharExplosion, this.PortalExplosion, this.subSetMap);
         }
 
         public void Draw(SpriteBatch spriteBatch)

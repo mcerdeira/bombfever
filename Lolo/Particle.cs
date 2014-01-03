@@ -12,6 +12,7 @@ namespace Lolo
     {
         private bool disabled;
         private Map map;
+        private List<Tile> subsetMap;
         private Player player;
         private Player player2;
         private int TTL_Total;
@@ -30,8 +31,8 @@ namespace Lolo
         private bool PortalExplosion = false;
 
         public Particle(Map map, Player player, Player player2, Texture2D texture, Vector2 position, Vector2 velocity,
-            float angle, float angularVelocity, float size, int ttl, Vector2 emitterlocation, bool miniexplosion = false, 
-            bool eternalfire = false, bool charexplosion = false, bool portalexplosion = false)
+            float angle, float angularVelocity, float size, int ttl, Vector2 emitterlocation, bool miniexplosion = false,
+            bool eternalfire = false, bool charexplosion = false, bool portalexplosion = false, List<Tile> subsetmap = null)
         {
             //this.ExplodeFX = explodefx;
             this.EmitterLocation = emitterlocation;
@@ -51,6 +52,8 @@ namespace Lolo
             this.TTL = ttl;
             this.TTL_Total = ttl;
             this.PortalExplosion = portalexplosion;
+
+            this.subsetMap = subsetmap;
         }
 
         public void Update()
@@ -72,46 +75,85 @@ namespace Lolo
                 {
                     player2.Status = "dead";
                 }
-                for (int index = 0; index < map.tiles.Count; index++)
+                
+                // This loop in a subset, reduces a lot of this iterations
+                for (int index = 0; index < subsetMap.Count; index++)
                 {
-                    if (map.tiles[index].ID != 0 && map.tiles[index].ID != 6)
+                    if (this.hitBox.Intersects(subsetMap[index].hitBox))
                     {
-                        distance = Vector2.Distance(General.Rectangle2Vector(map.tiles[index].hitBox), this.EmitterLocation);
-                        if (distance < 100 && this.hitBox.Intersects(map.tiles[index].hitBox))
+                        if (!disabled && subsetMap[index].BreakAble)
                         {
-                            if (!disabled && map.tiles[index].BreakAble)
+                            if (subsetMap[index].inmunityCounter == 0)
                             {
-                                if (map.tiles[index].inmunityCounter == 0)
-                                {
-                                    map.tiles[index].Action = "dead";
-                                }
+                                subsetMap[index].Action = "dead";
                             }
-                            else
-                            {
-                                if (Math.Abs(distance) < 100)
-                                {
-                                    map.tiles[index].Shake();
-                                }
-                            }
-
-                            disabled = true; // If the particle has bounced, its no longuer deathly (maybe it should dissapear too)
-
-                            Random rnd = new Random();
-                            int speedup = rnd.Next(1, 5);
-
-                            Velocity.X *= speedup;
-                            Velocity.Y *= speedup;
-
-                            Velocity.Y *= -1;
-
-                            if (!miniExplosion)
-                            {
-                                TTL = -1;
-                            }
-                            break;
                         }
-                    }
+                        else
+                        {
+                            if (Math.Abs(distance) < 100)
+                            {
+                                subsetMap[index].Shake();
+                            }
+                        }
+
+                        disabled = true; // If the particle has bounced, its no longuer deathly (maybe it should dissapear too)
+
+                        Random rnd = new Random();
+                        int speedup = rnd.Next(1, 5);
+
+                        Velocity.X *= speedup;
+                        Velocity.Y *= speedup;
+
+                        Velocity.Y *= -1;
+
+                        if (!miniExplosion)
+                        {
+                            TTL = -1;
+                        }
+                        break;
+                    }                    
                 }
+
+                //for (int index = 0; index < map.tiles.Count; index++)
+                //{
+                //    if (map.tiles[index].ID != 0 && map.tiles[index].ID != 6)
+                //    {
+                //        distance = Vector2.Distance(General.Rectangle2Vector(map.tiles[index].hitBox), this.EmitterLocation);
+                //        if (distance < 100 && this.hitBox.Intersects(map.tiles[index].hitBox))
+                //        {
+                //            if (!disabled && map.tiles[index].BreakAble)
+                //            {
+                //                if (map.tiles[index].inmunityCounter == 0)
+                //                {
+                //                    map.tiles[index].Action = "dead";
+                //                }
+                //            }
+                //            else
+                //            {
+                //                if (Math.Abs(distance) < 100)
+                //                {
+                //                    map.tiles[index].Shake();
+                //                }
+                //            }
+
+                //            disabled = true; // If the particle has bounced, its no longuer deathly (maybe it should dissapear too)
+
+                //            Random rnd = new Random();
+                //            int speedup = rnd.Next(1, 5);
+
+                //            Velocity.X *= speedup;
+                //            Velocity.Y *= speedup;
+
+                //            Velocity.Y *= -1;
+
+                //            if (!miniExplosion)
+                //            {
+                //                TTL = -1;
+                //            }
+                //            break;
+                //        }
+                //    }
+                //}
             }
             Position += Velocity;
         }

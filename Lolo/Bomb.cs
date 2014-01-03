@@ -102,7 +102,8 @@ namespace Lolo
             if (Position.X > 798)
             {
                 Position.X = -20;
-            }           
+            }
+
             Rectangle source = new Rectangle(width * column, height * row, width, height);
             Rectangle dest = new Rectangle((int)Position.X, (int)Position.Y, width, height);
             //hitBox = dest;
