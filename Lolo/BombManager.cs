@@ -42,7 +42,10 @@ namespace Lolo
         {
             BombExplosion ex = new BombExplosion(7, map, this, Player, Player2, particleTexture, position, "", particles, true, false, charExplosion, portalexplosion);
             bombex.Add(ex);
-            sndFXMiniExplode.Play();
+            if (!portalexplosion)
+            {
+                sndFXMiniExplode.Play();
+            }
         }
 
         public bool KickingBomb(Player player)
