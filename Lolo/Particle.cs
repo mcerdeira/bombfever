@@ -85,7 +85,7 @@ namespace Lolo
                         {
                             if (subsetMap[index].inmunityCounter == 0)
                             {
-                                subsetMap[index].Action = "dead";
+                                subsetMap[index].Action = "dead";                                
                             }
                         }
                         else

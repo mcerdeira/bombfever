@@ -322,6 +322,9 @@
     <Content Include="Content\bomb_red.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\plus1.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Lolo_TemporaryKey.pfx" />
     <None Include="portal.xnb" />
   </ItemGroup>

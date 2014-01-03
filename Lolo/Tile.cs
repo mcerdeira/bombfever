@@ -114,14 +114,14 @@ namespace Lolo
                 }
             }
             // Decide sprite things, based on id
-            switch (this.ID)
-            {
-                case 0:
-                    // Space
-                    break;
-                default:
-                    break;
-            }
+            //switch (this.ID)
+            //{
+            //    case 0:
+            //        // Space
+            //        break;
+            //    default:
+            //        break;
+            //}
             if (this.Action == "dead")
             {
                 Life--;

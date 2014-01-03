@@ -413,7 +413,7 @@ namespace Lolo
             ItemsTx.Add(Content.Load<Texture2D>("skull"));
             ItemsTx.Add(Content.Load<Texture2D>("ghost"));
             ItemsTx.Add(Content.Load<Texture2D>("freeze"));
-            ItemsTx.Add(Content.Load<Texture2D>("dummy")); // Plus1
+            ItemsTx.Add(Content.Load<Texture2D>("plus1"));
             ItemsTx.Add(Content.Load<Texture2D>("dummy")); // SwitchScore
             ItemsTx.Add(Content.Load<Texture2D>("dummy")); // ExtraTime
             ItemsTx.Add(Content.Load<Texture2D>("dummy")); // Roundx2

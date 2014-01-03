@@ -52,7 +52,7 @@ namespace Lolo
             }
             this.PortalExplosion = portalexplosion;
 
-            this.subSetMap = map.tiles.Where(x => (Vector2.Distance(x.Position, location) < 100 && x.ID != 0 && x.ID != 6)).ToList();
+            this.subSetMap = map.tiles.Where(x => (Vector2.Distance(x.Position, location) < 80 && x.ID != 0 && x.ID != 6)).ToList();
         }
 
         public void Update()
