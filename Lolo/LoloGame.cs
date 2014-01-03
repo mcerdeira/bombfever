@@ -419,8 +419,7 @@ namespace Lolo
             ItemsTx.Add(Content.Load<Texture2D>("dummy")); // Roundx2
             ItemsTx.Add(Content.Load<Texture2D>("dummy")); // BouncingBombs
             ItemsTx.Add(Content.Load<Texture2D>("dummy")); // EternalFire
-            ItemsTx.Add(Content.Load<Texture2D>("dummy")); // ExtraBomb
-            ItemsTx.Add(Content.Load<Texture2D>("dummy")); // Portal
+            ItemsTx.Add(Content.Load<Texture2D>("dummy")); // ExtraBomb            
 
             TilesTx.Add(Content.Load<Texture2D>("1"));
             TilesTx.Add(Content.Load<Texture2D>("2"));
