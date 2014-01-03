@@ -115,6 +115,7 @@ namespace Lolo
 
             if (LifeLoop < 90)
             {
+                // Twinkling effect
                 int freq = 0;
                 if (LifeLoop < 90)
                 {
