@@ -53,6 +53,7 @@ namespace Lolo
         private Texture2D background;
         private Texture2D menues;
         private Texture2D bombTex;
+        private Texture2D bombTex2;
         private Texture2D particleTex;
         private Texture2D pbarTex;
         private Texture2D bubble;
@@ -441,6 +442,7 @@ namespace Lolo
 
             GPortal = Content.Load<Texture2D>("gate"); 
             bombTex = Content.Load<Texture2D>("bomb");
+            bombTex2 = Content.Load<Texture2D>("bomb_red");
             particleTex = Content.Load<Texture2D>("particle");
             pbarTex = Content.Load<Texture2D>("pbar");
             sfxExplosion = Content.Load<SoundEffect>("explosion");
@@ -558,7 +560,7 @@ namespace Lolo
 
                                 // In Game objects
                                 score = new Score(ScreenHeight, ScreenWidth, mainFont, roundTime, General.getGameTypes()[gameOPT.gametype]);
-                                bombmanager = new BombManager(sfxExplosion, sfxMiniExplosion, sndfxBigExplode, sndfxBouncingBomb, bombTex, particleTex, sfxPortal);
+                                bombmanager = new BombManager(sfxExplosion, sfxMiniExplosion, sndfxBigExplode, sndfxBouncingBomb, bombTex, bombTex2, particleTex, sfxPortal);
                                 p1 = new Player(PlayerTextures[(int)p1Sel], new Vector2(50, 50), ctype1, bombmanager, score, "p1", PlayerStyle.Human, PlayersndFXList, mainFont, ScreenHeight, ScreenWidth, bubble, ItemsTx);
                                 if (CurrentGameState == GameState.Start1P)
                                 {

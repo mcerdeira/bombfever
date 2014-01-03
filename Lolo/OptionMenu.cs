@@ -14,7 +14,7 @@ namespace Lolo
     {
         int ScreenWidth;
         int ScreenHeight;
-        Texture2D Texture;
+        Texture2D Texture; 
         List<Object> btns = new List<Object>();
         private GameOptions gameOpt;
         private int currButton = -1;

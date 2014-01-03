@@ -16,6 +16,7 @@ namespace Lolo
         public int frCounter = 0; // Frame counter (it keeps the animation rate)
         public Vector2 Position;
         private Texture2D Texture;
+        private Texture2D Texture2;
         private int Columns;
         public string Owner;
         public Rectangle hitBox;
@@ -33,13 +34,14 @@ namespace Lolo
         List<SoundEffect> SndfxBouncingBomb;
         SoundEffect sndfxPortal;
 
-        public Bomb(Vector2 position, string owner, BombManager BombMan, Texture2D texture, Player player, Player player2, bool eternalFire, bool bouncing, List<SoundEffect> sndfxbouncingbomb, SoundEffect sndportal)
+        public Bomb(Vector2 position, string owner, BombManager BombMan, Texture2D texture, Texture2D texture2, Player player, Player player2, bool eternalFire, bool bouncing, List<SoundEffect> sndfxbouncingbomb, SoundEffect sndportal)
         {
             this.Owner = owner;
             this.BombMan = BombMan;
             this.player = player;
             this.player2 = player2;
-            Texture = texture;           
+            this.Texture = texture;
+            this.Texture2 = texture2;
             this.Position = position;
             this.Columns = Texture.Width / 50; //30            
             this.EternalFire = eternalFire;
@@ -111,8 +113,35 @@ namespace Lolo
 
             bombHitBox = new Rectangle((int)Position.X, (int)Position.Y, 50, 50);
 
-            spriteBatch.Draw(Texture, dest, source, Color.White);
+            if (LifeLoop < 90)
+            {
+                int freq = 0;
+                if (LifeLoop < 90)
+                {
+                    freq = 10;
+                }
+                if (LifeLoop < 50)
+                {
+                    freq = 5;
+                }
+                if (LifeLoop < 20)
+                {
+                    freq = 2;
+                }
 
+                if (LifeLoop % freq != 0)
+                {
+                    spriteBatch.Draw(Texture, dest, source, Color.White);
+                }
+                else
+                {
+                    spriteBatch.Draw(Texture2, dest, source, Color.White);
+                }
+            }
+            else
+            {
+                spriteBatch.Draw(Texture, dest, source, Color.White);
+            }
             //This was for debugging
             //spriteBatch.Draw(Texture, bombHitBox, source, Color.Red);
         }
