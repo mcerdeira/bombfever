@@ -105,7 +105,7 @@ namespace Lolo
             int height = Texture.Height;
             float centerX = General.getScreenCenterTextX(GameTitle, ScreenWidth, TFont);
             Rectangle source = new Rectangle(0, 0, width, height);
-            Rectangle dest = new Rectangle(0, 0, width, height);            
+            Rectangle dest = new Rectangle(0, 0, ScreenWidth, ScreenHeight);            
             spriteBatch.Draw(Texture, dest, source, Color.White);
             spriteBatch.DrawString(TFont, GameTitle, new Vector2(centerX, 0), Color.Yellow);
             for (int index = 0; index < btns.Count; index++)

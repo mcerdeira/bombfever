@@ -195,7 +195,7 @@ namespace Lolo
             int height = Texture.Height;
             int x = 0, y = 0, line = 0;
             Rectangle source = new Rectangle(0, 0, width, height);
-            Rectangle dest = new Rectangle(0, 0, width, height);
+            Rectangle dest = new Rectangle(0, 0, ScreenWidth, ScreenHeight);
             spriteBatch.Draw(Texture, dest, source, Color.White);
             x = ScreenHeight / 3;
             y = ScreenWidth  / 4;
