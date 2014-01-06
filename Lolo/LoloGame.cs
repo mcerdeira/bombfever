@@ -416,9 +416,9 @@ namespace Lolo
             ItemsTx.Add(Content.Load<Texture2D>("plus1"));
             ItemsTx.Add(Content.Load<Texture2D>("switch"));
             ItemsTx.Add(Content.Load<Texture2D>("extratime"));
-            ItemsTx.Add(Content.Load<Texture2D>("dummy")); // Roundx2
+            ItemsTx.Add(Content.Load<Texture2D>("x2")); 
             ItemsTx.Add(Content.Load<Texture2D>("dummy")); // BouncingBombs
-            ItemsTx.Add(Content.Load<Texture2D>("dummy")); // EternalFire
+            ItemsTx.Add(Content.Load<Texture2D>("efire"));
             ItemsTx.Add(Content.Load<Texture2D>("dummy")); // ExtraBomb            
 
             TilesTx.Add(Content.Load<Texture2D>("1"));

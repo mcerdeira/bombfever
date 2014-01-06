@@ -137,7 +137,7 @@ namespace Lolo
             int width = Texture.Width;
             int height = Texture.Height;
             Rectangle source = new Rectangle(0, 0, width, height);
-            Rectangle dest = new Rectangle(0, 0, width, height);
+            Rectangle dest = new Rectangle(0, 0, ScreenWidth, ScreenHeight);
             spriteBatch.Draw(Texture, dest, source, Color.White);
             float startY = 0;
             startY = setText(spriteBatch, Font, startY, "P1: " + this.score1.ToString());
