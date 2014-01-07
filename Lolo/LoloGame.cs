@@ -419,7 +419,7 @@ namespace Lolo
             ItemsTx.Add(Content.Load<Texture2D>("x2")); 
             ItemsTx.Add(Content.Load<Texture2D>("dummy")); // BouncingBombs
             ItemsTx.Add(Content.Load<Texture2D>("efire"));
-            ItemsTx.Add(Content.Load<Texture2D>("dummy")); // ExtraBomb            
+            ItemsTx.Add(Content.Load<Texture2D>("extrabomb"));
 
             TilesTx.Add(Content.Load<Texture2D>("1"));
             TilesTx.Add(Content.Load<Texture2D>("2"));
