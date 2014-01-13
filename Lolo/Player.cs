@@ -30,9 +30,11 @@ namespace Lolo
         private string lastDirection = "";
         private Vector2 RespawnLoc; // Location the respawn will point to
         public int inmunityCounter = 0; // Frame duration of inmunity (after being hitted)
+        private int twinklingLoop = 0;
         public bool wallHitted; // Player hitted a wall Flag        
         public Texture2D Texture { get; set; }
         public int Columns { get; set; }
+        public bool isGhost = false;
         private int FrameRate = 0;
         private int currentFrame;
         private string KeyControl;
@@ -123,16 +125,27 @@ namespace Lolo
             this.Status = "dead";
         }
 
-        public void Pause(bool forced = false)
+        public void Pause(bool forced = false, bool byBomb = false)
         {            
             this.Status = "idle";
             if (forced)
             {
-                ForcedPausedLoop = 400;
+                if (byBomb)
+                {
+                    ForcedPausedLoop = 100;
+                }
+                else
+                {
+                    ForcedPausedLoop = 400;
+                }
             }
             else
             {
                 PausedLoop = 400;
+            }
+            if (byBomb)
+            {
+                twinklingLoop = 100;
             }
         }
 
@@ -202,11 +215,17 @@ namespace Lolo
             {
                 this.inmunityCounter--;
             }
+            if (this.twinklingLoop !=0)
+            {
+                this.twinklingLoop--;
+            }
         }
 
         private void resPawn()
         {            
             this.inmunityCounter = 170; // Lasts, more or less a bomb explosion time =)
+            this.twinklingLoop = 170;
+            this.ForcedPausedLoop = 0;
             this.Status = "respawning";
             if (Item != ItemTypes.Shield)
             {
@@ -215,6 +234,7 @@ namespace Lolo
                 this.Location = this.RespawnLoc;
                 this.BombMax = 2;
             }
+            this.isGhost = false;
             this.Shielded = false;
             sndFXList[(int)PlayerSndFXs.Die].Play();
             Item = ItemTypes.None;
@@ -939,8 +959,10 @@ namespace Lolo
 
         public void Ghost()
         {
+            this.isGhost = true;
             this.ItemDisplayTime = 200;
             this.inmunityCounter = 500;
+            this.twinklingLoop = 500;
             this.ItemTime = 500;
             this.Item = ItemTypes.Ghost;
             this.ItemDisplay = ItemTypeNames(this.Item);
@@ -1065,7 +1087,12 @@ namespace Lolo
             int hitX = (int)Location.X + 5;
             int hitY = (int)Location.Y + 10;
             hitBox = new Rectangle(hitX, hitY, 40, 40);//destinationRectangle;
-            if (inmunityCounter % 5 == 0)
+            if (inmunityCounter == 0)
+            {
+                this.isGhost = false;
+            }
+
+            if (twinklingLoop % 5 == 0)
             {
                 spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White);                
             }

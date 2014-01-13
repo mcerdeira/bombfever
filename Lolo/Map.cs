@@ -91,7 +91,8 @@ namespace Lolo
                     {
                         v = rdn.Next(0, 8); // If it is a special brick, chances are higher
                     }
-                    if (v == 1)
+                                        
+                    if (v == 1)                    
                     {
                         // An item is hidden inside, yay!!
                         int style = rdn.Next(0, (int)ItemTypes.Count);
@@ -176,13 +177,21 @@ namespace Lolo
                         else
                         {
                             // Now lets do some random... 
-                            v = rdn.Next(-20, 20);
+                            v = 2;
+                            while (v == 2)
+                            {
+                                v = rdn.Next(-20, 20);
+                            }
                             if (v == 6)
                             {
                                 // Portals tiles requires that Rows must be uneven and Cols must be even
                                 if (r % 2 == 0 || c % 2 != 0)
                                 {
-                                    v = rdn.Next(1, 6);
+                                    v = 2;
+                                    while (v == 2)
+                                    {
+                                        v = rdn.Next(1, 6);
+                                    }
                                 }
                             }
                             arrtiles[c, r] = v; // Save the random, for mirroring

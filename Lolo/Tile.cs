@@ -251,7 +251,7 @@ namespace Lolo
 
         private void CheckCollisions(Player player)
         {
-            if (player.Item == ItemTypes.Ghost && this.ID != 2) // Ghost can go through portals
+            if (player.isGhost && this.ID != 2) // Ghost can go through tiles
             {
                 return;
             }

@@ -70,6 +70,7 @@ namespace Lolo
         private PlayerActions prevKey1 = PlayerActions.None;
         private PlayerActions prevKey2 = PlayerActions.None;
         private bool EnterKeyDown = false;
+        private List<SoundEffectInstance> bkMusicList = new List<SoundEffectInstance>();
         private SoundEffectInstance bkMusicInstance;
         private SoundEffectInstance menuMusicInstance;
         private List<SoundEffect> PlayersndFXList = new List<SoundEffect>();
@@ -390,8 +391,7 @@ namespace Lolo
             cr.Add("http://www.bfxr.net/");
             cr.Add("http://opengameart.org/");
             //cr.Add(" ");
-            credits = new Credits(menues, mainFont, cr, ScreenHeight, ScreenWidth);
-            menu = new MainMenu(menues, mainFont,titleFont, ScreenHeight, ScreenWidth, "Boom Hunters");
+            credits = new Credits(menues, mainFont, cr, ScreenHeight, ScreenWidth);            
             lvlLoad = new LevelLoader(menues, mainFont, ScreenHeight, ScreenWidth);
             options = new OptionMenu(menues, mainFont, ScreenHeight, ScreenWidth);
             gameOPT = options.loadOptions();
@@ -437,6 +437,8 @@ namespace Lolo
             LoadControls();
             LoadMusicFX();
 
+            menu = new MainMenu(menues, mainFont, titleFont, ScreenHeight, ScreenWidth, "Boom Hunters", PlayersndFXList[(int)PlayerSndFXs.CharSelect], Content.Load<SoundEffect>("menuselect"));
+
             charselect = new CharacterSelection(menues, mainFont, PlayerSelectionTextures, ScreenHeight, ScreenWidth, PlayersndFXList[(int)PlayerSndFXs.CharSelect], PlayersndFXList[(int)PlayerSndFXs.CharSelected], PlayersndFXList[(int)PlayerSndFXs.CharUnSelected]);
 
             GPortal = Content.Load<Texture2D>("gate"); 
@@ -450,26 +452,28 @@ namespace Lolo
             sndfxItemPick = Content.Load<SoundEffect>("itempick");
             sfxPortal = Content.Load<SoundEffect>("portal");
             cMatch = new Match();
+
+            menuMusicInstance.Play();
         }
 
         private void LoadMusicFX()
         {
             menuMusicInstance = Content.Load<SoundEffect>("menumusic").CreateInstance();
             menuMusicInstance.IsLooped = true;
-            menuMusicInstance.Volume = 0.5f;
-            menuMusicInstance.Play();
-            bkMusicInstance = Content.Load<SoundEffect>("backmusic").CreateInstance();
-            bkMusicInstance.IsLooped = true;
-            bkMusicInstance.Volume = 0.5f;
-
+            menuMusicInstance.Volume = 0.5f;            
+            // Load the 6 songs
+            for (int i = 1; i < 7; i++)
+            {
+                bkMusicList.Add(Content.Load<SoundEffect>(String.Format("backmusic{0}", i)).CreateInstance());
+            }
+           
             // List with all the player soundFXs
             PlayersndFXList.Add(Content.Load<SoundEffect>("placebomb"));
             PlayersndFXList.Add(Content.Load<SoundEffect>("die"));
             PlayersndFXList.Add(Content.Load<SoundEffect>("kick"));
             PlayersndFXList.Add(Content.Load<SoundEffect>("char_select"));
             PlayersndFXList.Add(Content.Load<SoundEffect>("char_selected"));
-            PlayersndFXList.Add(Content.Load<SoundEffect>("char_unselected"));
-            PlayersndFXList.Add(Content.Load<SoundEffect>("yay"));
+            PlayersndFXList.Add(Content.Load<SoundEffect>("char_unselected"));            
             // Bouncing bomb sounds
             sndfxBouncingBomb.Add(Content.Load<SoundEffect>("bounce1"));
             sndfxBouncingBomb.Add(Content.Load<SoundEffect>("bounce2"));
@@ -543,6 +547,16 @@ namespace Lolo
                                 unfreezeDelay = 0;
                                 charselect.Reset();
                                 menuMusicInstance.Stop();
+
+                                Random rnd = new Random();
+                                if (bkMusicInstance != null)
+                                {
+                                    bkMusicInstance.Stop();
+                                }
+                                int i = rnd.Next(0, 6);
+                                bkMusicInstance = bkMusicList[i];
+                                bkMusicInstance.IsLooped = true;
+                                bkMusicInstance.Volume = 0.5f;
                                 bkMusicInstance.Play();
                                 // Load game options
                                 gameOPT = options.loadOptions();
@@ -651,15 +665,7 @@ namespace Lolo
                                 unfreezeDelay--;
                             }
                         }
-                        float currTime = score.Update(gameTime, freezed);                        
-                        if (currTime < 15)
-                        {                            
-                            bkMusicInstance.Pitch = 0.2f;
-                        }
-                        if (currTime < 5)
-                        {
-                            bkMusicInstance.Pitch = 0.3f;
-                        }
+                        float currTime = score.Update(gameTime, freezed);
                         if (currTime >= 0)
                         {
                             p1.Update(gameTime);
@@ -684,9 +690,7 @@ namespace Lolo
                                     break;
                             }                            
                             roundR = new RoundResults(menues, mainFont, chartFont, score, st, cMatch, ScreenHeight, ScreenWidth, pbarTex);
-                            CurrentGameState = GameState.RoundResults;
-                            bkMusicInstance.Pitch = 0;
-                            PlayersndFXList[(int)PlayerSndFXs.Yay].Play();                            
+                            CurrentGameState = GameState.RoundResults;                            
                         }
                         break;
                     case GameState.Credits:

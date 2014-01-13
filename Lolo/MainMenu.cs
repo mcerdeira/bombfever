@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Lolo
 {
@@ -18,8 +19,10 @@ namespace Lolo
         private SpriteFont Font;
         private SpriteFont TFont;
         private string GameTitle;
+        private SoundEffect fxSelect;
+        private SoundEffect fxSelected;
 
-        public MainMenu(Texture2D texture, SpriteFont font, SpriteFont titlefont, int screenheight, int screenwidth, string gametitle)
+        public MainMenu(Texture2D texture, SpriteFont font, SpriteFont titlefont, int screenheight, int screenwidth, string gametitle, SoundEffect fxselect, SoundEffect fxselected)
         {            
             this.ScreenHeight = screenheight;
             this.ScreenWidth = screenwidth;
@@ -27,6 +30,8 @@ namespace Lolo
             this.TFont = titlefont;
             this.Font = font;
             this.GameTitle = gametitle;
+            this.fxSelect = fxselect;
+            this.fxSelected = fxselected;
             Button btn = new Button("2P Versus", screenwidth, font, Color.Yellow, Color.White, GameState.Start2P);            
             btns.Add(btn);
             btn = new Button("1P Survival", screenwidth, font, Color.DarkGray, Color.Gray, GameState.MainMenu, false); // GameState.Start1P
@@ -42,11 +47,12 @@ namespace Lolo
             btn = new Button("Quit", screenwidth, font, Color.Yellow, Color.White, GameState.Quit);
             btns.Add(btn);
             PositionButtons();
-            ButtonFocus(1);
+            ButtonFocus(1, true);
         }
 
         public GameState GetRetState()
         {
+            fxSelected.Play();
             return btns[currButton].GetRetState();
         }
 
@@ -63,7 +69,7 @@ namespace Lolo
             }
         }
 
-        public void ButtonFocus(int direction)
+        public void ButtonFocus(int direction, bool initial_focus = false)
         {
             calcCurrentButton(direction);
 
@@ -77,6 +83,10 @@ namespace Lolo
                 btns[index].Status = 0;
             }
             btns[currButton].Status = 1;
+            if(!initial_focus)
+            {
+                fxSelect.Play();
+            }
         }
 
         public void PositionButtons()

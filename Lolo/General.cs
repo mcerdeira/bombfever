@@ -16,8 +16,7 @@ namespace Lolo
         KickBomb = 2,
         CharSelect = 3,
         CharSelected = 4,
-        CharUnSelected = 5,
-        Yay = 6
+        CharUnSelected = 5        
     }
 
     public enum PlayerTex // This is used by a list of textures to point to indexes

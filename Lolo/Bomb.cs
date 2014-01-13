@@ -23,6 +23,7 @@ namespace Lolo
         public Rectangle bombHitBox;
         private Player player;
         private Player player2;
+        private int KickedLoop = 0;
         private int xMove = 0;
         private int yMove = 0;
         private int LifeLoop = 100;
@@ -30,6 +31,7 @@ namespace Lolo
         public bool EternalFire = false;
         public bool BouncingBomb = false;
         public string flying = "";
+        int bounceSnd = 0;
         BombManager BombMan;
         List<SoundEffect> SndfxBouncingBomb;
         SoundEffect sndfxPortal;
@@ -63,6 +65,7 @@ namespace Lolo
 
         public void Kicked(string direction)
         {
+            this.KickedLoop = 5;
             this.LifeLoop += 5; // A little extra time if it gets kicked
             yMove = 0;
             xMove = 0;
@@ -150,26 +153,9 @@ namespace Lolo
 
         private void CheckCollisions(Player player)
         {
-            if (LifeLoop <= 50 && hitBox.Intersects(player.hitBox))
+            if (hitBox.Intersects(player.hitBox))
             {
-                Vector2 v = General.IntersectDepthVector(player.hitBox, this.hitBox);
-                float absx = Math.Abs(v.X);
-                float absy = Math.Abs(v.Y);
-                // if a collision has happened
-                if (!(v.X == 0 && v.Y == 0))
-                {
-                    if (absx > absy) // the shallower impact is the correct one- this is on the y axis
-                    {
-                        Vector2 newpos = new Vector2(player.hitBox.X, player.hitBox.Y + v.Y);
-                        player.newPosition = newpos;
-                    }
-                    else // the x axis!
-                    {
-                        Vector2 newpos = new Vector2(player.hitBox.X + v.X, player.hitBox.Y);
-                        player.newPosition = newpos;
-                    }
-                    player.wallHitted = true;
-                }
+                player.Pause(true, true);
             }
         }
 
@@ -203,7 +189,7 @@ namespace Lolo
 
         public void Update()
         {
-            // This two if are fir freezing bombs when player is paused
+            // This two if are for freezing bombs when player is paused
             if (this.Owner == "p1")
             {
                 if (this.player.PausedLoop != 0)
@@ -216,6 +202,19 @@ namespace Lolo
                 if (this.player2.PausedLoop != 0)
                 {
                     return;
+                }
+            }
+
+            if (flying != "") // Flying bombs makes players stay still
+            {
+                if (KickedLoop > 0)
+                {
+                    KickedLoop--;
+                }
+                if (KickedLoop == 0)
+                {
+                    CheckCollisions(player);
+                    CheckCollisions(player2);
                 }
             }
 
@@ -234,10 +233,13 @@ namespace Lolo
                     if (yMove > 0 || yMove < 0)
                     {
                         yMove *= -1;
+                    }                    
+                    SndfxBouncingBomb[bounceSnd].Play();
+                    bounceSnd++;
+                    if (bounceSnd > SndfxBouncingBomb.Count - 1)
+                    {
+                        bounceSnd = 0;
                     }
-                    Random rnd = new Random();
-                    int i = rnd.Next(0, SndfxBouncingBomb.Count);
-                    SndfxBouncingBomb[i].Play();
                     wallHitted = false;
                 }
                 else
