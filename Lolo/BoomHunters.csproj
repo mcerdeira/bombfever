@@ -8,8 +8,8 @@
     <ProjectGuid>{71752AF5-71E3-409D-8676-2EFF2F8F57E4}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Lolo</RootNamespace>
-    <AssemblyName>Lolo</AssemblyName>
+    <RootNamespace>BoomHunters</RootNamespace>
+    <AssemblyName>BoomHunters</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>C:\Users\mcerdeira\beel\Test\Lolo\publish\</PublishUrl>
