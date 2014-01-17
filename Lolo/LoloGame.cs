@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.Audio;
+using System.Threading;
 #endregion
 
 namespace Lolo
@@ -89,21 +90,25 @@ namespace Lolo
         private SoundEffect sfxPortal;
         private int unfreezeDelay = 0;
         private Texture2D GPortal;
+        private Thread LoadThread;
+        private Vector2 loadingPos;
 
-        GameState CurrentGameState = GameState.MainMenu;
+        GameState CurrentGameState;
 
-        public LoloGame()
-            : base()
+        public LoloGame(string[] args) : base()
         {
-            graphics = new GraphicsDeviceManager(this);         
-            //ScreenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            //ScreenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;            
-            #warning Make mouse invisible
-            this.IsMouseVisible = true;
+            graphics = new GraphicsDeviceManager(this);            
             graphics.PreferredBackBufferWidth = ScreenWidth;
             graphics.PreferredBackBufferHeight = ScreenHeight;
-            #warning Put fullscreen back
-            //graphics.IsFullScreen = true;
+            this.IsMouseVisible = false;
+            graphics.IsFullScreen = true;
+
+            if (System.Diagnostics.Debugger.IsAttached 
+                || (args.Length > 0 && args[0].ToString().Trim() == "-devmode"))
+            {
+                this.IsMouseVisible = true;
+                graphics.IsFullScreen = false;
+            }
             graphics.ApplyChanges();
             Content.RootDirectory = "Content";
         }
@@ -363,15 +368,25 @@ namespace Lolo
         /// all of your content.
         /// </summary>
         protected override void LoadContent()
-        {            
-            mainFont = Content.Load<SpriteFont>("mainfont");           
-            gameOPT = new GameOptions();
-            // Create a new SpriteBatch, which can be used to draw textures.
+        {
+            CurrentGameState = GameState.Loading;
+            mainFont = Content.Load<SpriteFont>("mainfont");             
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            loadingPos = new Vector2();
+            loadingPos.X = General.getScreenCenterTextX("Loading...", ScreenWidth, mainFont);
+            loadingPos.Y = General.getScreenCenterTextY("Loading...", ScreenHeight, mainFont);                
+            LoadThread = new Thread(() => RealLoad());
+            LoadThread.Start();
+        }
+
+        private void RealLoad()
+        {            
+            gameOPT = new GameOptions();            
             background = Content.Load<Texture2D>("Background");
             chartFont = Content.Load<SpriteFont>("chartsfont");
-            pauseSprite = new Pause(ScreenHeight, ScreenWidth, mainFont, chartFont); 
-            menues = Content.Load<Texture2D>("MainMenu");                        
+            pauseSprite = new Pause(ScreenHeight, ScreenWidth, mainFont, chartFont);
+            menues = Content.Load<Texture2D>("MainMenu");
             titleFont = Content.Load<SpriteFont>("titlefont");
             bubble = Content.Load<Texture2D>("bubble");
             PauseFX = Content.Load<Effect>("Dark.mgfxo");
@@ -391,14 +406,14 @@ namespace Lolo
             cr.Add("http://www.bfxr.net/");
             cr.Add("http://opengameart.org/");
             //cr.Add(" ");
-            credits = new Credits(menues, mainFont, cr, ScreenHeight, ScreenWidth);            
+            credits = new Credits(menues, mainFont, cr, ScreenHeight, ScreenWidth);
             lvlLoad = new LevelLoader(menues, mainFont, ScreenHeight, ScreenWidth);
             options = new OptionMenu(menues, mainFont, ScreenHeight, ScreenWidth);
             gameOPT = options.loadOptions();
             PlayerTextures.Add(Content.Load<Texture2D>("Knight"));
             PlayerTextures.Add(Content.Load<Texture2D>("Girl"));
             PlayerTextures.Add(Content.Load<Texture2D>("King"));
-            PlayerTextures.Add(Content.Load<Texture2D>("Man"));            
+            PlayerTextures.Add(Content.Load<Texture2D>("Man"));
             PlayerTextures.Add(Content.Load<Texture2D>("Skelet"));
             PlayerTextures.Add(Content.Load<Texture2D>("Sorce"));
 
@@ -416,7 +431,7 @@ namespace Lolo
             ItemsTx.Add(Content.Load<Texture2D>("plus1"));
             ItemsTx.Add(Content.Load<Texture2D>("switch"));
             ItemsTx.Add(Content.Load<Texture2D>("extratime"));
-            ItemsTx.Add(Content.Load<Texture2D>("x2")); 
+            ItemsTx.Add(Content.Load<Texture2D>("x2"));
             ItemsTx.Add(Content.Load<Texture2D>("dummy")); // BouncingBombs
             ItemsTx.Add(Content.Load<Texture2D>("efire"));
             ItemsTx.Add(Content.Load<Texture2D>("extrabomb"));
@@ -433,7 +448,7 @@ namespace Lolo
             EnemyTx.Add(Content.Load<Texture2D>("Devil1"));
             EnemyTx.Add(Content.Load<Texture2D>("Devil2"));
             EnemyTx.Add(Content.Load<Texture2D>("Spider"));
-            
+
             LoadControls();
             LoadMusicFX();
 
@@ -441,7 +456,7 @@ namespace Lolo
 
             charselect = new CharacterSelection(menues, mainFont, PlayerSelectionTextures, ScreenHeight, ScreenWidth, PlayersndFXList[(int)PlayerSndFXs.CharSelect], PlayersndFXList[(int)PlayerSndFXs.CharSelected], PlayersndFXList[(int)PlayerSndFXs.CharUnSelected]);
 
-            GPortal = Content.Load<Texture2D>("gate"); 
+            GPortal = Content.Load<Texture2D>("gate");
             bombTex = Content.Load<Texture2D>("bomb");
             bombTex2 = Content.Load<Texture2D>("bomb_red");
             particleTex = Content.Load<Texture2D>("particle");
@@ -452,6 +467,8 @@ namespace Lolo
             sndfxItemPick = Content.Load<SoundEffect>("itempick");
             sfxPortal = Content.Load<SoundEffect>("portal");
             cMatch = new Match();
+
+            CurrentGameState = GameState.MainMenu;
 
             menuMusicInstance.Play();
         }
@@ -537,6 +554,8 @@ namespace Lolo
             {
                 switch (CurrentGameState)
                 {
+                    case GameState.Loading:
+                        break;
                     case GameState.Start1P:
                     case GameState.Start2P:
                     case GameState.StartCoOp:
@@ -622,7 +641,7 @@ namespace Lolo
                         bkMusicInstance.Stop();
                         menuMusicInstance.Play();
                         break;
-                    case GameState.MainMenu:                        
+                    case GameState.MainMenu:
                         menu.Update(gameTime);
                         break;
                     case GameState.GotoOptions:
@@ -732,6 +751,9 @@ namespace Lolo
             }
             switch (CurrentGameState)
             {
+                case GameState.Loading:
+                    spriteBatch.DrawString(mainFont, "Loading...", loadingPos, Color.Yellow);
+                    break;
                 case GameState.MainMenu:
                     menu.Draw(spriteBatch);
                     break;

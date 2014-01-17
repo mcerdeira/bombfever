@@ -73,8 +73,9 @@ namespace Lolo
                     this.gameOpt = reader.Deserialize(input) as GameOptions;
                 }
             }
-            catch(FileNotFoundException)
+            catch(Exception)
             {
+                this.gameOpt = new GameOptions();
                 this.gameOpt.p1control = 0;
                 this.gameOpt.p2control = 0;
                 this.gameOpt.timelimit = 0;

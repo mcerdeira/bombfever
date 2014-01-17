@@ -55,7 +55,8 @@ namespace Lolo
         Quit,          // (Command) Quit the game 
         GoAndLoadFile, // (Command) Starts the game 1P vs CPU        
         RoundResults,   // Displaying round results
-        PlayerSelection // Displaying the character selection screen
+        PlayerSelection, // Displaying the character selection screen
+        Loading          // Game Loading   
     }
 
     public enum ControlType
