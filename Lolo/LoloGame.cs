@@ -637,9 +637,12 @@ namespace Lolo
                         cMatch = new Match();
                         CurrentGameState = GameState.MainMenu;
                         menuMusicInstance.Volume = 0.5f;
-                        bkMusicInstance.Volume = 0.5f;
-                        bkMusicInstance.Stop();
-                        menuMusicInstance.Play();
+                        if (bkMusicInstance != null)
+                        {
+                            bkMusicInstance.Volume = 0.5f;
+                            bkMusicInstance.Stop();
+                            menuMusicInstance.Play();
+                        }                       
                         break;
                     case GameState.MainMenu:
                         menu.Update(gameTime);

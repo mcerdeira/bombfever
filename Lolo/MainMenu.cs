@@ -81,8 +81,10 @@ namespace Lolo
             for (int index = 0; index < btns.Count; index++)
             {
                 btns[index].Status = 0;
+                btns[index].SetXPosition(0);
             }
             btns[currButton].Status = 1;
+            btns[currButton].SetXPosition(10);
             if(!initial_focus)
             {
                 fxSelect.Play();
@@ -94,7 +96,7 @@ namespace Lolo
             float posY = 250;
             for (int index = 0; index < btns.Count; index++)
             {
-                float centerX = General.getScreenCenterTextX(btns[index].getCaption(), ScreenWidth, Font);
+                float centerX = 0;// General.getScreenCenterTextX(btns[index].getCaption(), ScreenWidth, Font);
                 Vector2 pos = new Vector2(centerX, posY);
                 btns[index].SetPosition(pos);
                 posY += btns[index].getHeight() / 2;

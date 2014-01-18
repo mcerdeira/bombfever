@@ -51,6 +51,11 @@ namespace Lolo
             return this.Caption;
         }
 
+        public void SetXPosition(float x)
+        {
+            this.Position.X = x;
+        }
+
         public void SetPosition(Vector2 position)
         {
             this.Position = position;
@@ -62,7 +67,7 @@ namespace Lolo
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            float centerX = General.getScreenCenterTextX(Caption, ScreenWidth, Font);
+            //float centerX = 0;// General.getScreenCenterTextX(Caption, ScreenWidth, Font);
             Color col;
             if (Status == 0)
             {
@@ -72,7 +77,7 @@ namespace Lolo
             {
                 col = MainColor;
             }
-            spriteBatch.DrawString(Font, Caption, new Vector2(centerX, Position.Y), col);
+            spriteBatch.DrawString(Font, Caption, new Vector2(Position.X, Position.Y), col);
         }
     }
 }
