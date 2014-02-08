@@ -18,7 +18,7 @@ namespace Lolo
         private int currButton = -1;
         private SpriteFont Font;
         private SpriteFont TFont;
-        private string GameTitle;
+        //private string GameTitle;
         private SoundEffect fxSelect;
         private SoundEffect fxSelected;
 
@@ -29,22 +29,22 @@ namespace Lolo
             this.Texture = texture;
             this.TFont = titlefont;
             this.Font = font;
-            this.GameTitle = gametitle;
+            //this.GameTitle = gametitle;
             this.fxSelect = fxselect;
             this.fxSelected = fxselected;
-            Button btn = new Button("2P Versus", screenwidth, font, Color.Yellow, Color.White, GameState.Start2P);            
+            Button btn = new Button("2P Versus", screenwidth, font, Color.Yellow, Color.White, GameState.Start2P, false);
             btns.Add(btn);
-            btn = new Button("1P Survival", screenwidth, font, Color.DarkGray, Color.Gray, GameState.MainMenu, false); // GameState.Start1P
+            btn = new Button("1P Survival", screenwidth, font, Color.DarkGray, Color.Gray, GameState.MainMenu, false, false); // GameState.Start1P
             btns.Add(btn);
-            btn = new Button("Co-op Survival", screenwidth, font, Color.Yellow, Color.White, GameState.StartCoOp);
+            btn = new Button("Co-op Survival", screenwidth, font, Color.Yellow, Color.White, GameState.StartCoOp, false);
             btns.Add(btn);
-            btn = new Button("Options", screenwidth, font, Color.Yellow, Color.White, GameState.GotoOptions);
+            btn = new Button("Options", screenwidth, font, Color.Yellow, Color.White, GameState.GotoOptions, false);
             btns.Add(btn);
-            btn = new Button("Load level", screenwidth, font, Color.Yellow, Color.White, GameState.LoadFromFile);
+            btn = new Button("Load level", screenwidth, font, Color.Yellow, Color.White, GameState.LoadFromFile, false);
             btns.Add(btn);
-            btn = new Button("Credits", screenwidth, font, Color.Yellow, Color.White, GameState.Credits);
+            btn = new Button("Credits", screenwidth, font, Color.Yellow, Color.White, GameState.Credits, false);
             btns.Add(btn);
-            btn = new Button("Quit", screenwidth, font, Color.Yellow, Color.White, GameState.Quit);
+            btn = new Button("Quit", screenwidth, font, Color.Yellow, Color.White, GameState.Quit, false);
             btns.Add(btn);
             PositionButtons();
             ButtonFocus(1, true);
@@ -81,10 +81,10 @@ namespace Lolo
             for (int index = 0; index < btns.Count; index++)
             {
                 btns[index].Status = 0;
-                btns[index].SetXPosition(0);
+                btns[index].SetXPosition(10);
             }
             btns[currButton].Status = 1;
-            btns[currButton].SetXPosition(10);
+            btns[currButton].SetXPosition(20);
             if(!initial_focus)
             {
                 fxSelect.Play();
@@ -93,33 +93,29 @@ namespace Lolo
 
         public void PositionButtons()
         {
-            float posY = 250;
+            float posY = 320;
             for (int index = 0; index < btns.Count; index++)
             {
-                float centerX = 0;// General.getScreenCenterTextX(btns[index].getCaption(), ScreenWidth, Font);
+                float centerX = General.getScreenCenterTextX(btns[index].getCaption(), ScreenWidth, Font);
                 Vector2 pos = new Vector2(centerX, posY);
                 btns[index].SetPosition(pos);
-                posY += btns[index].getHeight() / 2;
+                posY += btns[index].getHeight() - (btns[index].getHeight() / 3);
             }
         }
 
         public void Update(GameTime gametime)
         {
-            for (int index = 0; index < btns.Count; index++)
-            {
-                btns[index].Update(gametime);
-            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             int width = Texture.Width;
             int height = Texture.Height;
-            float centerX = General.getScreenCenterTextX(GameTitle, ScreenWidth, TFont);
+            //float centerX = General.getScreenCenterTextX(GameTitle, ScreenWidth, TFont);
             Rectangle source = new Rectangle(0, 0, width, height);
             Rectangle dest = new Rectangle(0, 0, ScreenWidth, ScreenHeight);            
             spriteBatch.Draw(Texture, dest, source, Color.White);
-            spriteBatch.DrawString(TFont, GameTitle, new Vector2(centerX, 0), Color.Yellow);
+            //spriteBatch.DrawString(TFont, GameTitle, new Vector2(centerX, 0), Color.Yellow);
             for (int index = 0; index < btns.Count; index++)
             {
                 btns[index].Draw(spriteBatch);

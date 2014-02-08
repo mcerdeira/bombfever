@@ -34,9 +34,9 @@ namespace Lolo
             btns.Add(cboTime);
             ComboList cbotype = new ComboList("Game type", screenwidth, font, Color.White, General.getGameTypes());
             btns.Add(cbotype);            
-            Button btn = new Button("Acept", screenwidth, font, Color.Yellow, Color.White, GameState.GotoMainMenu);
+            Button btn = new Button("Acept", screenwidth, font, Color.Yellow, Color.White, GameState.GotoMainMenu, true);
             btns.Add(btn);
-            btn = new Button("Cancel", screenwidth, font, Color.Yellow, Color.White, GameState.GotoMainMenu);
+            btn = new Button("Cancel", screenwidth, font, Color.Yellow, Color.White, GameState.GotoMainMenu, true);
             btns.Add(btn);
             PositionButtons();
             ButtonFocus(1);            
@@ -218,15 +218,7 @@ namespace Lolo
         {
             for (int index = 0; index < btns.Count; index++)
             {
-                if (btns[index].GetType().Name == "Button")
-                {
-                    ((Button)btns[index]).Update(gametime);
-                }
-                else if (btns[index].GetType().Name == "CheckBox")
-                {
-                    ((CheckBox)btns[index]).Update(gametime);
-                }
-                else if (btns[index].GetType().Name == "ComboList")
+                if (btns[index].GetType().Name == "ComboList")
                 {
                     ((ComboList)btns[index]).Update(gametime);
                 }

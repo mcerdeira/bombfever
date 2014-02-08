@@ -36,9 +36,9 @@ namespace Lolo
             this.score = score;
             this.Texture = texture;
             Button btn;
-            btn = new Button("Rematch", screenwidth, font, Color.Yellow, Color.White, prevGameState);
+            btn = new Button("Rematch", screenwidth, font, Color.Yellow, Color.White, prevGameState, true);
             btns.Add(btn);
-            btn = new Button("Quit", screenwidth, font, Color.Yellow, Color.White, GameState.GotoMainMenu);
+            btn = new Button("Quit", screenwidth, font, Color.Yellow, Color.White, GameState.GotoMainMenu, true);
             btns.Add(btn);
             PositionButtons();
             ButtonFocus(1);
@@ -87,10 +87,6 @@ namespace Lolo
 
         public void Update(GameTime gametime)
         {
-            for (int index = 0; index < btns.Count; index++)
-            {
-                btns[index].Update(gametime);
-            }
         }        
 
         private float setText(SpriteBatch spriteBatch, SpriteFont Font, float startY, string text)

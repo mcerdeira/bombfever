@@ -16,7 +16,7 @@ namespace Lolo
         int ScreenHeight;
         public int Status = 0; // frame status
         private Vector2 Position;        
-        private SpriteFont Font;
+        private SpriteFont Font;        
         private string Caption = "PAUSE";
         List<Button> btns = new List<Button>();
         private int currButton = -1;
@@ -29,9 +29,9 @@ namespace Lolo
             float centerX = General.getScreenCenterTextX(Caption, screenwidth, font);
             float centerY = General.getScreenCenterTextY(Caption, screenheight, font);
             this.Position = new Vector2(centerX, centerY);
-            Button btn = new Button("Continue", screenwidth, font2, Color.Yellow, Color.White, GameState.None);
+            Button btn = new Button("Continue", screenwidth, font2, Color.Yellow, Color.White, GameState.None, true);
             btns.Add(btn);
-            btn = new Button("Quit", screenwidth, font2, Color.Yellow, Color.White, GameState.GotoMainMenu);
+            btn = new Button("Quit", screenwidth, font2, Color.Yellow, Color.White, GameState.GotoMainMenu, true);
             btns.Add(btn);
             PositionButtons(centerY + 50);
             ButtonFocus(1);
@@ -90,10 +90,6 @@ namespace Lolo
 
         public void Update(GameTime gametime)
         {
-            for (int index = 0; index < btns.Count; index++)
-            {
-                btns[index].Update(gametime);
-            }
         }
     }
 }

@@ -16,11 +16,12 @@ namespace Lolo
         Vector2 Position;
         Color Color;
         Color MainColor;
+        public bool Centered;
         private int ScreenWidth;
         public int Status;
         public bool Enabled;
 
-        public Button(string caption, int screenwidth, SpriteFont font, Color maincolor, Color color, GameState retstate, bool enabled = true)
+        public Button(string caption, int screenwidth, SpriteFont font, Color maincolor, Color color, GameState retstate, bool centered, bool enabled = true)
         {
             this.Enabled = enabled;
             this.ScreenWidth = screenwidth;
@@ -29,6 +30,7 @@ namespace Lolo
             this.MainColor = maincolor;
             this.RetState = retstate;
             this.Caption = caption;
+            this.Centered = centered;
         }
 
         public GameState GetRetState()
@@ -61,13 +63,17 @@ namespace Lolo
             this.Position = position;
         }
 
-        public void Update(GameTime gametime)
-        {
-        }
-
         public void Draw(SpriteBatch spriteBatch)
         {
-            //float centerX = 0;// General.getScreenCenterTextX(Caption, ScreenWidth, Font);
+            float positionX;
+            if (this.Centered)
+            {
+                positionX = General.getScreenCenterTextX(Caption, ScreenWidth, Font);
+            }
+            else
+            {
+                positionX = Position.X;
+            }
             Color col;
             if (Status == 0)
             {
@@ -77,7 +83,7 @@ namespace Lolo
             {
                 col = MainColor;
             }
-            spriteBatch.DrawString(Font, Caption, new Vector2(Position.X, Position.Y), col);
+            spriteBatch.DrawString(Font, Caption, new Vector2(positionX, Position.Y), col);
         }
     }
 }

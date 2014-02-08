@@ -53,6 +53,8 @@ namespace Lolo
         int ScreenHeight = 600;
         private Texture2D background;
         private Texture2D menues;
+        private Texture2D roundres;
+        private Texture2D charselection;
         private Texture2D bombTex;
         private Texture2D bombTex2;
         private Texture2D particleTex;
@@ -387,6 +389,8 @@ namespace Lolo
             chartFont = Content.Load<SpriteFont>("chartsfont");
             pauseSprite = new Pause(ScreenHeight, ScreenWidth, mainFont, chartFont);
             menues = Content.Load<Texture2D>("MainMenu");
+            roundres = Content.Load<Texture2D>("RoundResults");
+            charselection = Content.Load<Texture2D>("CharSelection");
             titleFont = Content.Load<SpriteFont>("titlefont");
             bubble = Content.Load<Texture2D>("bubble");
             PauseFX = Content.Load<Effect>("Dark.mgfxo");
@@ -406,9 +410,9 @@ namespace Lolo
             cr.Add("http://www.bfxr.net/");
             cr.Add("http://opengameart.org/");
             //cr.Add(" ");
-            credits = new Credits(menues, mainFont, cr, ScreenHeight, ScreenWidth);
-            lvlLoad = new LevelLoader(menues, mainFont, ScreenHeight, ScreenWidth);
-            options = new OptionMenu(menues, mainFont, ScreenHeight, ScreenWidth);
+            credits = new Credits(charselection, mainFont, cr, ScreenHeight, ScreenWidth);
+            lvlLoad = new LevelLoader(charselection, mainFont, ScreenHeight, ScreenWidth);
+            options = new OptionMenu(charselection, mainFont, ScreenHeight, ScreenWidth);
             gameOPT = options.loadOptions();
             PlayerTextures.Add(Content.Load<Texture2D>("Knight"));
             PlayerTextures.Add(Content.Load<Texture2D>("Girl"));
@@ -454,7 +458,7 @@ namespace Lolo
 
             menu = new MainMenu(menues, mainFont, titleFont, ScreenHeight, ScreenWidth, "Boom Hunters", PlayersndFXList[(int)PlayerSndFXs.CharSelect], Content.Load<SoundEffect>("menuselect"));
 
-            charselect = new CharacterSelection(menues, mainFont, PlayerSelectionTextures, ScreenHeight, ScreenWidth, PlayersndFXList[(int)PlayerSndFXs.CharSelect], PlayersndFXList[(int)PlayerSndFXs.CharSelected], PlayersndFXList[(int)PlayerSndFXs.CharUnSelected]);
+            charselect = new CharacterSelection(charselection, mainFont, PlayerSelectionTextures, ScreenHeight, ScreenWidth, PlayersndFXList[(int)PlayerSndFXs.CharSelect], PlayersndFXList[(int)PlayerSndFXs.CharSelected], PlayersndFXList[(int)PlayerSndFXs.CharUnSelected]);
 
             GPortal = Content.Load<Texture2D>("gate");
             bombTex = Content.Load<Texture2D>("bomb");
@@ -710,8 +714,8 @@ namespace Lolo
                                 case GameState.PlayingCoOP:
                                     st = GameState.StartCoOp;
                                     break;
-                            }                            
-                            roundR = new RoundResults(menues, mainFont, chartFont, score, st, cMatch, ScreenHeight, ScreenWidth, pbarTex);
+                            }
+                            roundR = new RoundResults(roundres, mainFont, chartFont, score, st, cMatch, ScreenHeight, ScreenWidth, pbarTex);
                             CurrentGameState = GameState.RoundResults;                            
                         }
                         break;
