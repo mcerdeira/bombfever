@@ -35,6 +35,9 @@ namespace Lolo
         public Tile Partner;
         private int Life = 1;        
         private Texture2D gateTexture;
+        private float animationTime = 0.1f; // Number of seconds between animation frames
+        private float stateTime; // Used to control the elapsed time to count to n seconds and control animations
+        private bool draw;
 
         public Tile(Vector2 position, Texture2D texture, Player player, Player player2, bool brekable, bool walkable, Map map, int id, BombManager bombmanager)
         {            
@@ -89,8 +92,10 @@ namespace Lolo
             this.Partner = partner;
         }
 
-        public void Update()
+        public void Update(GameTime gametime)
         {
+            this.stateTime += (float)gametime.ElapsedGameTime.TotalSeconds;
+          
             if(this.ID == 0)
             {
                 return;
@@ -127,6 +132,10 @@ namespace Lolo
                 Life--;
                 if (this.Life > 0)
                 {
+                    if (this.ID == -100 || this.ID == -200)
+                    {
+                        Status++;
+                    }
                     this.Action = "";
                     this.inmunityCounter = 170;
                 }
@@ -316,7 +325,20 @@ namespace Lolo
         {
             if (this.ID != 0)
             {
-                if (inmunityCounter % 5 == 0)
+                if (inmunityCounter != 0)
+                {
+                    if (this.stateTime > this.animationTime)
+                    {
+                        this.stateTime = 0;
+                        draw = !draw;
+                    }
+                }
+                else
+                {
+                    draw = true;
+                }
+
+                if (draw)
                 {
                     int width = Texture.Width / Columns;
                     int height = Texture.Height;

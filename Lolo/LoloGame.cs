@@ -696,7 +696,7 @@ namespace Lolo
                         {
                             p1.Update(gameTime);
                             p2.Update(gameTime);
-                            map.Update();
+                            map.Update(gameTime);
                             bombmanager.Update();
                         }
                         else

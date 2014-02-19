@@ -78,6 +78,9 @@ namespace Lolo
         public int ForcedPausedLoop = 0;
         private bool Shielded = false;
         List<Texture2D> ItemTextures;
+        private float animationTime = 0.1f; // Number of seconds between animation frames
+        private float stateTime; // Used to control the elapsed time to count to n seconds and control animations
+        private bool draw;
 
         public Player(Texture2D texture, Vector2 location, ControlType ctype, BombManager BombMan, Score score, string instancename, PlayerStyle pstlye, List<SoundEffect> sndfxlist, SpriteFont font, int screenheight, int screenwidth, Texture2D bubble, List<Texture2D> itemtextures)
         {
@@ -152,6 +155,7 @@ namespace Lolo
         public void Update(GameTime gametime)
         {
             int totalFrames = -1;
+            this.stateTime += (float)gametime.ElapsedGameTime.TotalSeconds;
             UpdateInput((float)gametime.ElapsedGameTime.TotalSeconds);            
             if (this.Status == "walking")
             {
@@ -1092,7 +1096,21 @@ namespace Lolo
                 this.isGhost = false;
             }
 
-            if (twinklingLoop % 5 == 0)
+            if (twinklingLoop != 0)
+            {
+                if (this.stateTime > this.animationTime)
+                {
+                    this.stateTime = 0;
+                    draw = !draw;
+                }
+            }
+            else
+            {
+                draw = true;
+            }
+
+
+            if (draw)
             {
                 spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White);                
             }

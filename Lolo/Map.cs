@@ -52,11 +52,11 @@ namespace Lolo
             this.Score.ExtraTime();
         }
 
-        public void Update()
+        public void Update(GameTime gametime)
         {
             for (int index = 0; index < tiles.Count; index++)
             {
-                tiles[index].Update();
+                tiles[index].Update(gametime);
             }
 
             for (int index = 0; index < items.Count; index++)
